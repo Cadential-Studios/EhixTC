@@ -1,50 +1,26 @@
 {
   "westwalker": {
-    "id": "westwalker",
     "name": "Westwalker of the Frontier",
-    "description": "You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.",
-    "startingLocation": "westwalker_camp",
-    "attributes": {
-      "strength": 14,
-      "dexterity": 16,
-      "constitution": 15,
-      "intelligence": 12,
-      "wisdom": 16,
-      "charisma": 11
-    },
+    "description": "Rangers known as Westwalkers roam the plains bordering the dark Griefwood. They rely on keen senses and a bond with the land rather than arcane power.",
+    "stats": { "might": 12, "grace": 13, "wit": 11, "spirit": 10, "luck": 11 },
+    "startingEquipment": ["rangers_bow", "leather_armor", "survival_kit", "healing_herbs"],
     "skills": ["survival", "tracking", "archery", "herbalism"],
-    "startingItems": ["rangers_bow", "leather_armor", "survival_kit", "healing_herbs"]
+    "lore": "Raised among scattered frontier clans, Westwalkers guard the roads and watch the Griefwood for signs of encroaching darkness."
   },
   "leonin": {
-    "id": "leonin",
     "name": "M'ra Kaal Spirit-Speaker",
-    "description": "You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.",
-    "startingLocation": "leonin_encampment",
-    "attributes": {
-      "strength": 16,
-      "dexterity": 13,
-      "constitution": 16,
-      "intelligence": 11,
-      "wisdom": 15,
-      "charisma": 14
-    },
+    "description": "The proud Leonin of the M'ra Kaal pride honor those who commune with ancestral spirits. Spirit-speakers serve as warriors and guides, bound by sacred oaths.",
+    "stats": { "might": 14, "grace": 11, "wit": 10, "spirit": 13, "luck": 10 },
+    "startingEquipment": ["ceremonial_spear", "spirit_totem", "tribal_armor", "ancestral_medallion"],
     "skills": ["spirit_communication", "combat", "leadership", "tribal_lore"],
-    "startingItems": ["ceremonial_spear", "spirit_totem", "tribal_armor", "ancestral_medallion"]
+    "lore": "M'ra Kaal clans believe the coming Convergence will test their honor. Spirit-speakers bear the voices of the ancestors into battle."
   },
   "gaian": {
-    "id": "gaian",
     "name": "Gaian Scholar",
-    "description": "You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.",
-    "startingLocation": "gaian_library",
-    "attributes": {
-      "strength": 10,
-      "dexterity": 12,
-      "constitution": 13,
-      "intelligence": 17,
-      "wisdom": 14,
-      "charisma": 13
-    },
+    "description": "Scholars from the city of Gaia dedicate their lives to study and magic. They seek truth in dusty tomes and the patterns of the moons.",
+    "stats": { "might": 9, "grace": 11, "wit": 15, "spirit": 12, "luck": 10 },
+    "startingEquipment": ["scholars_robes", "research_notes", "arcane_focus", "library_tome"],
     "skills": ["arcane_knowledge", "history", "research", "linguistics"],
-    "startingItems": ["scholars_robes", "research_notes", "arcane_focus", "library_tome"]
+    "lore": "Gaians preserve knowledge from before the Ascension. Many believe understanding the moons will unlock new magical discoveries during the Convergence."
   }
 }

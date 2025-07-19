@@ -1,4 +1,41 @@
 {
+  "opening": {
+    "id": "opening",
+    "text": "The year is 998 PA and whispers of the coming Triune Convergence spread across the land. Three moons creep toward rare alignment, stirring omens in every corner of Edoria.",
+    "choices": [
+      { "text": "Continue", "nextScene": "choose_origin" }
+    ]
+  },
+  "choose_origin": {
+    "id": "choose_origin",
+    "text": "Tell us from whence you hail.",
+    "choices": [
+      { "text": "Westwalker of the Frontier", "nextScene": "origin_westwalker" },
+      { "text": "M'ra Kaal (Leonin)", "nextScene": "origin_leonin" },
+      { "text": "Gaian Scholar", "nextScene": "origin_gaian" }
+    ]
+  },
+  "origin_westwalker": {
+    "id": "origin_westwalker",
+    "text": "You are a Westwalker, keeper of the wild roads and wary guardian of the Griefwood's borders.",
+    "choices": [
+      { "text": "Awaken by the campfire", "nextScene": "start_vision" }
+    ]
+  },
+  "origin_leonin": {
+    "id": "origin_leonin",
+    "text": "As a Spirit-Speaker of the M'ra Kaal, your duty is to honor the ancestors and heed their warnings.",
+    "choices": [
+      { "text": "Begin your vigil", "nextScene": "start_vision" }
+    ]
+  },
+  "origin_gaian": {
+    "id": "origin_gaian",
+    "text": "From the endless halls of Gaia's library you seek truth in lore and lunar cycles.",
+    "choices": [
+      { "text": "Study beneath the moonlight", "nextScene": "start_vision" }
+    ]
+  },
   "start_vision": {
     "id": "start_vision",
     "text": "As you focus, the world melts away. The red moon, Kapra, seems to swell in the sky, its light turning from eerie to malevolent. The world holds its breath, and then your mind is violently pulled away.",
