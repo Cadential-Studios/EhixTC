@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edoria: The Triune Convergence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almendra:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Almendra', serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .game-container {
+            max-width: 800px;
+            margin: auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+        }
+        .header {
+            background: rgba(23, 23, 39, 0.8);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid #4a4a6a;
+        }
+        .moon {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px 0px rgba(255, 255, 255, 0.2);
+        }
+        .moon-edyria { background-color: #6a8dff; box-shadow: 0 0 15px 3px #6a8dff; }
+        .moon-kapra { background-color: #ff6a6a; box-shadow: 0 0 15px 3px #ff6a6a; }
+        .moon-enia { background-color: #fffb8a; box-shadow: 0 0 15px 3px #fffb8a; }
+        .story-text {
+            line-height: 1.8;
+            font-size: 1.2rem;
+        }
+        .choice-button, .action-button {
+            background-color: #2e2e4d;
+            border: 1px solid #4a4a6a;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+        .choice-button:hover, .action-button:hover {
+            background-color: #4a4a6a;
+            border-color: #8a8ac2;
+        }
+        .start-button {
+            background: linear-gradient(45deg, #8a8ac2, #6a8dff);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
+        .start-button:hover {
+            transform: scale(1.05);
+        }
+        .ui-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .bottom-nav {
+            border-top: 1px solid #4a4a6a;
+            background: rgba(23, 23, 39, 0.9);
+            backdrop-filter: blur(5px);
+        }
+        .nav-icon {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-icon:hover {
+            color: #fff;
+            transform: scale(1.1);
+        }
+        .nav-icon i {
+            font-size: 32px;
+        }
+        #character-creation-screen, #game-screen { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container" class="game-container">
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+            <h1 class="font-cinzel text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
+            <h2 class="font-cinzel text-2xl md:text-3xl text-gray-300 mb-8">The Triune Convergence</h2>
+            <p class="max-w-2xl mx-auto mb-12 text-gray-300 text-lg">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
+            <button id="start-game-button" class="start-button font-cinzel text-xl font-bold text-white py-4 px-12 rounded-lg shadow-lg transition-transform duration-300">Begin</button>
+        </div>
+
+        <!-- CHARACTER CREATION SCREEN -->
+        <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+            <h2 class="font-cinzel text-3xl text-white mb-6">Choose Your Origin</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="westwalker">
+                    <h3 class="font-cinzel text-xl text-white mb-2">Westwalker of the Frontier</h3>
+                    <p class="text-gray-300">You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.</p>
+                </div>
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="leonin">
+                    <h3 class="font-cinzel text-xl text-white mb-2">M'ra Kaal Spirit-Speaker</h3>
+                    <p class="text-gray-300">You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.</p>
+                </div>
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="gaian">
+                    <h3 class="font-cinzel text-xl text-white mb-2">Gaian Scholar</h3>
+                    <p class="text-gray-400">You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GAME SCREEN -->
+        <div id="game-screen" class="flex-grow flex flex-col">
+            <!-- Header -->
+            <header id="game-header" class="header sticky top-0 p-4 rounded-b-lg z-10">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-cinzel text-lg" id="current-date">Alphi 1, 998 PA</p>
+                        <p class="text-sm text-gray-400" id="month-description">The Awakening</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center"><div id="moon-edyria" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
+                        <div class="text-center"><div id="moon-kapra" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-kapra"></div><p class="text-xs text-red-300">Kapra</p></div>
+                        <div class="text-center"><div id="moon-enia" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-enia"></div><p class="text-xs text-yellow-300">Enia</p></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main id="main-content" class="flex-grow p-4 flex flex-col"></main>
+
+            <!-- Bottom Nav -->
+            <footer class="bottom-nav sticky bottom-0 py-2 px-4 mt-auto">
+                <div class="flex justify-around items-center text-gray-400">
+                    <button class="nav-icon text-center" data-panel="journal-panel" title="Journal"><i class="ph-duotone ph-book-open"></i></button>
+                    <button class="nav-icon text-center" data-panel="character-panel" title="Character"><i class="ph-duotone ph-user"></i></button>
+                    <button class="nav-icon text-center" data-panel="inventory-panel" title="Inventory"><i class="ph-duotone ph-backpack"></i></button>
+                    <button class="nav-icon text-center" data-panel="settings-panel" title="Settings"><i class="ph-duotone ph-gear-six"></i></button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- UI PANELS -->
+    <div id="journal-panel" class="ui-panel"><h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Journal</h2><div id="journal-content"></div><button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button></div>
+    <div id="character-panel" class="ui-panel"><h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Character</h2><div id="character-content"></div><button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button></div>
+    <div id="inventory-panel" class="ui-panel"><h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Inventory</h2><div id="inventory-content" class="grid grid-cols-4 sm:grid-cols-6 gap-4"></div><button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button></div>
+    <div id="settings-panel" class="ui-panel"><h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Settings</h2><div id="settings-content"><p class="text-gray-400">Game settings (Text Speed, Audio, etc.) will be here.</p></div><button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button></div>
+
+    <script>
+        const gameData = {
+            player: {
+                origin: null,
+                location: null,
+                inventory: [],
+                quests: { active: [], completed: [] },
+                lore: new Set(),
+                rumors: new Set(),
+            },
+            time: {
+                day: 1,
+                month: 0,
+                year: 998,
+                months: ["Alphi", "Brenn", "Frutia", "Dorona", "Evorn", "Filik", "Grenn", "Halbar"],
+                monthDescriptions: ["The Awakening", "The Growing", "The Zenith", "The Bounty", "The Waning", "The Reaping", "The Fading", "The Sleeping"]
+            },
+            story: {
+                currentScene: null
+            }
+        };
+        
+        const locations = {
+            westwalker_camp: {
+                name: "Westwalker Campfire",
+                description: "A small, well-kept campfire crackles, a lonely point of light against the vast, darkening plains of the Frontier. The edge of the Griefwood looms like a wall of shadow in the distance. The air is still, but carries an unusual chill.",
+                image: "https://placehold.co/800x300/4B3F3F/E0E0E0?text=Westwalker+Camp",
+                actions: [
+                    { text: "Rest by the fire", type: 'scene', target: 'start_vision' },
+                    { text: "Check your gear", type: 'info', info: "Your ranger's pack is light but well-stocked. You have what you need to survive." },
+                    { text: "Scout the perimeter", type: 'info', info: "The area seems quiet... too quiet." },
+                    { text: "Travel to Jorn", type: 'travel', target: 'jorn' }
+                ]
+            },
+            leonin_encampment: {
+                name: "M'ra Kaal Encampment",
+                description: "The scent of woodsmoke and roasting meat hangs in the air. Around you, the proud Leonin of your clan share stories and sharpen their blades. The sounds of the Ancestral Roar still echo in your spirit.",
+                image: "https://placehold.co/800x300/6D4C3C/E0E0E0?text=M'ra+Kaal+Encampment",
+                actions: [
+                    { text: "Meditate on the spirits", type: 'scene', target: 'start_vision' },
+                    { text: "Visit the Honor Arena", type: 'info', info: "Two warriors are locked in a duel of skill, their movements a blur of muscle and steel. It is a dance of honor." },
+                    { text: "Speak to the Clan-Speaker", type: 'info', info: "Zema Mataal is deep in communion and cannot be disturbed." },
+                ]
+            },
+            gaian_library: {
+                name: "The Great Library of Gaia",
+                description: "Sunlight, filtered through high, arched windows, illuminates swirling dust motes. The air smells of old parchment and endless knowledge. Scholars move like ghosts between towering shelves.",
+                image: "https://placehold.co/800x300/3C4F6D/E0E0E0?text=Great+Library+of+Gaia",
+                actions: [
+                    { text: "Study the celestial charts", type: 'scene', target: 'start_vision' },
+                    { text: "Consult a Sage", type: 'info', info: "The sage nods slowly. 'The Convergence, yes... a time of great peril and great opportunity. The stars do not lie.'" },
+                    { text: "Explore the Archives", type: 'info', info: "You find a dusty tome that mentions 'celestial schisms' and 'realm-thinning' during past Convergences." },
+                ]
+            }
+        };
+
+        const scenes = {
+            start_vision: {
+                text: "As you focus, the world melts away. The red moon, Kapra, seems to swell in the sky, its light turning from eerie to malevolent. The world holds its breath, and then your mind is violently pulled away.",
+                choices: [
+                    { text: "Witness the vision.", nextScene: "vision" }
+                ]
+            },
+            vision: {
+                onEnter: () => {
+                    gameData.player.quests.active.push("The Vision");
+                    gameData.player.lore.add("The Triune Convergence is a time of great upheaval.");
+                },
+                text: "You see flashes: A throne of twisted iron under a black sky. A Leonin warrior with a shattered mane. A dwarven forge, cold and dark. A tidal wave of shadow washing over the plains of Ehix. And through it all, three moons burning like hateful eyes, their light not illuminating, but consuming. You gasp and return to yourself, heart hammering in your chest, the horrifying images seared into your memory.",
+                choices: [
+                    { text: "This is an omen. I must understand it.", nextScene: "seek_answers" },
+                    { text: "It was just a nightmare, a trick of the light.", nextScene: "dismiss" },
+                ]
+            },
+            seek_answers: {
+                text: "The vision feels too real to ignore. It's a warning. The Triune Convergence is not just a celestial event; it's a threat. You know you cannot stand by and do nothing. Your path begins now. Where will you go?",
+                choices: [
+                    { text: "Travel to Gaia and consult the sages.", nextScene: "end_prologue" },
+                    { text: "Speak with the elders of my people.", nextScene: "end_prologue" },
+                    { text: "Seek out the reclusive druids of the S’Liviah.", nextScene: "end_prologue" },
+                ]
+            },
+            dismiss: {
+                text: "You shake your head, trying to clear the disturbing images. It was the stress of the times, the talk of prophecies, the strange color of the moon. Nothing more. You try to settle back into your routine, but a sliver of ice remains in your gut. The vision, whether real or not, has changed something within you.",
+                choices: [
+                    { text: "I should still be more watchful...", nextScene: "end_prologue" }
+                ]
+            },
+            end_prologue: {
+                text: "Your journey has just begun. The fate of Edoria may well rest on the choices you make under the light of the three moons. (To be continued...)",
+                choices: []
+            }
+        };
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const characterCreationScreen = document.getElementById('character-creation-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const startGameButton = document.getElementById('start-game-button');
+        const originChoices = document.querySelectorAll('#character-creation-screen .choice-button');
+        const mainContentEl = document.getElementById('main-content');
+        const dateEl = document.getElementById('current-date');
+        const monthDescEl = document.getElementById('month-description');
+        const moonEdyriaEl = document.getElementById('moon-edyria');
+        const moonKapraEl = document.getElementById('moon-kapra');
+        const moonEniaEl = document.getElementById('moon-enia');
+        const navButtons = document.querySelectorAll('.nav-icon');
+        const uiPanels = document.querySelectorAll('.ui-panel');
+        const closePanelButtons = document.querySelectorAll('.close-panel-btn');
+        const characterContentEl = document.getElementById('character-content');
+        const journalContentEl = document.getElementById('journal-content');
+        const inventoryContentEl = document.getElementById('inventory-content');
+
+        function updateDisplay() {
+            const monthName = gameData.time.months[gameData.time.month];
+            dateEl.textContent = `${monthName} ${gameData.time.day}, ${gameData.time.year} PA`;
+            monthDescEl.textContent = gameData.time.monthDescriptions[gameData.time.month];
+            const edyriaPhase = (gameData.time.day % 15) / 14;
+            const kapraPhase = (gameData.time.day % 28) / 27;
+            const eniaPhase = (gameData.time.day % 38) / 37;
+            moonEdyriaEl.style.opacity = 0.2 + (edyriaPhase * 0.8);
+            moonKapraEl.style.opacity = 0.2 + (kapraPhase * 0.8);
+            moonEniaEl.style.opacity = 0.2 + (eniaPhase * 0.8);
+        }
+
+        function renderScene(sceneId) {
+            const scene = scenes[sceneId];
+            if (!scene) return;
+            
+            if (scene.onEnter) scene.onEnter();
+
+            gameData.story.currentScene = sceneId;
+            advanceTime();
+            
+            mainContentEl.innerHTML = `
+                <p class="story-text p-4 bg-black bg-opacity-20 rounded-lg mb-6">${typeof scene.text === 'function' ? scene.text(gameData.player.origin) : scene.text}</p>
+                <div id="choices" class="grid grid-cols-1 gap-4 mt-auto"></div>
+            `;
+            
+            const choicesEl = document.getElementById('choices');
+            scene.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice.text;
+                button.className = 'choice-button w-full text-left p-4 rounded-lg font-cinzel text-lg';
+                button.onclick = () => {
+                    if (choice.nextScene) {
+                        renderScene(choice.nextScene);
+                    } else {
+                        renderLocation(gameData.player.location);
+                    }
+                };
+                choicesEl.appendChild(button);
+            });
+        }
+
+        function renderLocation(locationId) {
+            const location = locations[locationId];
+            if (!location) return;
+
+            gameData.player.location = locationId;
+            gameData.story.currentScene = null; // We are not in a scene anymore
+            
+            mainContentEl.innerHTML = `
+                <div class="mb-4 rounded-lg overflow-hidden"><img src="${location.image}" alt="${location.name}" class="w-full h-full object-cover"></div>
+                <h2 class="font-cinzel text-2xl text-white mb-2">${location.name}</h2>
+                <p class="text-gray-300 mb-6">${location.description}</p>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
+                    ${location.actions.map(action => `
+                        <button class="action-button p-4 rounded-lg" data-type="${action.type}" data-target="${action.target}" data-info="${action.info || ''}">
+                            <span class="font-cinzel text-lg">${action.text}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const type = e.currentTarget.dataset.type;
+                    const target = e.currentTarget.dataset.target;
+                    const info = e.currentTarget.dataset.info;
+
+                    if (type === 'scene') {
+                        renderScene(target);
+                    } else if (type === 'info') {
+                        // For now, just show a simple alert. Can be replaced with a modal.
+                        alert(info);
+                    } else if (type === 'travel') {
+                        // Placeholder for travel logic
+                        alert(`Traveling to ${target}... (not yet implemented)`);
+                    }
+                });
+            });
+        }
+        
+        function advanceTime() {
+            gameData.time.day++;
+            if (gameData.time.day > 40) {
+                gameData.time.day = 1;
+                gameData.time.month = (gameData.time.month + 1) % gameData.time.months.length;
+                if (gameData.time.month === 0) gameData.time.year++;
+            }
+            updateDisplay();
+        }
+
+        function openPanel(panelId) {
+            closeAllPanels();
+            const panel = document.getElementById(panelId);
+            if(panel) {
+                // Update panel content before showing
+                if(panelId === 'character-panel') {
+                    let originText = '';
+                    if (gameData.player.origin === 'westwalker') originText = 'Westwalker of the Frontier';
+                    if (gameData.player.origin === 'leonin') originText = 'M\'ra Kaal Spirit-Speaker';
+                    if (gameData.player.origin === 'gaian') originText = 'Gaian Scholar';
+                    characterContentEl.innerHTML = `<p class="text-xl mb-4">Origin: ${originText}</p><p class="text-gray-400">More stats and details will appear here.</p>`;
+                }
+                if(panelId === 'journal-panel') {
+                    journalContentEl.innerHTML = `
+                        <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Active Quests</h3>
+                        <div class="text-gray-300 mb-6">${gameData.player.quests.active.map(q => `<p>${q}</p>`).join('') || '<p>None.</p>'}</div>
+                        <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Rumors</h3>
+                        <div class="text-gray-300 mb-6">${[...gameData.player.rumors].map(r => `<p>${r}</p>`).join('') || '<p>None.</p>'}</div>
+                        <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Lore</h3>
+                        <div class="text-gray-300">${[...gameData.player.lore].map(l => `<p>${l}</p>`).join('') || '<p>None.</p>'}</div>
+                    `;
+                }
+                if(panelId === 'inventory-panel') {
+                     inventoryContentEl.innerHTML = Array(12).fill(0).map(() => `<div class="w-20 h-20 bg-black bg-opacity-20 border border-gray-600 rounded"></div>`).join('');
+                }
+                panel.style.display = 'block';
+            }
+        }
+
+        function closeAllPanels() {
+            uiPanels.forEach(panel => panel.style.display = 'none');
+        }
+
+        // Event Listeners
+        startGameButton.addEventListener('click', () => {
+            startScreen.style.display = 'none';
+            characterCreationScreen.style.display = 'flex';
+        });
+
+        originChoices.forEach(choice => {
+            choice.addEventListener('click', () => {
+                gameData.player.origin = choice.dataset.origin;
+                characterCreationScreen.style.display = 'none';
+                gameScreen.style.display = 'flex';
+                
+                let startLocation;
+                if (gameData.player.origin === 'westwalker') startLocation = 'westwalker_camp';
+                else if (gameData.player.origin === 'leonin') startLocation = 'leonin_encampment';
+                else if (gameData.player.origin === 'gaian') startLocation = 'gaian_library';
+                
+                renderLocation(startLocation);
+            });
+        });
+
+        navButtons.forEach(button => button.addEventListener('click', () => openPanel(button.dataset.panel)));
+        closePanelButtons.forEach(button => button.addEventListener('click', closeAllPanels));
+
+        // Initial setup
+        updateDisplay();
+    </script>
+
+</body>
+</html>
