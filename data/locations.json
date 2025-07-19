@@ -1,14 +1,47 @@
 {
   "westwalker_camp": {
     "name": "Westwalker Campfire",
-    "description": "A small, well-kept campfire crackles, a lonely point of light against the vast, darkening plains of the Frontier. The edge of the Griefwood looms like a wall of shadow in the distance. The air is still, but carries an unusual chill.",
+    "description": "A small, well-kept campfire crackles, a lonely point of light against the vast, darkening plains of the Frontier. The edge of the Griefwood looms like a wall of shadow in the distance. The air carries an unusual chill.",
     "image": "assets/images/locations/westwalker_camp.jpg",
     "region": "frontier",
     "actions": [
       { "text": "Rest by the fire", "type": "scene", "target": "start_vision" },
       { "text": "Check your gear", "type": "info", "info": "Your ranger's pack is light but well-stocked. You have what you need to survive." },
       { "text": "Scout the perimeter", "type": "info", "info": "The area seems quiet... too quiet." },
+      { "text": "Follow the trail toward the Griefwood", "type": "travel", "target": "griefwood_edge" },
       { "text": "Travel to Jorn", "type": "travel", "target": "jorn" }
+    ]
+  },
+  "griefwood_edge": {
+    "name": "Edge of the Griefwood",
+    "description": "Dark trees crowd together, their twisted branches forming a barrier of shadow. Whispers ride the wind from within the forest.",
+    "image": "assets/images/locations/griefwood_edge.jpg",
+    "region": "frontier",
+    "actions": [
+      { "text": "Venture into the forest", "type": "travel", "target": "griefwood_clearing" },
+      { "text": "Return to Camp", "type": "travel", "target": "westwalker_camp" },
+      { "text": "Watch the treeline", "type": "info", "info": "The shadows seem to shift of their own accord." }
+    ]
+  },
+  "griefwood_clearing": {
+    "name": "Griefwood Clearing",
+    "description": "A small clearing bathed in dim light where ancient stones rise from the earth. The air here hums with old power.",
+    "image": "assets/images/locations/griefwood_clearing.jpg",
+    "region": "frontier",
+    "actions": [
+      { "text": "Study the standing stones", "type": "info", "info": "Strange runes glow faintly, hinting at forgotten rituals." },
+      { "text": "Head back to the edge", "type": "travel", "target": "griefwood_edge" }
+    ]
+  },
+  "jorn": {
+    "name": "Town of Jorn",
+    "description": "A hardy frontier settlement that serves as a trading post for trappers and travelers. Smoke rises from sturdy stone chimneys.",
+    "image": "assets/images/locations/jorn.jpg",
+    "region": "frontier",
+    "actions": [
+      { "text": "Visit the market", "type": "info", "info": "Merchants offer pelts, iron tools and tales of the forest." },
+      { "text": "Rest at the inn", "type": "info", "info": "The innkeeper welcomes you with a weary smile." },
+      { "text": "Return to Camp", "type": "travel", "target": "westwalker_camp" }
     ]
   },
   "leonin_encampment": {
