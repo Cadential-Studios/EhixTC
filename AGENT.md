@@ -3,6 +3,17 @@
 ## Project Overview
 **Edoria: The Triune Convergence** is an interactive RPG story game built with HTML5, CSS3, and JavaScript. The game features a fantasy world shaped by three moons and their celestial cycles.
 
+## 🚨 QUICK START - BRANCH REMINDER
+**BEFORE MAKING ANY CHANGES:**
+1. Check current branch: `git branch`
+2. Switch to correct branch: `git checkout [branch-name]`
+3. Common branches:
+   - `develop` - General development
+   - `feature/story-expansion` - Story content
+   - `content/locations` - New locations
+   - `feature/ui-improvements` - UI work
+   - **NEVER work directly on `main`**
+
 ## Repository Information
 - **Repository**: `Cadential-Studios/EhixTC`
 - **Main Branch**: `main`
@@ -118,6 +129,13 @@ saves/
 
 ## AI Assistant Instructions
 
+### 🔴 FIRST PRIORITY: BRANCH CHECK
+**Before assisting with ANY code changes:**
+1. Remind user to check current branch with `git branch`
+2. Suggest appropriate branch for the task
+3. Confirm they've switched to correct branch before proceeding
+4. Never assist with changes on `main` branch (except for documentation)
+
 ### When Asked to Add Content
 
 #### Adding New Locations
@@ -208,11 +226,71 @@ saves/
 - Test on mobile/desktop viewports
 - Verify save/load functionality
 
-### Git Workflow
-- Always check current file state before editing
-- Use descriptive commit messages
-- Test changes before committing
-- Keep commits focused on single features
+### Git Workflow & Branch Management
+
+#### ⚠️ IMPORTANT: ALWAYS CHECK/SWITCH BRANCH BEFORE STARTING WORK
+Before making ANY changes, always:
+1. Check current branch: `git branch` or `git status`
+2. Switch to appropriate branch: `git checkout [branch-name]`
+3. Pull latest changes: `git pull origin [branch-name]`
+
+#### Development Branch Strategy
+- **NEVER develop directly on `main`** - main is for production-ready code only
+- Use `develop` branch for general integration work
+- Use specific feature/content branches for focused development
+- Create new branches from `develop`, not `main`
+
+#### Available Branches:
+**Feature Branches:**
+- `feature/story-expansion` - New story content, scenes, dialogue
+- `feature/combat-system` - Combat mechanics implementation
+- `feature/inventory-system` - Item management and equipment
+- `feature/save-load-system` - Save/load functionality
+- `feature/quest-system` - Quest tracking and management
+- `feature/world-map` - Interactive map and travel
+- `feature/character-progression` - Leveling, stats, skills
+- `feature/audio-system` - Sound effects and music
+- `feature/ui-improvements` - UI/UX enhancements
+- `feature/moon-mechanics` - Moon phase gameplay effects
+
+**Content Branches:**
+- `content/locations` - New areas and environments
+- `content/characters-npcs` - NPCs and character interactions
+- `content/items-equipment` - New items, weapons, equipment
+
+**Other Branches:**
+- `develop` - Main development integration
+- `hotfix/bug-fixes` - Critical bug fixes
+- `release/v1.0` - Release preparation
+
+#### Quick Branch Commands:
+```bash
+# Check current branch
+git branch
+
+# Switch to development branch
+git checkout develop
+
+# Switch to feature branch
+git checkout feature/story-expansion
+
+# Create and switch to new branch from develop
+git checkout develop
+git checkout -b feature/new-feature
+
+# See all branches
+git branch -a
+```
+
+#### Standard Git Workflow:
+1. **Check current branch** before starting work
+2. Switch to appropriate branch for the task
+3. Pull latest changes
+4. Make your changes
+5. Test thoroughly
+6. Commit with descriptive messages
+7. Push to remote branch
+8. Create pull request to merge into `develop`
 
 ## Important Notes
 
