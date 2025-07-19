@@ -18,7 +18,12 @@ const gameData = {
         monthDescriptions: ["The Awakening", "The Growing", "The Zenith", "The Bounty", "The Waning", "The Reaping", "The Fading", "The Sleeping"]
     },
     story: {
-        currentScene: null
+        currentScene: null,
+        completedScenes: []
+    },
+    settings: {
+        textSpeed: 1,
+        volume: 1
     }
 };
 
@@ -49,6 +54,7 @@ const closePanelButtons = document.querySelectorAll('.close-panel-btn');
 const characterContentEl = document.getElementById('character-content');
 const journalContentEl = document.getElementById('journal-content');
 const inventoryContentEl = document.getElementById('inventory-content');
+const settingsContent = document.getElementById('settings-content');
 
 // Data Loading Functions
 async function loadGameData() {
@@ -168,7 +174,13 @@ function updateDisplay() {
 function renderScene(sceneId) {
     const scene = scenesData[sceneId];
     if (!scene) return;
-    
+
+    if (gameData.story.currentScene && gameData.story.currentScene !== sceneId) {
+        if (!gameData.story.completedScenes.includes(gameData.story.currentScene)) {
+            gameData.story.completedScenes.push(gameData.story.currentScene);
+        }
+    }
+
     if (scene.onEnter) scene.onEnter();
 
     gameData.story.currentScene = sceneId;
@@ -247,31 +259,49 @@ function openPanel(panelId) {
     const panel = document.getElementById(panelId);
     if(panel) {
         if(panelId === 'character-panel') {
-            let originText = '';
-            if (gameData.player.origin === 'westwalker') originText = 'Westwalker of the Frontier';
-            if (gameData.player.origin === 'leonin') originText = 'M\'ra Kaal Spirit-Speaker';
-            if (gameData.player.origin === 'gaian') originText = 'Gaian Scholar';
-            characterContentEl.innerHTML = `<p class="text-xl mb-4">Origin: ${originText}</p><p class="text-gray-400">More stats and details will appear here.</p>`;
+            const origin = classesData[gameData.player.origin];
+            if(origin) {
+                const statsHtml = Object.entries(gameData.player.stats || {}).map(([k,v]) => `<p>${k}: ${v}</p>`).join('');
+                characterContentEl.innerHTML = `<p class="text-xl mb-4">Origin: ${origin.name}</p><div class="grid grid-cols-2 gap-1 text-gray-300">${statsHtml}</div>`;
+            }
         }
         if(panelId === 'journal-panel') {
             journalContentEl.innerHTML = `
+                <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Completed Scenes</h3>
+                <div class="text-gray-300 mb-6">${gameData.story.completedScenes.map(s => `<p>${s}</p>`).join('') || '<p>None.</p>'}</div>
                 <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Active Quests</h3>
                 <div class="text-gray-300 mb-6">${gameData.player.quests.active.map(q => `<p>${q}</p>`).join('') || '<p>None.</p>'}</div>
-                <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Rumors</h3>
-                <div class="text-gray-300 mb-6">${[...gameData.player.rumors].map(r => `<p>${r}</p>`).join('') || '<p>None.</p>'}</div>
                 <h3 class="font-cinzel text-xl text-yellow-300 mb-2">Lore</h3>
                 <div class="text-gray-300">${[...gameData.player.lore].map(l => `<p>${l}</p>`).join('') || '<p>None.</p>'}</div>
             `;
         }
         if(panelId === 'inventory-panel') {
-             inventoryContentEl.innerHTML = Array(12).fill(0).map(() => `<div class="w-20 h-20 bg-black bg-opacity-20 border border-gray-600 rounded"></div>`).join('');
+             inventoryContentEl.innerHTML = gameData.player.inventory.map(id => {
+                 const item = itemsData[id];
+                 if(!item) return '';
+                 return `<div class="inventory-item p-2 bg-black bg-opacity-20 border border-gray-600 rounded" title="${item.description}">${item.name}</div>`;
+             }).join('') || '<p class="text-gray-400">Inventory empty.</p>';
         }
-        panel.style.display = 'block';
+        if(panelId === 'settings-panel') {
+            settingsContent.innerHTML = `
+                <div class="mb-4">
+                    <label class="block mb-2">Text Speed</label>
+                    <input id="text-speed" type="range" min="0.5" max="2" step="0.1" value="${gameData.settings.textSpeed}" class="w-full">
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Volume</label>
+                    <input id="volume" type="range" min="0" max="1" step="0.1" value="${gameData.settings.volume}" class="w-full">
+                </div>
+            `;
+            document.getElementById('text-speed').oninput = (e) => gameData.settings.textSpeed = parseFloat(e.target.value);
+            document.getElementById('volume').oninput = (e) => gameData.settings.volume = parseFloat(e.target.value);
+        }
+        panel.classList.add('open');
     }
 }
 
 function closeAllPanels() {
-    uiPanels.forEach(panel => panel.style.display = 'none');
+    uiPanels.forEach(panel => panel.classList.remove('open'));
 }
 
 // Event Listeners
@@ -283,6 +313,11 @@ startGameButton.addEventListener('click', () => {
 originChoices.forEach(choice => {
     choice.addEventListener('click', () => {
         gameData.player.origin = choice.dataset.origin;
+        const originData = classesData[gameData.player.origin];
+        if(originData){
+            gameData.player.stats = { ...originData.stats };
+            gameData.player.inventory = [...originData.startingEquipment];
+        }
         characterCreationScreen.style.display = 'none';
         gameScreen.style.display = 'flex';
         
