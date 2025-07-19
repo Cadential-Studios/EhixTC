@@ -111,7 +111,7 @@
 ### **TASK 4: Save/Load System**
 **Branch**: `feature/save-load-system`
 **Priority**: 🟡 HIGH
-**Status**: ❌ Not Started
+**Status**: ✅ Completed
 
 **Objective**: Implement working save/load functionality
 
@@ -123,18 +123,18 @@
 5. Create save/load UI buttons
 
 **Acceptance Criteria**:
-- [ ] Players can save game progress
-- [ ] Save files store character, progress, and world state
-- [ ] Players can load previous saves
-- [ ] Multiple save slots available
-- [ ] Save system is persistent across browser sessions
+- [x] Players can save game progress
+- [x] Save files store character, progress, and world state
+- [x] Players can load previous saves
+- [x] Multiple save slots available
+- [x] Save system is persistent across browser sessions
 
 ---
 
 ### **TASK 5: Time and Moon System**
 **Branch**: `feature/moon-mechanics`
 **Priority**: 🟡 HIGH
-**Status**: ❌ Not Started
+**Status**: ✅ Completed
 
 **Objective**: Implement the three-moon calendar system
 
@@ -146,10 +146,10 @@
 5. Connect moon phases to gameplay effects
 
 **Acceptance Criteria**:
-- [ ] Time advances as player makes choices
-- [ ] Three moons have independent cycles
-- [ ] Moon phases are visually displayed
-- [ ] Moon phases affect available actions/events
+- [x] Time advances as player makes choices
+- [x] Three moons have independent cycles
+- [x] Moon phases are visually displayed
+- [x] Moon phases affect available actions/events
 - [ ] Calendar system tracks convergence approach
 
 ---
