@@ -5,7 +5,7 @@
 ### **TASK 1: Code Organization** 
 **Branch**: `develop`
 **Priority**: 🔴 CRITICAL
-**Status**: ❌ Not Started
+**Status**: ✅ Completed
 
 **Objective**: Extract embedded code from `index.html` to separate files
 
@@ -29,7 +29,7 @@
 ### **TASK 2: Populate Core JSON Data**
 **Branch**: `content/locations` 
 **Priority**: 🔴 CRITICAL
-**Status**: ❌ Not Started
+**Status**: ✅ Completed
 
 **Objective**: Add essential game data to make the game functional
 
@@ -48,7 +48,14 @@
   "origin_id": {
     "name": "Origin Name",
     "description": "Detailed background description",
-    "stats": { "might": 10, "grace": 10, "wit": 10, "spirit": 10, "luck": 10 },
+    "stats": {
+      "strength": 10,
+      "dexterity": 10,
+      "constitution": 10,
+      "intelligence": 10,
+      "wisdom": 10,
+      "charisma": 10
+    },
     "startingEquipment": ["item1", "item2"],
     "skills": ["skill1", "skill2"],
     "lore": "Background story and cultural context"
