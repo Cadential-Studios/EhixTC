@@ -17,6 +17,11 @@ const gameData = {
         months: ["Alphi", "Brenn", "Frutia", "Dorona", "Evorn", "Filik", "Grenn", "Halbar"],
         monthDescriptions: ["The Awakening", "The Growing", "The Zenith", "The Bounty", "The Waning", "The Reaping", "The Fading", "The Sleeping"]
     },
+    moons: {
+        edyria: { cycle: 15, phase: 0 },
+        kapra: { cycle: 28, phase: 0 },
+        enia: { cycle: 38, phase: 0 }
+    },
     story: {
         currentScene: null,
         completedScenes: []
@@ -162,13 +167,27 @@ function updateDisplay() {
     dateEl.textContent = `${monthName} ${gameData.time.day}, ${gameData.time.year} PA`;
     monthDescEl.textContent = gameData.time.monthDescriptions[gameData.time.month];
     
-    const edyriaPhase = (gameData.time.day % 15) / 14;
-    const kapraPhase = (gameData.time.day % 28) / 27;
-    const eniaPhase = (gameData.time.day % 38) / 37;
-    
+    const edyria = gameData.moons.edyria;
+    const kapra = gameData.moons.kapra;
+    const enia = gameData.moons.enia;
+
+    const edyriaPhase = edyria.phase / (edyria.cycle - 1);
+    const kapraPhase = kapra.phase / (kapra.cycle - 1);
+    const eniaPhase = enia.phase / (enia.cycle - 1);
+
     moonEdyriaEl.style.opacity = 0.2 + (edyriaPhase * 0.8);
     moonKapraEl.style.opacity = 0.2 + (kapraPhase * 0.8);
     moonEniaEl.style.opacity = 0.2 + (eniaPhase * 0.8);
+
+    moonEdyriaEl.classList.toggle('full-moon', edyria.phase === Math.floor(edyria.cycle/2));
+    moonKapraEl.classList.toggle('full-moon', kapra.phase === Math.floor(kapra.cycle/2));
+    moonEniaEl.classList.toggle('full-moon', enia.phase === Math.floor(enia.cycle/2));
+}
+
+function checkMoonEvents() {
+    if (gameData.moons.kapra.phase === Math.floor(gameData.moons.kapra.cycle / 2)) {
+        gameData.player.lore.add("Kapra's full moon fills the air with unease.");
+    }
 }
 
 function renderScene(sceneId) {
@@ -246,11 +265,15 @@ function renderLocation(locationId) {
 
 function advanceTime() {
     gameData.time.day++;
+    gameData.moons.edyria.phase = (gameData.moons.edyria.phase + 1) % gameData.moons.edyria.cycle;
+    gameData.moons.kapra.phase = (gameData.moons.kapra.phase + 1) % gameData.moons.kapra.cycle;
+    gameData.moons.enia.phase = (gameData.moons.enia.phase + 1) % gameData.moons.enia.cycle;
     if (gameData.time.day > 40) {
         gameData.time.day = 1;
         gameData.time.month = (gameData.time.month + 1) % gameData.time.months.length;
         if (gameData.time.month === 0) gameData.time.year++;
     }
+    checkMoonEvents();
     updateDisplay();
 }
 
@@ -292,9 +315,16 @@ function openPanel(panelId) {
                     <label class="block mb-2">Volume</label>
                     <input id="volume" type="range" min="0" max="1" step="0.1" value="${gameData.settings.volume}" class="w-full">
                 </div>
+                <div class="mb-4" id="save-load-section">
+                    <button id="save-game" class="action-button py-2 px-4 mr-2">Save Game</button>
+                    <div id="save-slots" class="mt-2"></div>
+                    <p id="save-message" class="text-sm text-green-400 mt-2" style="display:none;"></p>
+                </div>
             `;
             document.getElementById('text-speed').oninput = (e) => gameData.settings.textSpeed = parseFloat(e.target.value);
             document.getElementById('volume').oninput = (e) => gameData.settings.volume = parseFloat(e.target.value);
+            document.getElementById('save-game').onclick = saveGame;
+            populateSaveSlots();
         }
         panel.classList.add('open');
     }
@@ -302,6 +332,91 @@ function openPanel(panelId) {
 
 function closeAllPanels() {
     uiPanels.forEach(panel => panel.classList.remove('open'));
+}
+
+const SAVE_KEY = 'edoriaSaves';
+const SAVE_SLOT_LIMIT = 5;
+const GAME_VERSION = '0.1.0';
+
+function getSaveSlots() {
+    const saves = localStorage.getItem(SAVE_KEY);
+    return saves ? JSON.parse(saves) : [];
+}
+
+function setSaveSlots(slots) {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(slots));
+}
+
+function createSaveData() {
+    return {
+        saveId: `save_${Date.now()}`,
+        gameVersion: GAME_VERSION,
+        timestamp: new Date().toISOString(),
+        data: JSON.parse(JSON.stringify({
+            player: gameData.player,
+            time: gameData.time,
+            story: gameData.story,
+            settings: gameData.settings
+        }))
+    };
+}
+
+function saveGame() {
+    const slots = getSaveSlots();
+    if(slots.length >= SAVE_SLOT_LIMIT) {
+        slots.shift();
+    }
+    slots.push(createSaveData());
+    setSaveSlots(slots);
+    populateSaveSlots();
+    displaySaveMessage('Game saved');
+}
+
+function loadGame(index) {
+    const slots = getSaveSlots();
+    const save = slots[index];
+    if(!save) return;
+    const { player, time, story, settings } = save.data;
+    gameData.player = player;
+    gameData.time = time;
+    gameData.story = story;
+    gameData.settings = settings;
+    if(gameData.story.currentScene) {
+        renderScene(gameData.story.currentScene);
+    } else {
+        renderLocation(gameData.player.location || 'westwalker_camp');
+    }
+    updateDisplay();
+    displaySaveMessage('Game loaded');
+}
+
+function populateSaveSlots() {
+    const slots = getSaveSlots();
+    const container = document.getElementById('save-slots');
+    if(!container) return;
+    container.innerHTML = slots.map((s,i)=>`<div class="flex justify-between items-center mb-2"><span class="text-sm">Slot ${i+1} - ${new Date(s.timestamp).toLocaleString()}</span><div><button class="load-save-btn action-button px-2 py-1 mr-1" data-slot="${i}">Load</button><button class="delete-save-btn action-button px-2 py-1" data-slot="${i}">Delete</button></div></div>`).join('') || '<p class="text-gray-400">No saves.</p>';
+    container.querySelectorAll('.load-save-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ loadGame(parseInt(btn.dataset.slot)); closeAllPanels(); });
+    });
+    container.querySelectorAll('.delete-save-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ deleteSave(parseInt(btn.dataset.slot)); });
+    });
+}
+
+function deleteSave(index) {
+    const slots = getSaveSlots();
+    slots.splice(index,1);
+    setSaveSlots(slots);
+    populateSaveSlots();
+    displaySaveMessage('Save deleted');
+}
+
+function displaySaveMessage(msg) {
+    const msgEl = document.getElementById('save-message');
+    if(!msgEl) return;
+    msgEl.textContent = msg;
+    msgEl.style.display = 'block';
+    setTimeout(()=>{ msgEl.style.display = 'none'; },2000);
 }
 
 // Event Listeners

@@ -44,9 +44,13 @@ body {
     box-shadow: 0 0 15px 3px #ff6a6a; 
 }
 
-.moon-enia { 
-    background-color: #fffb8a; 
-    box-shadow: 0 0 15px 3px #fffb8a; 
+.moon-enia {
+    background-color: #fffb8a;
+    box-shadow: 0 0 15px 3px #fffb8a;
+}
+
+.full-moon {
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Text Styles */
