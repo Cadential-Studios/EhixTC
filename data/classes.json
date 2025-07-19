@@ -2,7 +2,14 @@
   "westwalker": {
     "name": "Westwalker of the Frontier",
     "description": "Rangers known as Westwalkers roam the plains bordering the dark Griefwood. They rely on keen senses and a bond with the land rather than arcane power.",
-    "stats": { "might": 12, "grace": 13, "wit": 11, "spirit": 10, "luck": 11 },
+    "stats": {
+      "strength": 12,
+      "dexterity": 13,
+      "constitution": 11,
+      "intelligence": 11,
+      "wisdom": 10,
+      "charisma": 11
+    },
     "startingEquipment": ["rangers_bow", "leather_armor", "survival_kit", "healing_herbs"],
     "skills": ["survival", "tracking", "archery", "herbalism"],
     "lore": "Raised among scattered frontier clans, Westwalkers guard the roads and watch the Griefwood for signs of encroaching darkness."
@@ -10,7 +17,14 @@
   "leonin": {
     "name": "M'ra Kaal Spirit-Speaker",
     "description": "The proud Leonin of the M'ra Kaal pride honor those who commune with ancestral spirits. Spirit-speakers serve as warriors and guides, bound by sacred oaths.",
-    "stats": { "might": 14, "grace": 11, "wit": 10, "spirit": 13, "luck": 10 },
+    "stats": {
+      "strength": 14,
+      "dexterity": 11,
+      "constitution": 13,
+      "intelligence": 10,
+      "wisdom": 13,
+      "charisma": 10
+    },
     "startingEquipment": ["ceremonial_spear", "spirit_totem", "tribal_armor", "ancestral_medallion"],
     "skills": ["spirit_communication", "combat", "leadership", "tribal_lore"],
     "lore": "M'ra Kaal clans believe the coming Convergence will test their honor. Spirit-speakers bear the voices of the ancestors into battle."
@@ -18,7 +32,14 @@
   "gaian": {
     "name": "Gaian Scholar",
     "description": "Scholars from the city of Gaia dedicate their lives to study and magic. They seek truth in dusty tomes and the patterns of the moons.",
-    "stats": { "might": 9, "grace": 11, "wit": 15, "spirit": 12, "luck": 10 },
+    "stats": {
+      "strength": 9,
+      "dexterity": 11,
+      "constitution": 10,
+      "intelligence": 15,
+      "wisdom": 12,
+      "charisma": 10
+    },
     "startingEquipment": ["scholars_robes", "research_notes", "arcane_focus", "library_tome"],
     "skills": ["arcane_knowledge", "history", "research", "linguistics"],
     "lore": "Gaians preserve knowledge from before the Ascension. Many believe understanding the moons will unlock new magical discoveries during the Convergence."
