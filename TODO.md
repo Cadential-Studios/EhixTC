@@ -1,4 +1,4 @@
-# TODO.md - Development Task List for Codex AI
+# TODO.md - Comprehensive Development Task List for Full RPG
 
 ## 🚨 CRITICAL - FOUNDATION TASKS (Complete These First)
 
@@ -9,29 +9,736 @@
 
 **Objective**: Extract embedded code from `index.html` to separate files
 
-**Steps**:
-1. Check current branch: `git branch`
-2. Switch to develop: `git checkout develop`
-3. Extract all `<style>` content from `index.html` to `assets/css/main.css`
-4. Extract all `<script>` content from `index.html` to `assets/js/main.js`
-5. Update `index.html` to reference external files
-6. Test that game still loads correctly
-7. Commit changes: "Extract CSS and JS to external files"
-
-**Acceptance Criteria**:
-- [ ] No inline CSS in `index.html`
-- [ ] No inline JavaScript in `index.html`
-- [ ] Game loads and functions identically
-- [ ] External files are properly linked
-
----
-
 ### **TASK 2: Populate Core JSON Data**
 **Branch**: `content/locations` 
 **Priority**: 🔴 CRITICAL
 **Status**: ✅ Completed
 
 **Objective**: Add essential game data to make the game functional
+
+---
+
+## 🔧 CORE RPG SYSTEMS (High Priority)
+
+### **TASK 3: Advanced Journal & UI System**
+**Branch**: `feature/journal-ui`
+**Priority**: 🟠 HIGH
+**Status**: 🚧 In Progress
+
+**Objective**: Create an immersive, fully-featured journal system with styling, hyperlinks, and specialized entry types
+
+**Sub-Tasks**:
+- [ ] **3A: Journal Styling & Color Coding**
+  - Implement rich text formatting with CSS classes
+  - Color-code different types of content (lore=gold, quests=blue, NPCs=green, etc.)
+  - Add parchment-style background with weathered edges
+  - Implement font styling (serif for lore, sans-serif for quests)
+
+- [ ] **3B: Hyperlink System**
+  - Create clickable references between journal entries
+  - Link character names to character sheets
+  - Link locations to area descriptions
+  - Link items to inventory/descriptions
+  - Implement modal popups for quick reference
+
+- [ ] **3C: Entry Type Prefabs**
+  - **Quest Entry Template**: Objective, Progress, Rewards, Notes
+  - **Lore Entry Template**: Title, Category, Content, Related Entries
+  - **Character Entry Template**: Portrait, Stats, Relationships, History
+  - **Location Entry Template**: Map reference, NPCs, Points of Interest
+  - **Item Entry Template**: Description, Stats, Lore, Acquisition
+
+- [ ] **3D: Journal Navigation**
+  - Tabbed interface (Quests, Lore, Characters, Locations, Items)
+  - Search functionality with filters
+  - Bookmarking system for important entries
+  - Recent entries quick access
+
+**Acceptance Criteria**:
+- Rich text with color coding functions correctly
+- Hyperlinks navigate between related entries seamlessly
+- All prefab templates display consistently
+- Search and filter systems work efficiently
+- Journal feels immersive and easy to navigate
+
+---
+
+### **TASK 4: Complete Inventory Management System**
+**Branch**: `feature/inventory`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Implement a fully functional inventory with item usage, equipment, and management
+
+**Sub-Tasks**:
+- [ ] **4A: Item Categories & Organization**
+  - Weapons (swords, bows, staves, etc.)
+  - Armor (head, chest, legs, feet, accessories)
+  - Consumables (potions, food, scrolls)
+  - Quest Items (keys, documents, artifacts)
+  - Materials (crafting components, gems)
+
+- [ ] **4B: Equipment System**
+  - Character equipment slots with visual representation
+  - Stat bonuses from equipped items
+  - Equipment restrictions by class
+  - Visual changes when items are equipped
+
+- [ ] **4C: Item Usage & Effects**
+  - Consumable items with immediate effects
+  - Healing potions restore health
+  - Mana potions restore magic
+  - Food items provide temporary buffs
+  - Scrolls with spell effects
+
+- [ ] **4D: Inventory UI Features**
+  - Drag and drop item management
+  - Item tooltips with full descriptions
+  - Sorting options (type, value, name)
+  - Item comparison for equipment
+  - Weight/capacity management
+
+**Acceptance Criteria**:
+- Items can be equipped and unequipped smoothly
+- Item effects apply correctly when used
+- Inventory UI is intuitive and responsive
+- All item categories function as intended
+
+---
+
+### **TASK 5: D&D-Style Skills & Dice Mechanics**
+**Branch**: `feature/skills-dice`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive skill system with dice rolling mechanics and visual animations
+
+**Sub-Tasks**:
+- [ ] **5A: Core Skill System**
+  - Six primary abilities (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma)
+  - Eighteen core skills mapped to abilities:
+    - **Strength**: Athletics
+    - **Dexterity**: Acrobatics, Sleight of Hand, Stealth
+    - **Intelligence**: Arcana, History, Investigation, Nature, Religion
+    - **Wisdom**: Animal Handling, Insight, Medicine, Perception, Survival
+    - **Charisma**: Deception, Intimidation, Performance, Persuasion
+  - Skill proficiency system with bonus modifiers
+  - Expertise system for doubled proficiency bonuses
+
+- [ ] **5B: Dice Rolling Engine**
+  - d20 system with advantage/disadvantage mechanics
+  - Multiple die types (d4, d6, d8, d10, d12, d20, d100)
+  - Dice pool rolling for multiple dice
+  - Critical success (natural 20) and critical failure (natural 1) handling
+  - Modifier calculation system (ability + proficiency + situational)
+
+- [ ] **5C: Dice Rolling Animations**
+  - 3D CSS dice rolling animations with realistic physics
+  - Different dice models for each die type
+  - Rolling sound effects with customizable volume
+  - Result reveal with dramatic timing
+  - Modifier breakdown display (base roll + ability + proficiency + situational)
+  - Critical hit/miss special animations and effects
+
+- [ ] **5D: Skill Check Implementation**
+  - Automatic skill checks based on story choices
+  - Manual skill check interface for player-initiated attempts
+  - Difficulty Class (DC) system (Easy: 10, Medium: 15, Hard: 20, Very Hard: 25)
+  - Contextual skill suggestions based on character class/background
+  - Retry mechanics with increasing difficulty or consequences
+
+- [ ] **5E: Advanced Dice Mechanics**
+  - Advantage system (roll twice, take higher) with green highlighting
+  - Disadvantage system (roll twice, take lower) with red highlighting
+  - Inspiration system for rerolling dice
+  - Lucky feat mechanics (reroll 1s)
+  - Group skill checks for party-based challenges
+
+**Acceptance Criteria**:
+- All 18 skills function with proper ability score modifiers
+- Dice rolling animations are smooth and satisfying
+- Skill checks integrate seamlessly with story choices
+- Advantage/disadvantage mechanics work correctly
+- Critical successes and failures have appropriate consequences
+- Modifier calculations are transparent and accurate
+
+---
+
+### **TASK 6: Combat & Battle System**
+**Branch**: `feature/combat`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Create an engaging turn-based combat system with strategy elements
+
+**Sub-Tasks**:
+- [ ] **6A: Combat Core Mechanics**
+  - Turn-based initiative system with d20 + Dexterity modifier
+  - Attack rolls using d20 + ability modifier + proficiency bonus
+  - Armor Class (AC) system for defense calculations
+  - Damage rolls with weapon dice + ability modifiers
+  - Hit point system with damage tracking and healing
+
+- [ ] **6B: Combat Actions & Options**
+  - Attack action with weapon or spell attacks
+  - Defense action for +2 AC bonus until next turn
+  - Dash action for increased movement
+  - Dodge action for advantage on Dexterity saves
+  - Help action to give allies advantage
+  - Ready action to prepare conditional responses
+
+- [ ] **6C: Character Abilities & Spells**
+  - Class-specific combat abilities and features
+  - Spell slot system with different spell levels
+  - Cantrips as unlimited-use minor spells
+  - Concentration mechanics for ongoing spell effects
+  - Spell save DC calculations and saving throws
+
+- [ ] **6D: Monster AI & Behaviors**
+  - Different AI patterns based on monster intelligence
+  - Tactical decision-making for ability usage
+  - Target selection algorithms (lowest HP, highest threat, etc.)
+  - Special monster abilities with cooldowns
+  - Boss encounter mechanics with legendary actions
+
+- [ ] **6E: Combat UI & Animations**
+  - Initiative tracker with turn order display
+  - Action selection interface with tooltips
+  - Health/mana bars with smooth animations
+  - Damage number pop-ups with critical hit effects
+  - Battle log with detailed action descriptions
+  - Dice rolling animations for all combat rolls
+
+**Acceptance Criteria**:
+- Combat follows D&D 5e rules accurately
+- Initiative system works with proper turn order
+- All attack rolls and damage calculations are correct
+- Spell system functions with proper resource management
+- Monster AI provides appropriate tactical challenge
+- Combat UI clearly displays all relevant information
+- Dice animations enhance the combat experience
+
+---
+
+### **TASK 7: Character Progression System**
+**Branch**: `feature/character-progression`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Implement D&D-style leveling, skills, and character development
+
+**Sub-Tasks**:
+- [ ] **7A: Experience & Leveling System**
+  - XP thresholds matching D&D 5e progression (300 XP for level 2, 900 for level 3, etc.)
+  - XP gain from combat encounters based on challenge rating
+  - XP rewards for quest completion and story milestones
+  - Leveling up interface with ability score improvements
+  - Milestone leveling option for story-based progression
+
+- [ ] **7B: Class Features & Abilities**
+  - Level-based class feature unlocks (e.g., Fighter's Action Surge at level 2)
+  - Archetype/subclass selection at appropriate levels
+  - Feature usage tracking (short rest vs long rest recovery)
+  - Class-specific resource management (spell slots, ki points, rage uses)
+  - Multiclassing rules and prerequisites
+
+- [ ] **7C: Ability Score System**
+  - Six core abilities with 8-20 range and racial bonuses
+  - Ability score increases at levels 4, 8, 12, 16, 19
+  - Feat selection as alternative to ability score increases
+  - Saving throw proficiencies by class
+  - Skill proficiency selection and expertise options
+
+- [ ] **7D: Proficiency & Expertise**
+  - Proficiency bonus progression (+2 at level 1, scaling to +6 at level 17)
+  - Skill proficiencies from class, background, and race
+  - Tool proficiencies and language acquisition
+  - Expertise doubling proficiency bonus for selected skills
+  - Jack of All Trades for half-proficiency on non-proficient checks
+
+- [ ] **7E: Character Customization**
+  - Race selection with ability score bonuses and traits
+  - Background selection providing skills, tools, and equipment
+  - Alignment system affecting certain class features
+  - Personal characteristics (ideals, bonds, flaws)
+  - Custom character portraits and descriptions
+
+**Acceptance Criteria**:
+- Character progression follows D&D 5e leveling system
+- All class features unlock at appropriate levels
+- Ability score improvements and feats work correctly
+- Proficiency system applies bonuses accurately
+- Character creation provides meaningful choices
+- Multiclassing rules are implemented correctly
+
+---
+
+### **TASK 8: Saving Throws & Conditions System**
+**Branch**: `feature/saving-throws`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement D&D saving throw mechanics and status condition system
+
+**Sub-Tasks**:
+- [ ] **8A: Saving Throw System**
+  - Six saving throw types (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma)
+  - Class-based saving throw proficiencies
+  - d20 + ability modifier + proficiency bonus calculations
+  - Advantage/disadvantage on saves from various sources
+  - Legendary resistance for powerful creatures
+
+- [ ] **8B: Status Conditions & Effects**
+  - Standard D&D conditions (blinded, charmed, deafened, frightened, etc.)
+  - Condition duration tracking and automatic removal
+  - Condition immunity and resistance by creature type
+  - Visual indicators for active conditions
+  - Condition interaction rules (e.g., unconscious includes incapacitated)
+
+- [ ] **8C: Environmental Hazards**
+  - Saving throws against environmental dangers
+  - Damage over time effects with ongoing saves
+  - Area effect spells requiring saves
+  - Trap detection and disarmament with skill checks
+  - Weather and terrain effects on movement and vision
+
+**Acceptance Criteria**:
+- All saving throw calculations are accurate
+- Status conditions apply correct mechanical effects
+- Environmental hazards integrate with exploration
+- Condition tracking is clear and intuitive
+
+---
+
+### **TASK 9: Magic System & Spellcasting**
+**Branch**: `feature/magic-system`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive D&D-style magic system
+
+**Sub-Tasks**:
+- [ ] **9A: Spell Slot System**
+  - Nine spell levels (cantrips through 9th level)
+  - Class-based spell slot progression
+  - Spell slot recovery on long rest
+  - Warlock pact magic with short rest recovery
+  - Spell slot upcast mechanics for scaling effects
+
+- [ ] **9B: Spellcasting Mechanics**
+  - Spell attack rolls vs AC for targeted spells
+  - Spell save DC = 8 + proficiency + spellcasting ability
+  - Concentration saves when taking damage (DC 10 or half damage)
+  - Ritual casting for eligible spells
+  - Counterspell and spell interaction mechanics
+
+- [ ] **9C: Spell Schools & Effects**
+  - Eight schools of magic (Abjuration, Conjuration, Divination, etc.)
+  - School-specific specialist wizard features
+  - Spell component requirements (verbal, somatic, material)
+  - Area of effect spell templates (cone, sphere, cylinder, etc.)
+  - Spell resistance and immunity for certain creatures
+
+- [ ] **9D: Spellbook & Preparation**
+  - Known spells vs prepared spells by class
+  - Spellbook mechanics for wizards
+  - Spell scroll creation and usage
+  - Magical item spell activation
+  - Spell learning through level progression and discovery
+
+**Acceptance Criteria**:
+- Spell slot system functions according to D&D 5e rules
+- All spellcasting mechanics work correctly
+- Spell effects are balanced and appropriate
+- Magic feels distinct from mundane abilities
+
+---
+
+### **TASK 10: Rest System & Resource Management**
+**Branch**: `feature/rest-system`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement D&D short rest and long rest mechanics for resource recovery
+
+**Sub-Tasks**:
+- [ ] **10A: Rest Mechanics**
+  - Short rest (1 hour) for Hit Die healing and some ability recovery
+  - Long rest (8 hours) for full HP, spell slots, and daily ability recovery
+  - Interrupted rest mechanics with consequences
+  - Safe vs unsafe resting locations
+  - Rest limitation rules (one long rest per 24 hours)
+
+- [ ] **10B: Hit Die System**
+  - Class-based Hit Dice (Fighter d10, Wizard d6, etc.)
+  - Hit Die expenditure during short rests for healing
+  - Hit Die recovery on long rest (half maximum, minimum 1)
+  - Constitution modifier added to Hit Die healing
+  - Hit Die pool tracking and management
+
+- [ ] **10C: Resource Recovery Tracking**
+  - Spell slot recovery based on caster class
+  - Daily ability usage reset (Action Surge, Bardic Inspiration, etc.)
+  - Warlock pact magic recovery on short rest
+  - Exhaustion level reduction on long rest
+  - Temporary hit points clearing on rest
+
+- [ ] **10D: Rest Activities & Interruptions**
+  - Light activity during rests (reading, talking, eating)
+  - Heavy activity interrupting rests
+  - Random encounter chances during unsafe rests
+  - Watch rotation for party rests
+  - Environmental factors affecting rest quality
+
+**Acceptance Criteria**:
+- Rest system follows D&D 5e mechanics accurately
+- Resource recovery works correctly for all classes
+- Rest interruptions have meaningful consequences
+- Players understand rest benefits and limitations
+
+---
+
+## 🌟 ADVANCED FEATURES (Medium Priority)
+
+### **TASK 11: Quest System Enhancement**
+**Branch**: `content/quests`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Expand quest system with complex objectives and branching storylines
+
+**Sub-Tasks**:
+- [ ] **7A: Quest Types & Complexity**
+  - Main story quests with multiple stages
+  - Side quests with optional objectives
+  - Daily/repeatable quests
+  - Hidden/discovery quests
+
+- [ ] **7B: Quest Tracking & Management**
+  - Active quest log with progress tracking
+  - Objective markers and hints
+  - Quest completion notifications
+  - Failed quest handling
+
+- [ ] **7C: Branching Storylines**
+  - Player choice consequences
+  - Multiple quest resolution paths
+  - Character relationship effects
+  - World state changes from decisions
+
+**Acceptance Criteria**:
+- Quest system provides engaging content
+- Progress tracking is clear and accurate
+- Branching storylines feel meaningful
+- Quest variety keeps gameplay interesting
+
+---
+
+### **TASK 12: World Events & Calendar System**
+**Branch**: `feature/world-events`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement dynamic world events tied to the three-moon calendar
+
+**Sub-Tasks**:
+- [ ] **12A: Calendar Integration**
+  - Visual calendar display with moon phases
+  - Time passage mechanics
+  - Seasonal changes and effects
+  - Holiday and special event scheduling
+
+- [ ] **12B: Moon Phase Effects**
+  - Aethermoon effects on magic and spellcasting
+  - Verdamoon effects on nature and healing
+  - Umbralmoon effects on stealth and shadow magic
+  - Convergence events when moons align
+
+- [ ] **12C: Dynamic World Events**
+  - Random encounters based on location/time
+  - Merchant caravans and traveling NPCs
+  - Seasonal festivals and celebrations
+  - Weather effects on gameplay
+
+**Acceptance Criteria**:
+- Calendar system integrates seamlessly with gameplay
+- Moon phases have noticeable effects
+- World events feel organic and immersive
+- Time passage adds depth to the world
+
+---
+
+### **TASK 13: NPC Interaction & Dialogue System**
+**Branch**: `feature/npc-dialogue`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Create rich NPC interactions with complex dialogue trees
+
+**Sub-Tasks**:
+- [ ] **13A: Dialogue Tree System**
+  - Branching conversation options
+  - Conditional dialogue based on player state
+  - Skill/stat checks in conversations
+  - Relationship tracking with NPCs
+
+- [ ] **13B: NPC Personality & Relationships**
+  - Unique personality traits for each NPC
+  - Relationship levels (hostile, neutral, friendly, ally)
+  - Memory system for past interactions
+  - Gift-giving and favor systems
+
+- [ ] **13C: Voice & Character Development**
+  - Distinctive speaking patterns for each NPC
+  - Background stories and motivations
+  - Character growth throughout the game
+  - Romance and friendship options
+
+**Acceptance Criteria**:
+- Dialogue feels natural and engaging
+- NPC relationships evolve meaningfully
+- Conversation choices have consequences
+- Each NPC feels unique and memorable
+
+---
+
+### **TASK 14: Crafting & Enchantment System**
+**Branch**: `feature/crafting`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Allow players to create and improve items through crafting
+
+**Sub-Tasks**:
+- [ ] **14A: Crafting Mechanics**
+  - Recipe discovery and learning
+  - Material gathering and processing
+  - Crafting skill progression
+  - Success/failure rates based on skill
+
+- [ ] **14B: Item Creation & Customization**
+  - Weapon and armor crafting
+  - Potion and scroll creation
+  - Item quality levels (common to legendary)
+  - Custom item naming and descriptions
+
+- [ ] **14C: Enchantment System**
+  - Magic enhancement of equipment
+  - Enchantment materials and components
+  - Risk/reward for enchantment attempts
+  - Unique enchantment effects
+
+**Acceptance Criteria**:
+- Crafting system is intuitive and rewarding
+- Item creation provides gameplay advantages
+- Enchantment system adds strategic depth
+- Material gathering encourages exploration
+
+---
+
+## 🎨 POLISH & ENHANCEMENT (Lower Priority)
+
+### **TASK 15: Audio & Visual Polish**
+**Branch**: `feature/audio-visual`
+**Priority**: 🟢 LOW
+**Status**: 📋 Planned
+
+**Objective**: Enhance the game's presentation with audio and visual improvements
+
+**Sub-Tasks**:
+- [ ] **15A: Sound Effects & Music**
+  - Ambient background music for different areas
+  - Sound effects for actions and events
+  - Audio feedback for UI interactions
+  - Volume controls and audio settings
+
+- [ ] **15B: Visual Effects & Animations**
+  - Smooth transitions between scenes
+  - Particle effects for magic and abilities
+  - Weather and environmental animations
+  - Character portrait animations
+
+- [ ] **15C: Responsive Design**
+  - Mobile device compatibility
+  - Tablet-optimized interface
+  - Keyboard navigation support
+  - Accessibility features
+
+**Acceptance Criteria**:
+- Audio enhances immersion without being intrusive
+- Visual effects add polish without affecting performance
+- Game is playable on multiple device types
+- Accessibility standards are met
+
+---
+
+### **TASK 16: Save System & Game States**
+**Branch**: `feature/save-system`
+**Priority**: 🟢 LOW
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive save/load functionality
+
+**Sub-Tasks**:
+- [ ] **16A: Save Game Data**
+  - Character progression and stats
+  - Inventory and equipment state
+  - Quest progress and world state
+  - Relationship and reputation data
+
+- [ ] **16B: Multiple Save Slots**
+  - Save slot management interface
+  - Save file naming and organization
+  - Auto-save functionality
+  - Save file import/export
+
+- [ ] **16C: Game State Restoration**
+  - Accurate restoration of all game systems
+  - Version compatibility handling
+  - Error recovery for corrupted saves
+  - Save file validation
+
+**Acceptance Criteria**:
+- Save/load functions work reliably
+- All game progress is preserved accurately
+- Multiple save slots function independently
+- Save system is user-friendly
+
+---
+
+### **TASK 17: Performance Optimization**
+**Branch**: `feature/optimization`
+**Priority**: 🟢 LOW
+**Status**: 📋 Planned
+
+**Objective**: Optimize game performance and loading times
+
+**Sub-Tasks**:
+- [ ] **17A: Code Optimization**
+  - Minimize JavaScript bundle size
+  - Optimize CSS for faster rendering
+  - Reduce redundant calculations
+  - Implement efficient data structures
+
+- [ ] **17B: Asset Management**
+  - Image compression and optimization
+  - Lazy loading for non-critical assets
+  - Asset caching strategies
+  - Progressive loading indicators
+
+- [ ] **17C: Memory Management**
+  - Garbage collection optimization
+  - Memory leak prevention
+  - Efficient object pooling
+  - Resource cleanup on scene changes
+
+**Acceptance Criteria**:
+- Game loads quickly on various devices
+- Memory usage remains stable during play
+- No performance degradation over time
+- Smooth gameplay on lower-end devices
+
+---
+
+## 🧪 TESTING & DEPLOYMENT (Ongoing)
+
+### **TASK 18: Comprehensive Testing**
+**Branch**: `testing/comprehensive`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Ensure game quality through thorough testing
+
+**Sub-Tasks**:
+- [ ] **18A: Functional Testing**
+  - All game systems work as intended
+  - Quest completion testing
+  - Combat system validation
+  - Save/load functionality verification
+
+- [ ] **18B: User Experience Testing**
+  - Interface usability testing
+  - New player experience evaluation
+  - Accessibility testing
+  - Cross-browser compatibility
+
+- [ ] **18C: Balance Testing**
+  - Combat difficulty progression
+  - Economic balance (money, items, costs)
+  - Character progression pacing
+  - Quest reward appropriateness
+
+**Acceptance Criteria**:
+- All major bugs are identified and fixed
+- Game difficulty provides appropriate challenge
+- User interface is intuitive for new players
+- Game functions correctly across different browsers
+
+---
+
+### **TASK 19: Documentation & Deployment**
+**Branch**: `docs/deployment`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Prepare for public release with proper documentation
+
+**Sub-Tasks**:
+- [ ] **19A: Player Documentation**
+  - In-game tutorial system
+  - Help system and guides
+  - Controls and interface explanation
+  - Gameplay tips and strategies
+
+- [ ] **19B: Technical Documentation**
+  - Code documentation and comments
+  - Architecture overview
+  - Developer setup instructions
+  - Contribution guidelines
+
+- [ ] **19C: Deployment Preparation**
+  - Production build optimization
+  - Hosting configuration
+  - Domain setup and SSL
+  - Analytics and monitoring
+
+**Acceptance Criteria**:
+- Players can learn the game without external help
+- Code is well-documented for future development
+- Game deploys successfully to production
+- Monitoring systems provide useful insights
+
+---
+
+## 📋 DEVELOPMENT GUIDELINES
+
+### **Branch Usage**
+- Always work on feature branches
+- Use descriptive commit messages
+- Test before merging to `develop`
+- Keep `main` branch stable for releases
+
+### **Code Standards**
+- Follow existing code style
+- Comment complex logic thoroughly
+- Use semantic variable and function names
+- Maintain consistent indentation
+
+### **Testing Protocol**
+- Test new features in isolation
+- Verify integration with existing systems
+- Check cross-browser compatibility
+- Validate on different screen sizes
+
+### **Priority System**
+- 🔴 CRITICAL: Breaks core functionality
+- 🟠 HIGH: Important features for full RPG experience
+- 🟡 MEDIUM: Enhancement features
+- 🟢 LOW: Polish and optimization
+
+---
+
+*This TODO list represents a comprehensive roadmap for developing "Edoria: The Triune Convergence" into a fully-featured RPG experience. Focus on completing tasks in priority order while maintaining code quality and testing standards.*
 
 #### **2A: Character Origins (`data/classes.json`)**
 **Steps**:
