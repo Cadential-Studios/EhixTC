@@ -1,0 +1,142 @@
+/* Edoria: The Triune Convergence - Main Stylesheet */
+
+body {
+    font-family: 'Almendra', serif;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+.font-cinzel {
+    font-family: 'Cinzel', serif;
+}
+
+.game-container {
+    max-width: 800px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+}
+
+/* Header Styles */
+.header {
+    background: rgba(23, 23, 39, 0.8);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid #4a4a6a;
+}
+
+/* Moon Styles */
+.moon {
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px 0px rgba(255, 255, 255, 0.2);
+}
+
+.moon-edyria { 
+    background-color: #6a8dff; 
+    box-shadow: 0 0 15px 3px #6a8dff; 
+}
+
+.moon-kapra { 
+    background-color: #ff6a6a; 
+    box-shadow: 0 0 15px 3px #ff6a6a; 
+}
+
+.moon-enia { 
+    background-color: #fffb8a; 
+    box-shadow: 0 0 15px 3px #fffb8a; 
+}
+
+/* Text Styles */
+.story-text {
+    line-height: 1.8;
+    font-size: 1.2rem;
+}
+
+/* Button Styles */
+.choice-button, .action-button {
+    background-color: #2e2e4d;
+    border: 1px solid #4a4a6a;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    cursor: pointer;
+}
+
+.choice-button:hover, .action-button:hover {
+    background-color: #4a4a6a;
+    border-color: #8a8ac2;
+}
+
+.start-button {
+    background: linear-gradient(45deg, #8a8ac2, #6a8dff);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    border: none;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    transform: scale(1.05);
+}
+
+/* UI Panel Styles */
+.ui-panel {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+/* Navigation Styles */
+.bottom-nav {
+    border-top: 1px solid #4a4a6a;
+    background: rgba(23, 23, 39, 0.9);
+    backdrop-filter: blur(5px);
+}
+
+.nav-icon {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.nav-icon:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.nav-icon i {
+    font-size: 32px;
+}
+
+/* Screen Display */
+#character-creation-screen, #game-screen { 
+    display: none; 
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-container {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .story-text {
+        font-size: 1rem;
+    }
+    
+    .choice-button, .action-button {
+        min-height: 80px;
+    }
+}

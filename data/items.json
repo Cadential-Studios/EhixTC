@@ -1,0 +1,85 @@
+{
+  "rangers_bow": {
+    "id": "rangers_bow",
+    "name": "Ranger's Bow",
+    "type": "weapon",
+    "subtype": "ranged",
+    "description": "A well-crafted hunting bow, worn smooth by years of use.",
+    "damage": "1d8",
+    "range": "150ft",
+    "properties": ["two-handed", "ammunition"],
+    "rarity": "common",
+    "value": 25
+  },
+  "leather_armor": {
+    "id": "leather_armor",
+    "name": "Leather Armor",
+    "type": "armor",
+    "subtype": "light",
+    "description": "Flexible protection made from treated animal hide.",
+    "armorClass": 11,
+    "properties": ["light"],
+    "rarity": "common",
+    "value": 10
+  },
+  "survival_kit": {
+    "id": "survival_kit",
+    "name": "Survival Kit",
+    "type": "tool",
+    "description": "Contains basic tools for wilderness survival: rope, tinderbox, fishing hooks, and small knife.",
+    "uses": "unlimited",
+    "rarity": "common",
+    "value": 5
+  },
+  "healing_herbs": {
+    "id": "healing_herbs",
+    "name": "Healing Herbs",
+    "type": "consumable",
+    "description": "A collection of medicinal plants that can restore minor wounds.",
+    "effect": "heal:1d4+1",
+    "uses": 3,
+    "rarity": "common",
+    "value": 8
+  },
+  "ceremonial_spear": {
+    "id": "ceremonial_spear",
+    "name": "Ceremonial Spear",
+    "type": "weapon",
+    "subtype": "melee",
+    "description": "A spear blessed by the spirits, decorated with tribal markings.",
+    "damage": "1d6",
+    "properties": ["versatile", "thrown"],
+    "rarity": "uncommon",
+    "value": 35
+  },
+  "spirit_totem": {
+    "id": "spirit_totem",
+    "name": "Spirit Totem",
+    "type": "magical",
+    "description": "A carved wooden totem that allows communication with ancestral spirits.",
+    "effect": "spirit_communication",
+    "uses": "unlimited",
+    "rarity": "rare",
+    "value": 100
+  },
+  "scholars_robes": {
+    "id": "scholars_robes",
+    "name": "Scholar's Robes",
+    "type": "clothing",
+    "description": "Fine robes marking you as a student of the Great Library.",
+    "armorClass": 10,
+    "properties": ["academic_authority"],
+    "rarity": "common",
+    "value": 15
+  },
+  "arcane_focus": {
+    "id": "arcane_focus",
+    "name": "Arcane Focus",
+    "type": "magical",
+    "description": "A crystal that helps channel magical energies.",
+    "effect": "spell_focus",
+    "uses": "unlimited",
+    "rarity": "uncommon",
+    "value": 50
+  }
+}

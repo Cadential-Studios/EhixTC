@@ -1,0 +1,50 @@
+{
+  "westwalker": {
+    "id": "westwalker",
+    "name": "Westwalker of the Frontier",
+    "description": "You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.",
+    "startingLocation": "westwalker_camp",
+    "attributes": {
+      "strength": 14,
+      "dexterity": 16,
+      "constitution": 15,
+      "intelligence": 12,
+      "wisdom": 16,
+      "charisma": 11
+    },
+    "skills": ["survival", "tracking", "archery", "herbalism"],
+    "startingItems": ["rangers_bow", "leather_armor", "survival_kit", "healing_herbs"]
+  },
+  "leonin": {
+    "id": "leonin",
+    "name": "M'ra Kaal Spirit-Speaker",
+    "description": "You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.",
+    "startingLocation": "leonin_encampment",
+    "attributes": {
+      "strength": 16,
+      "dexterity": 13,
+      "constitution": 16,
+      "intelligence": 11,
+      "wisdom": 15,
+      "charisma": 14
+    },
+    "skills": ["spirit_communication", "combat", "leadership", "tribal_lore"],
+    "startingItems": ["ceremonial_spear", "spirit_totem", "tribal_armor", "ancestral_medallion"]
+  },
+  "gaian": {
+    "id": "gaian",
+    "name": "Gaian Scholar",
+    "description": "You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.",
+    "startingLocation": "gaian_library",
+    "attributes": {
+      "strength": 10,
+      "dexterity": 12,
+      "constitution": 13,
+      "intelligence": 17,
+      "wisdom": 14,
+      "charisma": 13
+    },
+    "skills": ["arcane_knowledge", "history", "research", "linguistics"],
+    "startingItems": ["scholars_robes", "research_notes", "arcane_focus", "library_tome"]
+  }
+}

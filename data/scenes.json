@@ -1,0 +1,39 @@
+{
+  "start_vision": {
+    "id": "start_vision",
+    "text": "As you focus, the world melts away. The red moon, Kapra, seems to swell in the sky, its light turning from eerie to malevolent. The world holds its breath, and then your mind is violently pulled away.",
+    "choices": [
+      { "text": "Witness the vision.", "nextScene": "vision" }
+    ]
+  },
+  "vision": {
+    "id": "vision",
+    "onEnter": ["addQuest:The Vision", "addLore:The Triune Convergence is a time of great upheaval."],
+    "text": "You see flashes: A throne of twisted iron under a black sky. A Leonin warrior with a shattered mane. A dwarven forge, cold and dark. A tidal wave of shadow washing over the plains of Ehix. And through it all, three moons burning like hateful eyes, their light not illuminating, but consuming. You gasp and return to yourself, heart hammering in your chest, the horrifying images seared into your memory.",
+    "choices": [
+      { "text": "This is an omen. I must understand it.", "nextScene": "seek_answers" },
+      { "text": "It was just a nightmare, a trick of the light.", "nextScene": "dismiss" }
+    ]
+  },
+  "seek_answers": {
+    "id": "seek_answers",
+    "text": "The vision feels too real to ignore. It's a warning. The Triune Convergence is not just a celestial event; it's a threat. You know you cannot stand by and do nothing. Your path begins now. Where will you go?",
+    "choices": [
+      { "text": "Travel to Gaia and consult the sages.", "nextScene": "end_prologue" },
+      { "text": "Speak with the elders of my people.", "nextScene": "end_prologue" },
+      { "text": "Seek out the reclusive druids of the S'Liviah.", "nextScene": "end_prologue" }
+    ]
+  },
+  "dismiss": {
+    "id": "dismiss",
+    "text": "You shake your head, trying to clear the disturbing images. It was the stress of the times, the talk of prophecies, the strange color of the moon. Nothing more. You try to settle back into your routine, but a sliver of ice remains in your gut. The vision, whether real or not, has changed something within you.",
+    "choices": [
+      { "text": "I should still be more watchful...", "nextScene": "end_prologue" }
+    ]
+  },
+  "end_prologue": {
+    "id": "end_prologue",
+    "text": "Your journey has just begun. The fate of Edoria may well rest on the choices you make under the light of the three moons. (To be continued...)",
+    "choices": []
+  }
+}

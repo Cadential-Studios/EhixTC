@@ -1,0 +1,34 @@
+# Edoria: The Triune Convergence - .gitignore
+
+# Player save files (except sample)
+saves/*.json
+!saves/sample_save.json
+
+# Development files
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build files (if using build tools in future)
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Backup files
+*_backup.*
+*_old.*

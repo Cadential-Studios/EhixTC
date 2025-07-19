@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edoria: The Triune Convergence</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almendra:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
+    
+    <!-- Game Stylesheets -->
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+    <div id="game-container" class="game-container">
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+            <h1 class="font-cinzel text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
+            <h2 class="font-cinzel text-2xl md:text-3xl text-gray-300 mb-8">The Triune Convergence</h2>
+            <p class="max-w-2xl mx-auto mb-12 text-gray-300 text-lg">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
+            <button id="start-game-button" class="start-button font-cinzel text-xl font-bold text-white py-4 px-12 rounded-lg shadow-lg transition-transform duration-300">Begin</button>
+        </div>
+
+        <!-- CHARACTER CREATION SCREEN -->
+        <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+            <h2 class="font-cinzel text-3xl text-white mb-6">Choose Your Origin</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="westwalker">
+                    <h3 class="font-cinzel text-xl text-white mb-2">Westwalker of the Frontier</h3>
+                    <p class="text-gray-300">You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.</p>
+                </div>
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="leonin">
+                    <h3 class="font-cinzel text-xl text-white mb-2">M'ra Kaal Spirit-Speaker</h3>
+                    <p class="text-gray-300">You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.</p>
+                </div>
+                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="gaian">
+                    <h3 class="font-cinzel text-xl text-white mb-2">Gaian Scholar</h3>
+                    <p class="text-gray-400">You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GAME SCREEN -->
+        <div id="game-screen" class="flex-grow flex flex-col">
+            <!-- Header -->
+            <header id="game-header" class="header sticky top-0 p-4 rounded-b-lg z-10">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-cinzel text-lg" id="current-date">Alphi 1, 998 PA</p>
+                        <p class="text-sm text-gray-400" id="month-description">The Awakening</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center"><div id="moon-edyria" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
+                        <div class="text-center"><div id="moon-kapra" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-kapra"></div><p class="text-xs text-red-300">Kapra</p></div>
+                        <div class="text-center"><div id="moon-enia" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-enia"></div><p class="text-xs text-yellow-300">Enia</p></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main id="main-content" class="flex-grow p-4 flex flex-col"></main>
+
+            <!-- Bottom Nav -->
+            <footer class="bottom-nav sticky bottom-0 py-2 px-4 mt-auto">
+                <div class="flex justify-around items-center text-gray-400">
+                    <button class="nav-icon text-center" data-panel="journal-panel" title="Journal"><i class="ph-duotone ph-book-open"></i></button>
+                    <button class="nav-icon text-center" data-panel="character-panel" title="Character"><i class="ph-duotone ph-user"></i></button>
+                    <button class="nav-icon text-center" data-panel="inventory-panel" title="Inventory"><i class="ph-duotone ph-backpack"></i></button>
+                    <button class="nav-icon text-center" data-panel="settings-panel" title="Settings"><i class="ph-duotone ph-gear-six"></i></button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- UI PANELS -->
+    <div id="journal-panel" class="ui-panel">
+        <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Journal</h2>
+        <div id="journal-content"></div>
+        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
+    </div>
+    
+    <div id="character-panel" class="ui-panel">
+        <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Character</h2>
+        <div id="character-content"></div>
+        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
+    </div>
+    
+    <div id="inventory-panel" class="ui-panel">
+        <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Inventory</h2>
+        <div id="inventory-content" class="grid grid-cols-4 sm:grid-cols-6 gap-4"></div>
+        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
+    </div>
+    
+    <div id="settings-panel" class="ui-panel">
+        <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Settings</h2>
+        <div id="settings-content">
+            <p class="text-gray-400">Game settings (Text Speed, Audio, etc.) will be here.</p>
+        </div>
+        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="assets/js/main.js"></script>
+
+</body>
+</html>
