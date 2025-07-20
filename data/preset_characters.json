@@ -14,6 +14,16 @@
       "wisdom": 14,
       "charisma": 10
     },
+    "craftingSkills": {
+      "smithing": 1,
+      "weaponcraft": 1,
+      "alchemy": 2,
+      "enchanting": 0,
+      "leatherworking": 3,
+      "woodworking": 3,
+      "cooking": 2,
+      "arcana": 0
+    },
     "startingEquipment": ["longbow", "leather_armor", "health_potion", "rations", "bedroll"],
     "background": "outlander",
     "personalityTraits": ["I watch over my friends as if they were a litter of newborn pups.", "I have a lesson for every situation, drawn from observing nature."],
@@ -34,6 +44,16 @@
       "wisdom": 13,
       "charisma": 14
     },
+    "craftingSkills": {
+      "smithing": 3,
+      "weaponcraft": 2,
+      "alchemy": 1,
+      "enchanting": 2,
+      "leatherworking": 2,
+      "woodworking": 1,
+      "cooking": 1,
+      "arcana": 1
+    },
     "startingEquipment": ["ceremonial_spear", "chain_mail", "health_potion", "moonstone_amulet", "prayer_book"],
     "background": "acolyte",
     "personalityTraits": ["I honor my ancestors through every action.", "The spirits guide my path, and I trust their wisdom above all."],
@@ -53,6 +73,16 @@
       "intelligence": 15,
       "wisdom": 14,
       "charisma": 11
+    },
+    "craftingSkills": {
+      "smithing": 0,
+      "weaponcraft": 0,
+      "alchemy": 4,
+      "enchanting": 3,
+      "leatherworking": 0,
+      "woodworking": 1,
+      "cooking": 1,
+      "arcana": 4
     },
     "startingEquipment": ["quarterstaff", "scholar_robes", "mana_potion", "ancient_tome", "ink_and_quill"],
     "background": "sage",

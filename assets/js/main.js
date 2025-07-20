@@ -94,18 +94,19 @@ function setupEventListeners() {
             const characterData = presetCharactersData[gameData.player.origin];
             
             console.log('Character data:', characterData);
-            console.log('Player stats before:', { ...gameData.player.stats });
+            console.log('Player data before loading:', { ...gameData.player });
             
             if(characterData){
-                // Set character name and details
-                gameData.player.name = characterData.name;
-                gameData.player.title = characterData.title;
-                gameData.player.class = characterData.class;
-                gameData.player.species = characterData.species;
-                gameData.player.level = characterData.level || 1;
-                gameData.player.description = characterData.description;
+                // Load ALL character data, replacing defaults
+                gameData.player.name = characterData.name || gameData.player.name;
+                gameData.player.title = characterData.title || gameData.player.title;
+                gameData.player.class = characterData.class || gameData.player.class;
+                gameData.player.species = characterData.species || gameData.player.species;
+                gameData.player.level = characterData.level || gameData.player.level;
+                gameData.player.description = characterData.description || gameData.player.description;
+                gameData.player.experience = characterData.experience || gameData.player.experience;
                 
-                // Apply character stats (replace default stats with character stats)
+                // Load character stats (replace default stats with character stats)
                 if (characterData.stats) {
                     console.log('Applying character stats:', characterData.stats);
                     Object.entries(characterData.stats).forEach(([stat, value]) => {
@@ -114,6 +115,39 @@ function setupEventListeners() {
                             console.log(`Set ${stat} to ${value}`);
                         }
                     });
+                }
+                
+                // Load character inventory (replace starting inventory)
+                if (characterData.startingEquipment && Array.isArray(characterData.startingEquipment)) {
+                    gameData.player.inventory = [];  // Clear default inventory
+                    characterData.startingEquipment.forEach(itemId => {
+                        gameData.player.inventory.push({ id: itemId, quantity: 1 });
+                    });
+                    console.log('Loaded starting equipment:', gameData.player.inventory);
+                }
+                
+                // Load character-specific crafting skills if provided
+                if (characterData.craftingSkills) {
+                    Object.entries(characterData.craftingSkills).forEach(([skill, level]) => {
+                        if (gameData.player.craftingSkills[skill] !== undefined) {
+                            gameData.player.craftingSkills[skill] = level;
+                            console.log(`Set crafting skill ${skill} to ${level}`);
+                        }
+                    });
+                } else {
+                    // Set default crafting skills based on character class
+                    setDefaultCraftingSkills(characterData.class);
+                }
+                
+                // Load character background and traits
+                if (characterData.background) {
+                    gameData.player.background = characterData.background;
+                }
+                if (characterData.personalityTraits) {
+                    gameData.player.personalityTraits = characterData.personalityTraits;
+                }
+                if (characterData.lore) {
+                    gameData.player.lore.add(characterData.lore);
                 }
                 
                 // Apply species bonuses
@@ -130,10 +164,7 @@ function setupEventListeners() {
                 
                 console.log('Player stats after:', { ...gameData.player.stats });
                 
-                // Set initial equipment if specified
-                if (characterData.startingEquipment) {
-                    gameData.player.inventory.push(...characterData.startingEquipment);
-                }
+                // Load starting equipment (handled above in comprehensive character loading)
                 
                 // Set initial skills if specified
                 if (characterData.skillProficiencies) {
@@ -156,7 +187,7 @@ function setupEventListeners() {
                 // Recalculate derived stats like HP, modifiers, etc.
                 recalculateStats();
                 
-                console.log('Final player stats after recalculation:', { ...gameData.player.stats });
+                console.log('Final player data after loading:', gameData.player);
                 console.log('Player HP:', gameData.player.currentHitPoints, '/', gameData.player.maxHitPoints);
             } else {
                 console.error('No character data found for:', gameData.player.origin);
@@ -177,6 +208,55 @@ function setupEventListeners() {
             renderLocation(startLocation);
         });
     });
+
+// Function to set default crafting skills based on character class
+function setDefaultCraftingSkills(characterClass) {
+    // Reset all crafting skills to 0 first
+    Object.keys(gameData.player.craftingSkills).forEach(skill => {
+        gameData.player.craftingSkills[skill] = 0;
+    });
+    
+    // Set class-specific crafting skills
+    switch(characterClass) {
+        case 'ranger':
+            gameData.player.craftingSkills.woodworking = 2;
+            gameData.player.craftingSkills.leatherworking = 2;
+            gameData.player.craftingSkills.alchemy = 1;
+            gameData.player.craftingSkills.cooking = 2;
+            break;
+        case 'paladin':
+            gameData.player.craftingSkills.smithing = 2;
+            gameData.player.craftingSkills.weaponcraft = 1;
+            gameData.player.craftingSkills.enchanting = 1;
+            gameData.player.craftingSkills.leatherworking = 1;
+            break;
+        case 'wizard':
+            gameData.player.craftingSkills.alchemy = 3;
+            gameData.player.craftingSkills.enchanting = 2;
+            gameData.player.craftingSkills.arcana = 3;
+            gameData.player.craftingSkills.cooking = 1;
+            break;
+        case 'fighter':
+            gameData.player.craftingSkills.smithing = 2;
+            gameData.player.craftingSkills.weaponcraft = 2;
+            gameData.player.craftingSkills.leatherworking = 1;
+            break;
+        case 'rogue':
+            gameData.player.craftingSkills.alchemy = 2;
+            gameData.player.craftingSkills.leatherworking = 2;
+            gameData.player.craftingSkills.cooking = 1;
+            break;
+        default:
+            // Default skills for unknown classes
+            gameData.player.craftingSkills.smithing = 1;
+            gameData.player.craftingSkills.alchemy = 1;
+            gameData.player.craftingSkills.cooking = 1;
+            gameData.player.craftingSkills.leatherworking = 1;
+            break;
+    }
+    
+    console.log(`Set default crafting skills for ${characterClass}:`, gameData.player.craftingSkills);
+}
 
     // Navigation buttons
     navButtons.forEach(button => button.addEventListener('click', () => openPanel(button.dataset.panel)));

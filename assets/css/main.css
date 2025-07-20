@@ -121,14 +121,14 @@ body {
     opacity: 1;
 }
 
-/* Inventory specific styles */
-#inventory-panel {
+/* Inventory and Crafting specific styles */
+#inventory-panel, #crafting-panel {
     max-width: none;
     width: 100%;
     padding: 1rem;
 }
 
-#inventory-content {
+#inventory-content, #crafting-content {
     max-width: 1400px;
     margin: 0 auto;
 }
