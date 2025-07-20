@@ -177,6 +177,7 @@ function loadFallbackScenes() {
 
 // Add some skill checks to locations if they don't have them
 function enhanceLocationsWithSkillChecks() {
+    // todo: pull these from a data file or define them more cleanly
     // Add skill checks to westwalker camp if it doesn't have them
     if (locationsData.westwalker_camp && locationsData.westwalker_camp.actions) {
         const actions = locationsData.westwalker_camp.actions;

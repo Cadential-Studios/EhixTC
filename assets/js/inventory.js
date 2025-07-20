@@ -351,10 +351,17 @@ class InventoryManager {
         const rarityTextColor = this.getRarityTextColor(item.data.rarity);
         const canUse = this.canUseItem(item.data);
         const isEquippable = item.data.slot && item.data.slot !== 'none';
+        const isActivatable = item.data.properties && item.data.properties.includes('activatable');
         
         return `
-            <div class="inventory-item bg-gray-700 border-2 ${rarityBorderColor} rounded-lg p-3 mb-2 cursor-pointer hover:bg-gray-600 transition-all duration-200 ${!canUse ? 'opacity-60' : ''}"
+            <div class="inventory-item ${isActivatable ? 'activatable-item' : ''} bg-gray-700 border-2 ${rarityBorderColor} rounded-lg p-3 mb-2 cursor-pointer hover:bg-gray-600 transition-all duration-200 ${!canUse ? 'opacity-60' : ''}"
                  onclick="inventoryManager.openItemModal('${item.id}')">
+                ${isActivatable ? `
+                    <button onclick="event.stopPropagation(); activateItem('${item.id}')" 
+                            class="activate-item-btn">
+                        <i class="fas fa-magic mr-1"></i>Activate
+                    </button>
+                ` : ''}
                 <div class="flex justify-between items-start mb-2">
                     <div class="flex-1">
                         <div class="flex items-center gap-2">

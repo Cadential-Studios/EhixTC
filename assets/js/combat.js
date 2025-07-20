@@ -29,6 +29,19 @@ function rollDiceWithAnimation(sides = 20, modifier = 0, label = 'Roll', dc = nu
     return { roll: result, modifier, total, sides, success, dc };
 }
 
+// Simple damage dice rolling function (no DC, success/failure)
+function rollSimpleDamageWithAnimation(sides = 4, modifier = 0, label = 'Damage Roll') {
+    const result = Math.floor(Math.random() * sides) + 1;
+    const total = result + modifier;
+    
+    // Use the DiceRoller class for animation but without DC (no success/failure)
+    if (window.diceRoller && gameData.settings.showDiceAnimations) {
+        window.diceRoller.showDiceRollAnimation(result, sides, modifier, total, label, null);
+    }
+    
+    return { roll: result, modifier, total, sides };
+}
+
 
 // Advanced Dice Rolling Engine
 function rollDicePool(diceExpression) {

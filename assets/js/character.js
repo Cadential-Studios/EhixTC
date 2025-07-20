@@ -41,6 +41,52 @@ function getSkillBreakdown(skillName) {
     };
 }
 
+// Saving Throws System Functions
+function getSavingThrowModifier(ability) {
+    const abilityMod = getAbilityModifier(ability);
+    const savingThrow = gameData.player.savingThrows[ability];
+    
+    let proficiencyMod = 0;
+    if (savingThrow && savingThrow.proficient) {
+        proficiencyMod = gameData.player.proficiencyBonus;
+    }
+    
+    return abilityMod + proficiencyMod;
+}
+
+function getSavingThrowBreakdown(ability) {
+    const abilityMod = getAbilityModifier(ability);
+    const savingThrow = gameData.player.savingThrows[ability];
+    
+    let proficiencyMod = 0;
+    if (savingThrow && savingThrow.proficient) {
+        proficiencyMod = gameData.player.proficiencyBonus;
+    }
+    
+    return {
+        ability: ability,
+        abilityModifier: abilityMod,
+        proficiencyBonus: proficiencyMod,
+        total: abilityMod + proficiencyMod,
+        isProficient: savingThrow ? savingThrow.proficient : false
+    };
+}
+
+function performSavingThrow(ability, dc) {
+    const modifier = getSavingThrowModifier(ability);
+    const abilityName = ability.charAt(0).toUpperCase() + ability.slice(1);
+    
+    // Use rollDiceWithAnimation for consistent UI with skill checks
+    const rollResult = rollDiceWithAnimation(20, modifier, `${abilityName} Save`, dc);
+    
+    return {
+        roll: rollResult.roll,
+        modifier: rollResult.modifier,
+        total: rollResult.total,
+        success: rollResult.success
+    };
+}
+
 // Equipment System Functions
 function equipItem(itemId, slot = null) {
     const item = itemsData[itemId];

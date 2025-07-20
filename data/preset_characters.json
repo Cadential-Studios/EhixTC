@@ -24,7 +24,7 @@
       "cooking": 2,
       "arcana": 0
     },
-    "startingEquipment": ["longbow", "leather_armor", "health_potion", "rations", "bedroll"],
+    "startingEquipment": ["longbow", "leather_armor", "health_potion", "rations", "bedroll", "cursed_ring_of_strength"],
     "background": "outlander",
     "personalityTraits": ["I watch over my friends as if they were a litter of newborn pups.", "I have a lesson for every situation, drawn from observing nature."],
     "lore": "Raised among scattered frontier clans, Kael guards the roads and watches the Griefwood for signs of encroaching darkness. The spirits of the wild whisper warnings to those who know how to listen."
@@ -84,7 +84,7 @@
       "cooking": 1,
       "arcana": 4
     },
-    "startingEquipment": ["quarterstaff", "scholar_robes", "mana_potion", "ancient_tome", "ink_and_quill"],
+    "startingEquipment": ["quarterstaff", "scholar_robes", "mana_potion", "ancient_tome", "ink_and_quill", "cursed_ring_of_strength"],
     "background": "sage",
     "personalityTraits": ["I am horribly, horribly awkward in social situations.", "I am convinced that people are always trying to steal my secrets."],
     "lore": "Gaian scholars preserve knowledge from before the Ascension. Lyra believes that understanding the lunar patterns will unlock unprecedented magical discoveries during the Convergence, potentially reshaping the very fabric of reality."

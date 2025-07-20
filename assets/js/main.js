@@ -314,6 +314,11 @@ async function initializeGame() {
     // Initialize crafting system after data is loaded
     craftingManager.initialize();
     
+    // Initialize time system
+    startGameTime();
+    updateTimeDisplay();
+    updateTimeControlDisplay();
+    
     // Load fallback scenes if needed
     loadFallbackScenes();
     

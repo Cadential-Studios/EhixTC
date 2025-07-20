@@ -155,7 +155,7 @@ function closeAllPanels() {
     });
 }
 
-function updateDisplay() {
+function updateDisplayOriginal() {
     // Update date display
     if (dateEl) {
         dateEl.textContent = `${gameData.time.months[gameData.time.month]} ${gameData.time.day}, ${gameData.time.year} PA`;
@@ -772,4 +772,105 @@ function getDifficultyColor(difficulty) {
         'master': 'bg-purple-600 text-purple-100'
     };
     return colors[difficulty] || 'bg-gray-600 text-gray-100';
+}
+
+// Effects Panel Functions
+function updateEffectsPanel() {
+    const effectsContent = document.getElementById('effects-content');
+    if (!effectsContent) return;
+
+    if (gameData.effects.active.length === 0) {
+        effectsContent.innerHTML = `
+            <div class="text-center text-gray-400 py-8">
+                <i class="ph-duotone ph-sparkle text-4xl mb-4"></i>
+                <p>No active effects</p>
+            </div>
+        `;
+        return;
+    }
+
+    const effectsHTML = gameData.effects.active.map(effect => {
+        const effectTemplate = effectsData[effect.id];
+        if (!effectTemplate) return '';
+
+        const timeRemaining = Math.max(0, effect.remaining);
+        const totalDuration = effect.duration;
+        const progressPercent = totalDuration > 0 ? ((totalDuration - timeRemaining) / totalDuration) * 100 : 0;
+        
+        const minutes = Math.floor(timeRemaining / 60000);
+        const seconds = Math.floor((timeRemaining % 60000) / 1000);
+        const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        const effectTypeClass = effect.type;
+        const nameColorClass = effect.type === 'debuff' ? 'text-red-400' : 
+                              effect.type === 'buff' ? 'text-blue-400' : 'text-yellow-400';
+
+        return `
+            <div class="effect-item ${effectTypeClass}">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-cinzel text-lg ${nameColorClass}">${effect.name}</h3>
+                    <span class="effect-timer">${timeString}</span>
+                </div>
+                <p class="text-gray-300 text-sm mb-2">${effect.description}</p>
+                ${totalDuration > 0 ? `
+                    <div class="effect-progress-bar">
+                        <div class="effect-progress-fill ${effectTypeClass}" style="width: ${progressPercent}%"></div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+
+    effectsContent.innerHTML = effectsHTML;
+}
+
+// Enhanced updateDisplay function to include time and effects
+function updateDisplay() {
+    // Update date display
+    if (dateEl) {
+        dateEl.textContent = `${gameData.time.months[gameData.time.month]} ${gameData.time.day}, ${gameData.time.year} PA`;
+    }
+    
+    // Update month description
+    if (monthDescEl) {
+        monthDescEl.textContent = gameData.time.monthDescriptions[gameData.time.month];
+    }
+    
+    // Update time display
+    updateTimeDisplay();
+    
+    // Update moon phases
+    updateMoonPhases();
+    
+    // Update effects panel if open
+    const effectsPanel = document.getElementById('effects-panel');
+    if (effectsPanel && effectsPanel.classList.contains('open')) {
+        updateEffectsPanel();
+    }
+    
+    // Update time controls
+    updateTimeControlDisplay();
+}
+
+// Activate item function for magical items
+function activateItem(itemId) {
+    const item = itemsData[itemId];
+    if (!item || !item.effect) {
+        showGameMessage('This item cannot be activated.', 'warning');
+        return;
+    }
+
+    // Check if item has activatable property
+    if (!item.properties || !item.properties.includes('activatable')) {
+        showGameMessage('This item cannot be activated.', 'warning');
+        return;
+    }
+
+    // Apply the effect
+    const success = applyEffect(item.effect, item.name);
+    if (success) {
+        showGameMessage(`You activate the ${item.name}.`, 'success');
+    } else {
+        showGameMessage('Failed to activate the item.', 'failure');
+    }
 }

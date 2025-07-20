@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<!DOCTY    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />l>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,6 +60,7 @@
                     <div>
                         <p class="font-cinzel text-lg" id="current-date">Alphi 1, 998 PA</p>
                         <p class="text-sm text-gray-400" id="month-description">The Awakening</p>
+                        <p class="text-sm text-gray-300" id="current-time">8:00 AM</p>
                     </div>
                     <div class="flex items-center space-x-4">
                         <div class="text-center"><div id="moon-edyria" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
@@ -63,6 +70,16 @@
                 </div>
             </header>
 
+            <!-- Time Controls -->
+            <div id="time-controls" class="time-controls px-4 py-2 bg-gray-900 bg-opacity-50 border-b border-gray-700">
+                <div class="flex items-center justify-center space-x-4">
+                    <button id="time-play-pause" class="time-control-btn" onclick="toggleTime()" title="Pause/Resume Time">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <div class="text-sm text-gray-400">Time Controls</div>
+                </div>
+            </div>
+
             <!-- Main Content Area -->
             <main id="main-content" class="flex-grow p-4 flex flex-col"></main>
 
@@ -71,6 +88,7 @@
                 <div class="flex justify-around items-center text-gray-400">
                     <button class="nav-icon text-center" data-panel="journal-panel" title="Journal"><i class="ph-duotone ph-book-open"></i></button>
                     <button class="nav-icon text-center" data-panel="character-panel" title="Character"><i class="ph-duotone ph-user"></i></button>
+                    <button class="nav-icon text-center" data-panel="effects-panel" title="Effects"><i class="ph-duotone ph-sparkle"></i></button>
                     <button class="nav-icon text-center" data-panel="inventory-panel" title="Inventory"><i class="ph-duotone ph-backpack"></i></button>
                     <button class="nav-icon text-center" data-panel="crafting-panel" title="Crafting"><i class="ph-duotone ph-hammer"></i></button>
                     <button class="nav-icon text-center" data-panel="settings-panel" title="Settings"><i class="ph-duotone ph-gear-six"></i></button>
@@ -159,6 +177,12 @@
     <div id="character-panel" class="ui-panel">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Character</h2>
         <div id="character-content"></div>
+        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
+    </div>
+    
+    <div id="effects-panel" class="ui-panel">
+        <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Active Effects</h2>
+        <div id="effects-content"></div>
         <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
     </div>
     
