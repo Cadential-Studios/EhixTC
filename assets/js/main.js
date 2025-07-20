@@ -231,6 +231,9 @@ async function initializeGame() {
     
     await loadGameData();
     
+    // Initialize crafting system after data is loaded
+    craftingManager.initialize();
+    
     // Load fallback scenes if needed
     loadFallbackScenes();
     

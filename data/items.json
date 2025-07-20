@@ -474,14 +474,12 @@
     "subtype": "food",
     "slot": "none",
     "description": "A loaf of freshly baked bread.",
-    "effect": "nourishment",
-    "uses": 1,
     "rarity": "common",
     "value": 1,
     "weight": 0.5
   },
-  "chain-mail": {
-    "id": "chain-mail",
+  "chain_mail": {
+    "id": "chain_mail",
     "name": "Chain Mail",
     "type": "armor",
     "subtype": "medium",
@@ -494,4 +492,29 @@
     "value": 75,
     "weight": 20
   },
+  "iron_ore": {
+    "id": "iron_ore",
+    "name": "Iron Ore",
+    "type": "material",
+    "subtype": "mineral",
+    "slot": "none",
+    "description": "A common metal ore used for crafting and trade.",
+    "rarity": "common",
+    "value": 10,
+    "weight": 5
+  },
+  "iron_sword": {
+    "id": "iron_sword",
+    "name": "Iron Sword",
+    "type": "weapon",
+    "subtype": "melee",
+    "slot": "mainhand",
+    "description": "A sturdy sword made of iron, suitable for combat.",
+    "damage": "1d6",
+    "damageType": "slashing",
+    "properties": ["Versatile"],
+    "rarity": "common",
+    "value": 20,
+    "weight": 4
+  }
 }

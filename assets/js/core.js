@@ -14,16 +14,12 @@ const gameData = {
         description: '',
         location: null,
         inventory: [
-            'iron_sword', 'health_potion', 'health_potion', 'mana_potion', 'bread', 'bread', 'bread',
-            'steel_dagger', 'leather_armor', 'wooden_shield', 'silver_ring', 'iron_ore', 'iron_ore',
-            { id: 'health_potion', quantity: 3 }, { id: 'magic_crystal', quantity: 2 }, 'ancient_tome',
-            'amulet_protection', 'chain_mail', 'magic_staff'
+
         ],
         equipment: {
             head: null,
             neck: null,
             chest: null,
-            armor: null, //* Slot will be used for equipping armor pieces.
             mainhand: null,
             offhand: null,
             finger1: null,
@@ -73,6 +69,17 @@ const gameData = {
         level: 1,
         experience: 0,
         experienceToNext: 300,
+        // Crafting Skills
+        craftingSkills: {
+            smithing: 1,
+            weaponcraft: 0,
+            alchemy: 1,
+            enchanting: 0,
+            leatherworking: 1,
+            woodworking: 0,
+            cooking: 1,
+            arcana: 0
+        },
         // Spell and ability resources
         spellSlots: {
             1: 0, 2: 0, 3: 0, 4: 0, 5: 0
@@ -101,6 +108,8 @@ const gameData = {
             spell: null,
             duration: 0
         }
+
+        //todo: add relationships, reputation, renown, etc.
     },
     time: {
         day: 1,
@@ -136,6 +145,7 @@ let classesData = {};
 let presetCharactersData = {};
 let speciesData = {};
 let itemsData = {};
+let recipesData = {};
 let questsData = {};
 let monstersData = {};
 let calendarData = {};
@@ -232,13 +242,14 @@ async function loadGameData() {
             fetch('./data/preset_characters.json'),
             fetch('./data/species.json'),
             fetch('./data/items.json'),
+            fetch('./data/recipes.json'),
             fetch('./data/quests.json'),
             fetch('./data/monsters.json'),
             fetch('./data/calendar.json')
         ]);
 
         const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse, 
-               speciesResponse, itemsResponse, questsResponse, monstersResponse, calendarResponse] = responses;
+               speciesResponse, itemsResponse, recipesResponse, questsResponse, monstersResponse, calendarResponse] = responses;
 
         if (locationsResponse.ok) locationsData = await locationsResponse.json();
         if (scenesResponse.ok) scenesData = await scenesResponse.json();
@@ -246,6 +257,7 @@ async function loadGameData() {
         if (presetCharactersResponse.ok) presetCharactersData = await presetCharactersResponse.json();
         if (speciesResponse.ok) speciesData = await speciesResponse.json();
         if (itemsResponse.ok) itemsData = await itemsResponse.json();
+        if (recipesResponse.ok) recipesData = await recipesResponse.json();
         if (questsResponse.ok) questsData = await questsResponse.json();
         if (monstersResponse.ok) monstersData = await monstersResponse.json();
         if (calendarResponse.ok) calendarData = await calendarResponse.json();

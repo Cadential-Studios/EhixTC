@@ -138,6 +138,9 @@ function openPanel(panelId) {
             case 'inventory-panel':
                 renderAdvancedInventory();
                 break;
+            case 'crafting-panel':
+                renderCraftingWorkshop();
+                break;
             case 'settings-panel':
                 renderSettings();
                 break;
@@ -502,6 +505,9 @@ function setupKeyboardShortcuts() {
             case 'j':
                 if (!event.ctrlKey) openPanel('journal-panel');
                 break;
+            case 'c':
+                if (!event.ctrlKey) openPanel('crafting-panel');
+                break;
             case 's':
                 if (!event.ctrlKey) openPanel('settings-panel');
                 break;
@@ -510,4 +516,260 @@ function setupKeyboardShortcuts() {
                 break;
         }
     });
+}
+
+// Crafting Workshop Functions
+function renderCraftingWorkshop() {
+    const craftingContent = document.getElementById('crafting-content');
+    if (!craftingContent) return;
+
+    craftingContent.innerHTML = `
+        <div class="crafting-workshop grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+            <!-- Recipe Categories -->
+            <div class="recipe-categories bg-gray-800 rounded-lg p-4 border border-gray-600">
+                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
+                    <i class="ph-duotone ph-list mr-2"></i>Recipe Categories
+                </h3>
+                <div id="category-list" class="space-y-2">
+                    <!-- Categories will be populated here -->
+                </div>
+            </div>
+
+            <!-- Recipe List -->
+            <div class="recipe-list bg-gray-800 rounded-lg p-4 border border-gray-600">
+                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
+                    <i class="ph-duotone ph-scroll mr-2"></i>Available Recipes
+                </h3>
+                <div id="recipe-list-content" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Recipes will be populated here -->
+                </div>
+            </div>
+
+            <!-- Crafting Details -->
+            <div class="crafting-details bg-gray-800 rounded-lg p-4 border border-gray-600">
+                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
+                    <i class="ph-duotone ph-hammer mr-2"></i>Crafting Details
+                </h3>
+                <div id="crafting-details-content">
+                    <p class="text-gray-400 text-center py-8">Select a recipe to view crafting details</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    populateCraftingCategories();
+    populateRecipeList();
+}
+
+function populateCraftingCategories() {
+    const categoryList = document.getElementById('category-list');
+    if (!categoryList) return;
+
+    const categories = craftingManager.getCategories();
+
+    categoryList.innerHTML = categories.map(category => {
+        const isActive = currentCraftingCategory === category;
+        const categoryName = category === 'all' ? 'All Recipes' : 
+                           category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1');
+        
+        return `
+            <button class="category-btn w-full text-left px-3 py-2 rounded transition-colors
+                ${isActive ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
+                onclick="selectCraftingCategory('${category}')">
+                <i class="ph-duotone ${getCategoryIcon(category)} mr-2"></i>${categoryName}
+            </button>
+        `;
+    }).join('');
+}
+
+function selectCraftingCategory(category) {
+    currentCraftingCategory = category;
+    populateCraftingCategories();
+    populateRecipeList();
+}
+
+function populateRecipeList() {
+    const recipeListContent = document.getElementById('recipe-list-content');
+    if (!recipeListContent) return;
+
+    const filteredRecipes = craftingManager.getRecipesByCategory(currentCraftingCategory);
+
+    if (filteredRecipes.length === 0) {
+        recipeListContent.innerHTML = '<p class="text-gray-400 text-center py-4">No recipes found in this category</p>';
+        return;
+    }
+
+    recipeListContent.innerHTML = filteredRecipes.map(recipe => {
+        const canCraft = craftingManager.canCraftRecipe(recipe.id);
+        const skillsText = Object.entries(recipe.requiredSkills || {})
+            .map(([skill, level]) => `${skill} ${level}`)
+            .join(', ');
+
+        return `
+            <div class="recipe-item bg-gray-700 rounded-lg p-3 border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors
+                ${canCraft ? 'border-green-500' : 'border-gray-600'}"
+                onclick="selectRecipe('${recipe.id}')">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-cinzel text-white font-bold">${recipe.name}</h4>
+                    <span class="text-xs px-2 py-1 rounded ${getDifficultyColor(recipe.difficulty)}">${recipe.difficulty}</span>
+                </div>
+                <p class="text-sm text-gray-300 mb-2">${recipe.description}</p>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-blue-300">Skills: ${skillsText || 'None'}</span>
+                    <span class="text-yellow-300">XP: ${recipe.experienceGained}</span>
+                </div>
+                ${!canCraft ? '<div class="text-red-400 text-xs mt-1">Missing requirements</div>' : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function selectRecipe(recipeId) {
+    currentSelectedRecipe = recipeId;
+    displayRecipeDetails(recipeId);
+}
+
+function displayRecipeDetails(recipeId) {
+    const detailsContent = document.getElementById('crafting-details-content');
+    if (!detailsContent) return;
+
+    const recipe = craftingManager.getRecipe(recipeId);
+    if (!recipe) return;
+
+    const canCraft = craftingManager.canCraftRecipe(recipeId);
+    const successRate = craftingManager.calculateSuccessRate(recipe);
+    const ingredients = craftingManager.getIngredientsList(recipe);
+    const skills = craftingManager.getSkillRequirements(recipe);
+
+    detailsContent.innerHTML = `
+        <div class="recipe-details">
+            <div class="mb-4">
+                <h4 class="font-cinzel text-xl text-white mb-2">${recipe.name}</h4>
+                <p class="text-gray-300 text-sm mb-3">${recipe.description}</p>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="text-blue-300">
+                        <strong>Method:</strong> ${recipe.craftingMethod}
+                    </div>
+                    <div class="text-yellow-300">
+                        <strong>Time:</strong> ${recipe.craftingTime}s
+                    </div>
+                    <div class="text-green-300">
+                        <strong>Experience:</strong> ${recipe.experienceGained}
+                    </div>
+                    <div class="text-purple-300">
+                        <strong>Success Rate:</strong> ${successRate}%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Required Skills -->
+            ${skills.length > 0 ? `
+                <div class="mb-4">
+                    <h5 class="font-cinzel text-white mb-2">Required Skills</h5>
+                    <div class="space-y-1">
+                        ${skills.map(skill => `
+                            <div class="flex justify-between text-sm ${skill.hasSkill ? 'text-green-300' : 'text-red-300'}">
+                                <span>${skill.displayName}</span>
+                                <span>${skill.playerLevel}/${skill.requiredLevel}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- Required Tools -->
+            ${recipe.requiredTools ? `
+                <div class="mb-4">
+                    <h5 class="font-cinzel text-white mb-2">Required Tools</h5>
+                    <div class="space-y-1">
+                        ${recipe.requiredTools.map(tool => `
+                            <div class="text-sm text-blue-300">• ${tool.replace(/_/g, ' ').toUpperCase()}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- Ingredients -->
+            <div class="mb-4">
+                <h5 class="font-cinzel text-white mb-2">Required Ingredients</h5>
+                <div class="space-y-1">
+                    ${ingredients.map(ingredient => `
+                        <div class="flex justify-between text-sm ${ingredient.hasEnough ? 'text-green-300' : 'text-red-300'}">
+                            <span>${ingredient.displayName}</span>
+                            <span>${ingredient.playerQuantity}/${ingredient.quantity}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="mb-4">
+                <h5 class="font-cinzel text-white mb-2">Crafting Results</h5>
+                <div class="space-y-1">
+                    ${recipe.results.map(result => `
+                        <div class="text-sm text-green-300">
+                            • ${result.itemId.replace(/_/g, ' ').toUpperCase()} (${result.quantity}) - ${result.chance}%
+                        </div>
+                    `).join('')}
+                    ${recipe.byproducts && recipe.byproducts.length > 0 ? `
+                        <div class="text-sm text-blue-300 mt-2">
+                            <strong>Possible Byproducts:</strong>
+                            ${recipe.byproducts.map(bp => `
+                                <div>• ${bp.itemId.replace(/_/g, ' ').toUpperCase()} (${bp.quantity}) - ${bp.chance}%</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+
+            <!-- Craft Button -->
+            <button class="craft-btn w-full py-3 px-4 rounded-lg font-cinzel font-bold transition-colors
+                ${canCraft ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-600 text-gray-400 cursor-not-allowed'}"
+                ${canCraft ? `onclick="craftItem('${recipeId}')"` : 'disabled'}>
+                ${canCraft ? 'Craft Item' : 'Cannot Craft'}
+            </button>
+        </div>
+    `;
+}
+
+function craftItem(recipeId) {
+    const success = craftingManager.craftItem(recipeId);
+    
+    // Refresh displays after crafting
+    displayRecipeDetails(recipeId);
+    populateRecipeList();
+    
+    // Refresh inventory if it's open
+    if (document.getElementById('inventory-panel').style.display === 'block') {
+        renderAdvancedInventory();
+    }
+}
+
+// Global crafting state
+let currentCraftingCategory = 'all';
+let currentSelectedRecipe = null;
+
+// Helper functions for crafting UI
+function getCategoryIcon(category) {
+    const icons = {
+        'all': 'ph-stack',
+        'metalworking': 'ph-fire',
+        'weaponsmithing': 'ph-sword',
+        'alchemy': 'ph-flask',
+        'enchanting': 'ph-magic-wand',
+        'leatherworking': 'ph-shield',
+        'woodworking': 'ph-tree',
+        'cooking': 'ph-cooking-pot'
+    };
+    return icons[category] || 'ph-wrench';
+}
+
+function getDifficultyColor(difficulty) {
+    const colors = {
+        'easy': 'bg-green-600 text-green-100',
+        'medium': 'bg-yellow-600 text-yellow-100',
+        'hard': 'bg-red-600 text-red-100',
+        'master': 'bg-purple-600 text-purple-100'
+    };
+    return colors[difficulty] || 'bg-gray-600 text-gray-100';
 }

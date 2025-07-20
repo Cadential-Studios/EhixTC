@@ -574,16 +574,25 @@ class InventoryManager {
     // Item interaction methods
     equipItem(itemId) {
         if (typeof equipItem === 'function') {
-            equipItem(itemId);
-            this.renderAdvancedInventory(); // Refresh the entire display
+            const success = equipItem(itemId);
+            if (success) {
+                this.updateInventoryDisplay(); // Refresh the inventory display
+                this.renderAdvancedInventory(); // Refresh the entire display
+            }
+            return success;
         }
+        return false;
     }
 
     unequipItem(slotName) {
         if (typeof unequipItem === 'function') {
-            unequipItem(slotName);
-            this.renderAdvancedInventory(); // Refresh the entire display
+            const success = unequipItem(slotName);
+            if (success) {
+                this.renderAdvancedInventory(); // Refresh the entire display
+            }
+            return success;
         }
+        return false;
     }
 
     useItem(itemId) {

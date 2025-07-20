@@ -46,6 +46,16 @@ function equipItem(itemId, slot = null) {
     const item = itemsData[itemId];
     if (!item) return false;
     
+    // Check if player has this item in inventory
+    const hasItem = gameData.player.inventory.some(invItem => 
+        typeof invItem === 'string' ? invItem === itemId : invItem.id === itemId
+    );
+    
+    if (!hasItem) {
+        showGameMessage("You don't have this item in your inventory!", 'warning');
+        return false;
+    }
+    
     // Determine slot if not specified
     if (!slot) {
         slot = item.slot;
@@ -69,16 +79,8 @@ function equipItem(itemId, slot = null) {
         unequipItem(slot);
     }
     
-    // Equip new item
+    // Equip new item (but keep it in inventory)
     gameData.player.equipment[slot] = itemId;
-    
-    // Remove from inventory
-    const invIndex = gameData.player.inventory.findIndex(invItem => 
-        typeof invItem === 'string' ? invItem === itemId : invItem.id === itemId
-    );
-    if (invIndex !== -1) {
-        gameData.player.inventory.splice(invIndex, 1);
-    }
     
     // Recalculate stats
     recalculateStats();
@@ -101,6 +103,7 @@ function equipItem(itemId, slot = null) {
         }
     }
     
+    showGameMessage(`Equipped ${item.name}!`, 'success');
     return true;
 }
 
@@ -113,10 +116,7 @@ function unequipItem(slot) {
     // Capture old stats for animation
     const oldStats = { ...gameData.player.stats };
     
-    // Add to inventory
-    gameData.player.inventory.push(itemId);
-    
-    // Remove from equipment
+    // Remove from equipment (item stays in inventory)
     gameData.player.equipment[slot] = null;
     
     // Recalculate stats
@@ -140,6 +140,9 @@ function unequipItem(slot) {
         }
     }
     
+    if (item) {
+        showGameMessage(`Unequipped ${item.name}!`, 'info');
+    }
     return true;
 }
 
