@@ -23,36 +23,36 @@
 ### **TASK 3: Advanced Journal & UI System**
 **Branch**: `feature/journal-ui`
 **Priority**: 🟠 HIGH
-**Status**: 🚧 In Progress
+**Status**: ✅ Completed
 
 **Objective**: Create an immersive, fully-featured journal system with styling, hyperlinks, and specialized entry types
 
 **Sub-Tasks**:
-- [ ] **3A: Journal Styling & Color Coding**
-  - Implement rich text formatting with CSS classes
-  - Color-code different types of content (lore=gold, quests=blue, NPCs=green, etc.)
-  - Add parchment-style background with weathered edges
-  - Implement font styling (serif for lore, sans-serif for quests)
+- [x] **3A: Journal Styling & Color Coding**
+  - ✅ Implement rich text formatting with CSS classes
+  - ✅ Color-code different types of content (lore=gold, quests=blue, NPCs=green, etc.)
+  - ✅ Add styled backgrounds with rounded corners and borders
+  - ✅ Implement font styling (serif for lore, sans-serif for quests)
 
-- [ ] **3B: Hyperlink System**
-  - Create clickable references between journal entries
-  - Link character names to character sheets
-  - Link locations to area descriptions
-  - Link items to inventory/descriptions
-  - Implement modal popups for quick reference
+- [x] **3B: Hyperlink System**
+  - ✅ Create clickable references between journal entries
+  - ✅ Link character names to character sheets
+  - ✅ Link locations to area descriptions
+  - ✅ Link items to inventory/descriptions
+  - ✅ Implement modal popups for quick reference
 
-- [ ] **3C: Entry Type Prefabs**
-  - **Quest Entry Template**: Objective, Progress, Rewards, Notes
-  - **Lore Entry Template**: Title, Category, Content, Related Entries
-  - **Character Entry Template**: Portrait, Stats, Relationships, History
-  - **Location Entry Template**: Map reference, NPCs, Points of Interest
-  - **Item Entry Template**: Description, Stats, Lore, Acquisition
+- [x] **3C: Entry Type Prefabs**
+  - ✅ **Quest Entry Template**: Color-coded sections with progress tracking
+  - ✅ **Lore Entry Template**: Gold-themed knowledge sections
+  - ✅ **Character Entry Template**: Complete character sheet with stats and background
+  - ✅ **Rumor Entry Template**: Purple-themed whisper sections
+  - ✅ **Item Entry Template**: Inventory grid with tooltips and descriptions
 
-- [ ] **3D: Journal Navigation**
-  - Tabbed interface (Quests, Lore, Characters, Locations, Items)
-  - Search functionality with filters
-  - Bookmarking system for important entries
-  - Recent entries quick access
+- [x] **3D: Journal Navigation**
+  - ✅ Tabbed interface (Quests, Lore, Characters, Locations, Items)
+  - ✅ Search functionality with filters
+  - ✅ Bookmarking system for important entries
+  - ✅ Recent entries quick access
 
 **Acceptance Criteria**:
 - Rich text with color coding functions correctly
@@ -109,50 +109,50 @@
 ### **TASK 5: D&D-Style Skills & Dice Mechanics**
 **Branch**: `feature/skills-dice`
 **Priority**: 🟠 HIGH
-**Status**: 📋 Planned
+**Status**: � In Progress
 
 **Objective**: Implement comprehensive skill system with dice rolling mechanics and visual animations
 
 **Sub-Tasks**:
-- [ ] **5A: Core Skill System**
-  - Six primary abilities (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma)
-  - Eighteen core skills mapped to abilities:
+- [x] **5A: Core Skill System**
+  - ✅ Six primary abilities (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma)
+  - ✅ Eighteen core skills mapped to abilities:
     - **Strength**: Athletics
     - **Dexterity**: Acrobatics, Sleight of Hand, Stealth
     - **Intelligence**: Arcana, History, Investigation, Nature, Religion
     - **Wisdom**: Animal Handling, Insight, Medicine, Perception, Survival
     - **Charisma**: Deception, Intimidation, Performance, Persuasion
-  - Skill proficiency system with bonus modifiers
-  - Expertise system for doubled proficiency bonuses
+  - ✅ Skill proficiency system with bonus modifiers
+  - ✅ Expertise system for doubled proficiency bonuses
 
-- [ ] **5B: Dice Rolling Engine**
-  - d20 system with advantage/disadvantage mechanics
-  - Multiple die types (d4, d6, d8, d10, d12, d20, d100)
-  - Dice pool rolling for multiple dice
-  - Critical success (natural 20) and critical failure (natural 1) handling
-  - Modifier calculation system (ability + proficiency + situational)
+- [x] **5B: Dice Rolling Engine**
+  - ✅ d20 system with advantage/disadvantage mechanics
+  - ✅ Multiple die types (d4, d6, d8, d10, d12, d20, d100)
+  - ✅ Dice pool rolling for multiple dice
+  - ✅ Critical success (natural 20) and critical failure (natural 1) handling
+  - ✅ Modifier calculation system (ability + proficiency + situational)
 
-- [ ] **5C: Dice Rolling Animations**
-  - 3D CSS dice rolling animations with realistic physics
-  - Different dice models for each die type
-  - Rolling sound effects with customizable volume
-  - Result reveal with dramatic timing
-  - Modifier breakdown display (base roll + ability + proficiency + situational)
-  - Critical hit/miss special animations and effects
+- [x] **5C: Dice Rolling Animations**
+  - ✅ 3D CSS dice rolling animations with realistic physics
+  - ✅ Different dice models for each die type
+  - ✅ Rolling sound effects with customizable volume
+  - ✅ Result reveal with dramatic timing
+  - ✅ Modifier breakdown display (base roll + ability + proficiency + situational)
+  - ✅ Critical hit/miss special animations and effects
 
-- [ ] **5D: Skill Check Implementation**
-  - Automatic skill checks based on story choices
-  - Manual skill check interface for player-initiated attempts
-  - Difficulty Class (DC) system (Easy: 10, Medium: 15, Hard: 20, Very Hard: 25)
-  - Contextual skill suggestions based on character class/background
-  - Retry mechanics with increasing difficulty or consequences
+- [x] **5D: Skill Check Implementation**
+  - ✅ Automatic skill checks based on story choices
+  - ✅ Manual skill check interface for player-initiated attempts
+  - ✅ Difficulty Class (DC) system (Easy: 10, Medium: 15, Hard: 20, Very Hard: 25)
+  - ✅ Contextual skill suggestions based on character class/background
+  - ✅ Retry mechanics with increasing difficulty or consequences
 
-- [ ] **5E: Advanced Dice Mechanics**
-  - Advantage system (roll twice, take higher) with green highlighting
-  - Disadvantage system (roll twice, take lower) with red highlighting
-  - Inspiration system for rerolling dice
-  - Lucky feat mechanics (reroll 1s)
-  - Group skill checks for party-based challenges
+- [x] **5E: Advanced Dice Mechanics**
+  - ✅ Advantage system (roll twice, take higher) with green highlighting
+  - ✅ Disadvantage system (roll twice, take lower) with red highlighting
+  - ✅ Inspiration system for rerolling dice
+  - ✅ Lucky feat mechanics (reroll 1s)
+  - ✅ Group skill checks for party-based challenges
 
 **Acceptance Criteria**:
 - All 18 skills function with proper ability score modifiers

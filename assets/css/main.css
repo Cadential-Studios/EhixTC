@@ -1,7 +1,7 @@
 /* Edoria: The Triune Convergence - Main Stylesheet */
 
 body {
-    font-family: 'Almendra', serif;
+    font-family: "Faculty Glyphic", sans-serif;
     background-color: #1a1a2e;
     color: #e0e0e0;
     margin: 0;
@@ -10,6 +10,12 @@ body {
 
 .font-cinzel {
     font-family: 'Cinzel', serif;
+}
+
+.faculty-glyphic-regular {
+    font-family: "Faculty Glyphic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .game-container {
