@@ -10,7 +10,7 @@
       "wisdom": 10,
       "charisma": 11
     },
-    "startingEquipment": ["rangers_bow", "leather_armor", "survival_kit", "healing_herbs"],
+    "startingEquipment": ["rangers_bow", "leather_armor", "health_potion", "rations"],
     "skills": ["survival", "tracking", "archery", "herbalism"],
     "lore": "Raised among scattered frontier clans, Westwalkers guard the roads and watch the Griefwood for signs of encroaching darkness."
   },
@@ -25,7 +25,7 @@
       "wisdom": 13,
       "charisma": 10
     },
-    "startingEquipment": ["ceremonial_spear", "spirit_totem", "tribal_armor", "ancestral_medallion"],
+    "startingEquipment": ["ceremonial_spear", "chainmail", "health_potion", "moonstone_amulet"],
     "skills": ["spirit_communication", "combat", "leadership", "tribal_lore"],
     "lore": "M'ra Kaal clans believe the coming Convergence will test their honor. Spirit-speakers bear the voices of the ancestors into battle."
   },
@@ -40,7 +40,7 @@
       "wisdom": 12,
       "charisma": 10
     },
-    "startingEquipment": ["scholars_robes", "research_notes", "arcane_focus", "library_tome"],
+    "startingEquipment": ["steel_sword", "iron_helmet", "mana_potion", "ancient_key"],
     "skills": ["arcane_knowledge", "history", "research", "linguistics"],
     "lore": "Gaians preserve knowledge from before the Ascension. Many believe understanding the moons will unlock new magical discoveries during the Convergence."
   }

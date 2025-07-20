@@ -88,6 +88,9 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
     border: none;
     cursor: pointer;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .start-button:hover {
@@ -109,11 +112,130 @@ body {
     overflow-y: auto;
     opacity: 0;
     transition: opacity 0.3s ease;
+    flex-direction: column;
+    align-items: center;
 }
 
 .ui-panel.open {
-    display: block;
+    display: flex;
     opacity: 1;
+}
+
+/* Inventory specific styles */
+#inventory-panel {
+    max-width: none;
+    width: 100%;
+    padding: 1rem;
+}
+
+#inventory-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Drag and drop styles */
+.inventory-slot, .equipped-item {
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 60px;
+}
+
+.inventory-slot:hover, .equipped-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.inventory-slot.drag-over {
+    border-color: #60a5fa !important;
+    background-color: rgba(96, 165, 250, 0.2);
+    transform: scale(1.05);
+}
+
+.empty-slot {
+    opacity: 0.6;
+}
+
+.empty-slot:hover {
+    opacity: 0.8;
+}
+
+.occupied {
+    opacity: 1;
+}
+
+/* Rarity-based styling */
+.border-gray-400 { border-color: #9ca3af; }
+.border-green-400 { border-color: #4ade80; }
+.border-blue-400 { border-color: #60a5fa; }
+.border-purple-400 { border-color: #c084fc; }
+.border-yellow-400 { border-color: #facc15; }
+
+.shadow-gray-400 { box-shadow: 0 0 10px rgba(156, 163, 175, 0.3); }
+.shadow-green-400 { box-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+.shadow-blue-400 { box-shadow: 0 0 10px rgba(96, 165, 250, 0.3); }
+.shadow-purple-400 { box-shadow: 0 0 10px rgba(192, 132, 252, 0.3); }
+.shadow-yellow-400 { box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+
+/* Context menu styling */
+.menu-item {
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.menu-separator {
+    margin: 2px 0;
+}
+
+/* Equipment grid responsive */
+.equipment-grid {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Quick tooltip styling */
+#quick-tooltip {
+    pointer-events: none;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Inventory controls */
+.inventory-controls button {
+    transition: all 0.2s ease;
+}
+
+.inventory-controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+    .inventory-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    
+    .equipment-grid {
+        grid-template-columns: repeat(5, 1fr);
+        max-width: 350px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .inventory-grid {
+        grid-template-columns: repeat(14, 1fr);
+    }
+}
+
+@media (min-width: 1600px) {
+    .inventory-grid {
+        grid-template-columns: repeat(16, 1fr);
+    }
 }
 
 /* Navigation Styles */
@@ -156,4 +278,569 @@ body {
     .choice-button, .action-button {
         min-height: 80px;
     }
+}
+
+/* Enhanced Character Sheet Styles */
+.character-portrait {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.character-portrait:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+
+.stat-block {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.stat-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(99, 179, 237, 0.5), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.stat-block:hover::before {
+    transform: translateX(100%);
+}
+
+.stat-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-bar > div {
+    transition: width 0.8s ease-in-out;
+}
+
+.quick-stats .stat-quick {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.quick-stats .stat-quick:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.equipment-effect {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.equipment-effect:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.skill-row {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.skill-row:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ability-group {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.ability-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.combat-stat {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.combat-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.save-stat {
+    transition: all 0.2s ease;
+}
+
+.save-stat:hover {
+    background-color: #374151 !important;
+    transform: translateX(3px);
+}
+
+/* Character Sheet Responsive Design */
+@media (max-width: 1024px) {
+    .character-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-stats {
+        grid-template-columns: 2fr 2fr;
+    }
+    
+    .stats-section .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .character-header .flex {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .character-portrait {
+        width: 96px;
+        height: 96px;
+    }
+    
+    .quick-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .stats-section .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .skills-section .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation Utilities */
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+}
+
+.proficient-skill {
+    animation: pulse-glow 2s infinite;
+}
+
+/* Gradient Text Effects */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glass Effect for Panels */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dice Animation Styles */
+.dice-animation-transition {
+    transition: all 0.25s ease-in-out;
+    animation: diceValueChange 0.25s ease-in-out;
+}
+
+.dice-final-result {
+    animation: finalResultPulse 0.5s ease-in-out;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.result-pulse {
+    animation: resultPulse 1s ease-in-out infinite;
+}
+
+@keyframes diceValueChange {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+    75% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes finalResultPulse {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 10px currentColor;
+    }
+    50% {
+        transform: scale(1.15);
+        text-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px currentColor;
+    }
+}
+
+@keyframes resultPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Dice Roll Modal Enhancements */
+#dice-roll-modal .bg-gray-900 {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+}
+
+#dice-display {
+    transition: all 0.3s ease-in-out;
+}
+
+#dice-breakdown {
+    min-height: 120px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Modifier Animation */
+.modifier-highlight {
+    background: rgba(255, 193, 7, 0.2);
+    border-radius: 4px;
+    padding: 2px 4px;
+    animation: highlightFade 0.75s ease-in-out;
+}
+
+.modifier-slide-in {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes highlightFade {
+    0% {
+        background: rgba(255, 193, 7, 0.5);
+        transform: scale(1.05);
+    }
+    100% {
+        background: rgba(255, 193, 7, 0.1);
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Combat System Styles */
+.combat-container {
+    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+}
+
+.combat-action-btn {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.combat-action-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.target-btn {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.target-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.initiative-item {
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.participant-card {
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.participant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.combat-message {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+/* Combat animations */
+@keyframes combatPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.combat-turn-active {
+    animation: combatPulse 2s ease-in-out infinite;
+}
+
+/* HP Bar animations */
+.hp-bar {
+    transition: width 0.8s ease-in-out;
+}
+
+/* Critical hit effects */
+@keyframes criticalHit {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% {
+        transform: scale(1.1);
+        filter: brightness(1.5) hue-rotate(45deg);
+    }
+    50% {
+        transform: scale(1.2);
+        filter: brightness(2) hue-rotate(90deg);
+    }
+    75% {
+        transform: scale(1.1);
+        filter: brightness(1.5) hue-rotate(45deg);
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+.critical-hit-effect {
+    animation: criticalHit 1s ease-in-out;
+}
+
+/* Damage number pop-ups */
+@keyframes damagePopup {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(1);
+    }
+}
+
+.damage-popup {
+    animation: damagePopup 1.5s ease-out forwards;
+    position: absolute;
+    font-weight: bold;
+    font-size: 1.5rem;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.damage-popup.critical {
+    color: #ff4444;
+    text-shadow: 0 0 10px #ff4444;
+    font-size: 2rem;
+}
+
+.damage-popup.heal {
+    color: #44ff44;
+    text-shadow: 0 0 10px #44ff44;
+}
+
+.damage-popup.miss {
+    color: #888;
+    font-style: italic;
+}
+
+/* ==================== COMBAT SCREEN STYLES ==================== */
+
+#combat-screen {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+    background-attachment: fixed;
+}
+
+.combat-header {
+    border-bottom: 2px solid #dc2626;
+    background: linear-gradient(90deg, rgba(185, 28, 28, 0.8) 0%, rgba(127, 29, 29, 0.8) 100%);
+    backdrop-filter: blur(10px);
+}
+
+.initiative-panel,
+.combat-arena,
+.combat-log {
+    backdrop-filter: blur(10px);
+    border: 2px solid;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.initiative-panel {
+    border-color: #eab308;
+    background: rgba(31, 41, 55, 0.95);
+}
+
+.combat-arena {
+    border-color: #dc2626;
+    background: rgba(31, 41, 55, 0.95);
+}
+
+.combat-log {
+    border-color: #059669;
+    background: rgba(31, 41, 55, 0.95);
+}
+
+.initiative-item {
+    transition: all 0.3s ease;
+    border: 1px solid;
+}
+
+.initiative-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.participant-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.participant-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.participant-card:hover::before {
+    left: 100%;
+}
+
+.combat-action-btn {
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.combat-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.combat-action-btn:active {
+    transform: translateY(0);
+}
+
+.target-btn {
+    transition: all 0.2s ease;
+}
+
+.target-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+#combat-messages {
+    font-family: 'Courier New', monospace;
+}
+
+.combat-message {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* HP Bar animations */
+.participant-card .bg-green-500 {
+    transition: width 0.5s ease;
+}
+
+/* Critical hit effects */
+@keyframes criticalFlash {
+    0%, 100% { background-color: inherit; }
+    50% { background-color: #fbbf24; }
+}
+
+.critical-hit {
+    animation: criticalFlash 0.5s ease-in-out 2;
+}
+
+/* Turn indicator glow */
+.bg-blue-600,
+.bg-red-600 {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.bg-red-600 {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
 }

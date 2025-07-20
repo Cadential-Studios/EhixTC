@@ -167,25 +167,25 @@
 ### **TASK 6: Combat & Battle System**
 **Branch**: `feature/combat`
 **Priority**: 🟠 HIGH
-**Status**: 📋 Planned
+**Status**: � In Progress
 
 **Objective**: Create an engaging turn-based combat system with strategy elements
 
 **Sub-Tasks**:
-- [ ] **6A: Combat Core Mechanics**
-  - Turn-based initiative system with d20 + Dexterity modifier
-  - Attack rolls using d20 + ability modifier + proficiency bonus
-  - Armor Class (AC) system for defense calculations
-  - Damage rolls with weapon dice + ability modifiers
-  - Hit point system with damage tracking and healing
+- [x] **6A: Combat Core Mechanics**
+  - ✅ Turn-based initiative system with d20 + Dexterity modifier
+  - ✅ Attack rolls using d20 + ability modifier + proficiency bonus
+  - ✅ Armor Class (AC) system for defense calculations
+  - ✅ Damage rolls with weapon dice + ability modifiers
+  - ✅ Hit point system with damage tracking and healing
 
-- [ ] **6B: Combat Actions & Options**
-  - Attack action with weapon or spell attacks
-  - Defense action for +2 AC bonus until next turn
-  - Dash action for increased movement
-  - Dodge action for advantage on Dexterity saves
-  - Help action to give allies advantage
-  - Ready action to prepare conditional responses
+- [x] **6B: Combat Actions & Options**
+  - ✅ Attack action with weapon or spell attacks
+  - ✅ Defense action for +2 AC bonus until next turn
+  - ✅ Dash action for increased movement
+  - ✅ Dodge action for advantage on Dexterity saves
+  - ✅ Help action to give allies advantage
+  - ✅ Ready action to prepare conditional responses
 
 - [ ] **6C: Character Abilities & Spells**
   - Class-specific combat abilities and features
@@ -194,20 +194,20 @@
   - Concentration mechanics for ongoing spell effects
   - Spell save DC calculations and saving throws
 
-- [ ] **6D: Monster AI & Behaviors**
-  - Different AI patterns based on monster intelligence
-  - Tactical decision-making for ability usage
-  - Target selection algorithms (lowest HP, highest threat, etc.)
-  - Special monster abilities with cooldowns
+- [x] **6D: Monster AI & Behaviors**
+  - ✅ Different AI patterns based on monster intelligence
+  - ✅ Tactical decision-making for ability usage
+  - ✅ Target selection algorithms (lowest HP, highest threat, etc.)
+  - ✅ Special monster abilities with cooldowns
   - Boss encounter mechanics with legendary actions
 
-- [ ] **6E: Combat UI & Animations**
-  - Initiative tracker with turn order display
-  - Action selection interface with tooltips
-  - Health/mana bars with smooth animations
-  - Damage number pop-ups with critical hit effects
-  - Battle log with detailed action descriptions
-  - Dice rolling animations for all combat rolls
+- [x] **6E: Combat UI & Animations**
+  - ✅ Initiative tracker with turn order display
+  - ✅ Action selection interface with tooltips
+  - ✅ Health/mana bars with smooth animations
+  - ✅ Damage number pop-ups with critical hit effects
+  - ✅ Battle log with detailed action descriptions
+  - ✅ Dice rolling animations for all combat rolls
 
 **Acceptance Criteria**:
 - Combat follows D&D 5e rules accurately
