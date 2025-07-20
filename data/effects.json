@@ -1,0 +1,15 @@
+{
+    "nourishment": {
+        "name": "Nourishment",
+        "description": "When active, this effect provides a small amount of healing over time.",
+        "type": "consumable",
+        "effects": [
+            {
+                "type": "heal",
+                "amount": 5,
+                "duration": 0
+            }
+        ],
+        "icon": "assets/icons/nourishment.png"
+    }
+}

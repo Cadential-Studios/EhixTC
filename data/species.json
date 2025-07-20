@@ -1,0 +1,137 @@
+{
+    "human": {
+        "name": "Human",
+        "size": "Medium",
+        "speed": 30,
+        "traits": {
+            "versatile": "Humans gain +1 to all ability scores and one extra skill proficiency of their choice.",
+            "ambitious": "Humans gain an additional feat at 1st level."
+        },
+        "abilityScoreIncrease": {
+            "strength": 1,
+            "dexterity": 1,
+            "constitution": 1,
+            "intelligence": 1,
+            "wisdom": 1,
+            "charisma": 1
+        },
+        "languages": ["common"],
+        "proficiencies": [],
+        "description": "Humans are the most adaptable and ambitious people among the common species. They have widely varying tastes, morals, and customs in the many different lands where they have settled."
+    },
+    "leonin": {
+        "name": "Leonin",
+        "size": "Medium",
+        "speed": 35,
+        "traits": {
+            "daunting_roar": "As a bonus action, you can let out an especially menacing roar. Creatures within 10 feet must make a Wisdom saving throw or be frightened until the end of your next turn.",
+            "hunters_instincts": "You have proficiency in one of the following skills: Athletics, Intimidation, Perception, or Survival.",
+            "natural_armor": "You have tough, leathery skin. When you aren't wearing armor, your AC is 13 + your Dex modifier."
+        },
+        "abilityScoreIncrease": {
+            "constitution": 2,
+            "strength": 1
+        },
+        "languages": ["common", "leonin"],
+        "proficiencies": ["claws"],
+        "description": "Leonin are proud, fierce humanoids with the features of lions. They value honor and strength, living in close-knit prides that work together to protect their territory and traditions."
+    },
+    "elf": {
+        "name": "Elf",
+        "size": "Medium",
+        "speed": 30,
+        "traits": {
+            "darkvision": "You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
+            "keen_senses": "You have proficiency in the Perception skill.",
+            "fey_ancestry": "You have advantage on saving throws against being charmed, and magic can't put you to sleep.",
+            "trance": "You don't need to sleep and can't be forced to sleep. Instead, you meditate deeply for 4 hours a day."
+        },
+        "abilityScoreIncrease": {
+            "dexterity": 2
+        },
+        "languages": ["common", "elvish"],
+        "proficiencies": ["perception"],
+        "description": "Elves are a magical people of otherworldly grace, living in places of ethereal beauty, in the midst of ancient forests or in silvery spires glittering with faerie light."
+    },
+    "dwarf": {
+        "name": "Dwarf",
+        "size": "Medium",
+        "speed": 25,
+        "traits": {
+            "darkvision": "You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
+            "dwarven_resilience": "You have advantage on saving throws against poison, and you have resistance against poison damage.",
+            "stonecunning": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient and add double your proficiency bonus."
+        },
+        "abilityScoreIncrease": {
+            "constitution": 2
+        },
+        "languages": ["common", "dwarvish"],
+        "proficiencies": ["battleaxe", "handaxe", "light_hammer", "warhammer"],
+        "description": "Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human."
+    },
+    "halfling": {
+        "name": "Halfling",
+        "size": "Small",
+        "speed": 25,
+        "traits": {
+            "lucky": "When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die and must use the new roll.",
+            "brave": "You have advantage on saving throws against being frightened.",
+            "halfling_nimbleness": "You can move through the space of any creature that is of a size larger than yours."
+        },
+        "abilityScoreIncrease": {
+            "dexterity": 2
+        },
+        "languages": ["common", "halfling"],
+        "proficiencies": [],
+        "description": "The diminutive halflings survive in a world full of larger creatures by avoiding notice or, barring that, avoiding offense. They are inclined to be stout, weighing between 40 and 45 pounds."
+    },
+    "tiefling": {
+        "name": "Tiefling",
+        "size": "Medium",
+        "speed": 30,
+        "traits": {
+            "darkvision": "You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
+            "hellish_resistance": "You have resistance to fire damage.",
+            "infernal_legacy": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Hellish Rebuke spell once per day. Once you reach 5th level, you can cast the Darkness spell once per day."
+        },
+        "abilityScoreIncrease": {
+            "charisma": 2,
+            "intelligence": 1
+        },
+        "languages": ["common", "infernal"],
+        "proficiencies": [],
+        "description": "Tieflings are descended from humans who made a pact with devils, giving them fiendish traits such as horns, tails, and glowing eyes. They are often misunderstood and feared."
+    },
+    "dragonborn": {
+        "name": "Dragonborn",
+        "size": "Medium",
+        "speed": 30,
+        "traits": {
+            "draconic_ancestry": "You have a breath weapon and resistance to a type of damage determined by your draconic ancestry.",
+            "breath_weapon": "You can use your action to exhale destructive energy. The type of damage and shape of the breath weapon depend on your ancestry.",
+            "damage_resistance": "You have resistance to the damage type associated with your draconic ancestry."
+        },
+        "abilityScoreIncrease": {
+            "strength": 2,
+            "charisma": 1
+        },
+        "languages": ["common", "draconic"],
+        "proficiencies": [],
+        "description": "Dragonborn are proud, honorable beings with draconic heritage. They are known for their strength and charisma, and their breath weapons make them formidable in battle."
+    },
+    "gnome": {
+        "name": "Gnome",
+        "size": "Small",
+        "speed": 25,
+        "traits": {
+            "darkvision": "You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
+            "gnome_cunning": "You have advantage on Intelligence, Wisdom, and Charisma saving throws against magic."
+        },
+        "abilityScoreIncrease": {
+            "intelligence": 2
+        },
+        "languages": ["common", "gnomish"],
+        "proficiencies": [],
+        "description": "Gnomes are small, clever, and resourceful beings who excel in invention and magic. They are curious and love to explore the world around them."
+    }
+}

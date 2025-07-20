@@ -844,3 +844,1322 @@ body {
 .bg-red-600 {
     box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
 }
+
+/* Spell Menu Styles */
+.spell-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 2px solid #d4af37;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    min-width: 400px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.spell-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+.spell-menu-header {
+    background: linear-gradient(135deg, #d4af37 0%, #f4e474 50%, #d4af37 100%);
+    color: #1a1a2e;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+}
+
+.spell-menu-close {
+    background: none;
+    border: none;
+    color: #1a1a2e;
+    font-size: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.spell-menu-close:hover {
+    background-color: rgba(26, 26, 46, 0.2);
+}
+
+.spell-menu-content {
+    padding: 1rem;
+    color: #e0e0e0;
+}
+
+.spell-slots-display {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+}
+
+.spell-slots-display h4 {
+    margin: 0 0 0.5rem 0;
+    color: #d4af37;
+    font-size: 1rem;
+}
+
+.spell-slots-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.25rem;
+}
+
+.spell-slot {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d4af37;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.spell-slot.available {
+    background: #d4af37;
+    color: #1a1a2e;
+}
+
+.spell-slot.used {
+    background: transparent;
+    color: #666;
+}
+
+.spell-category {
+    margin-bottom: 1.5rem;
+}
+
+.spell-category h4 {
+    color: #d4af37;
+    margin: 0 0 0.75rem 0;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #d4af37;
+    padding-bottom: 0.25rem;
+}
+
+.spell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.spell-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #666;
+    border-radius: 6px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.spell-item:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.spell-item.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.spell-item.unavailable:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: #666;
+}
+
+.spell-name {
+    font-weight: bold;
+    color: #e0e0e0;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.spell-level {
+    font-size: 0.8rem;
+    color: #d4af37;
+    margin-bottom: 0.25rem;
+}
+
+.spell-description {
+    font-size: 0.8rem;
+    color: #ccc;
+    line-height: 1.3;
+}
+
+.class-features-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #666;
+}
+
+.feature-item {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4caf50;
+    border-radius: 6px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.feature-item:hover {
+    background: rgba(76, 175, 80, 0.2);
+    transform: translateY(-1px);
+}
+
+.feature-item.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(76, 175, 80, 0.05);
+}
+
+.feature-item.unavailable:hover {
+    transform: none;
+    background: rgba(76, 175, 80, 0.05);
+}
+
+.feature-name {
+    font-weight: bold;
+    color: #4caf50;
+    margin-bottom: 0.25rem;
+}
+
+.feature-uses {
+    font-size: 0.8rem;
+    color: #90caf9;
+}
+
+.feature-description {
+    font-size: 0.8rem;
+    color: #ccc;
+    margin-top: 0.25rem;
+    line-height: 1.3;
+}
+
+/* Advanced Inventory System Styles */
+.inventory-controls {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+}
+
+.inventory-list .list-header {
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+    font-family: 'Cinzel', serif;
+}
+
+.inventory-list .list-item {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    transition: all 0.3s ease;
+}
+
+.inventory-list .list-item:hover {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-grid .grid-item {
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+}
+
+.inventory-grid .grid-item:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.inventory-controls select {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+}
+
+.inventory-controls input[type="text"] {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+}
+
+.inventory-controls button {
+    font-family: 'Cinzel', serif;
+    transition: all 0.3s ease;
+}
+
+.inventory-controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Equipment Section Animations */
+.equipment-grid {
+    transition: all 0.3s ease;
+}
+
+.equipment-slot {
+    transition: all 0.3s ease;
+}
+
+.equipment-slot:hover {
+    transform: translateY(-2px);
+}
+
+/* Rarity Borders */
+.border-gray-400 { border-color: #9ca3af; }
+.border-green-400 { border-color: #4ade80; }
+.border-blue-400 { border-color: #60a5fa; }
+.border-purple-400 { border-color: #c084fc; }
+.border-yellow-400 { border-color: #facc15; }
+
+/* Text Colors for Rarities */
+.text-gray-400 { color: #9ca3af; }
+.text-green-400 { color: #4ade80; }
+.text-blue-400 { color: #60a5fa; }
+.text-purple-400 { color: #c084fc; }
+.text-yellow-400 { color: #facc15; }
+
+/* Selection Ring Animation */
+.ring-2 {
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.ring-blue-500 {
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* Loading States */
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.loading-shimmer {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Responsive Inventory */
+@media (max-width: 768px) {
+    .inventory-list .list-item {
+        grid-template-columns: 1fr;
+        gap: 2;
+    }
+    
+    .inventory-list .list-header {
+        display: none;
+    }
+    
+    .inventory-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .equipment-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tooltip Enhancements */
+.inventory-tooltip {
+    position: fixed;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    max-width: 300px;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+/* Drag and Drop Visual Feedback */
+.drag-over {
+    background: rgba(59, 130, 246, 0.3) !important;
+    border-color: #3b82f6 !important;
+    transform: scale(1.05);
+}
+
+.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+/* Action Button Groups */
+.action-button-group {
+    display: flex;
+    gap: 2px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.action-button-group button {
+    border-radius: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-button-group button:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.action-button-group button:last-child {
+    border-right: none;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* ========== DICE ANIMATION STYLES ========== */
+
+.dice-animation-container {
+    animation: diceSlideIn 0.3s ease-out;
+}
+
+@keyframes diceSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.dice-roll-display {
+    animation: diceFloat 2s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes diceFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.individual-die {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 4px;
+}
+
+.die-icon {
+    animation: diceRoll 0.1s ease-in-out infinite;
+}
+
+@keyframes diceRoll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.die-result {
+    transition: all 0.3s ease-in-out;
+}
+
+.damage-total {
+    transition: all 0.5s ease-in-out;
+}
+
+/* ========== COMBAT UI ENHANCEMENTS ========== */
+
+.participant-card {
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.participant-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s ease-in-out;
+}
+
+.participant-card:hover::before {
+    left: 100%;
+}
+
+.initiative-item {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.initiative-item:hover {
+    transform: translateX(5px);
+}
+
+.condition-tag {
+    animation: conditionPulse 2s ease-in-out infinite;
+}
+
+@keyframes conditionPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.hp-display .bg-red-500,
+.hp-display .bg-yellow-500,
+.hp-display .bg-green-500 {
+    transition: all 0.8s ease-in-out;
+}
+
+/* Turn indicator animations */
+.initiative-badge {
+    transition: all 0.3s ease-in-out;
+}
+
+.initiative-item.current-turn .initiative-badge {
+    animation: initiativePulse 1s ease-in-out infinite;
+}
+
+@keyframes initiativePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Combat message animations */
+.combat-message {
+    animation: messageSlideIn 0.3s ease-out;
+    transition: all 0.3s ease-in-out;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.combat-message:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding-left: 8px;
+}
+
+/* Settings panel enhancements */
+.setting-item input[type="range"] {
+    transition: all 0.3s ease-in-out;
+}
+
+.setting-item input[type="range"]:hover {
+    filter: brightness(1.2);
+}
+
+.setting-item input[type="checkbox"] {
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
+}
+
+.setting-item input[type="checkbox"]:checked {
+    filter: hue-rotate(90deg) brightness(1.3);
+}
+
+/* Enhanced Dice Modal Styles - Baldur's Gate 3 inspired */
+.dice-modal {
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease-in-out;
+    transition: background-color 0.4s ease-in-out, backdrop-filter 0.4s ease-in-out;
+    font-family: 'Cinzel', serif;
+}
+
+.dice-modal-content {
+    animation: slideInScale 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease-out;
+    font-family: 'Cinzel', serif;
+}
+
+
+.dice-display {
+    position: relative;
+    perspective: 1000px; /* Add 3D perspective for better rotation */
+}
+
+.dice-display #dice-icon {
+    text-shadow: 0 0 20px rgba(106, 141, 255, 0.6);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    transition: all 0.2s ease-out;
+    font-family: 'Cinzel', serif;
+    transform-style: preserve-3d; /* Enable 3D transforms */
+}
+
+.dice-display #dice-icon img {
+    transition: all 0.2s ease-out;
+    transform-style: preserve-3d;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #6a8dff, #8a8ac2, #6a8dff);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: gradientShift 2s ease-in-out infinite;
+    font-family: 'Cinzel', serif;
+}
+
+.modifier-line {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    animation: slideInLeft 0.5s ease-out;
+    font-family: 'Cinzel', serif;
+}
+
+.base-roll-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.5s ease-in-out;
+    font-family: 'Cinzel', serif;
+}
+
+.main-roll-section {
+    font-family: 'Cinzel', serif;
+}
+
+#continue-btn {
+    background: linear-gradient(135deg, #6a8dff, #8a8ac2);
+    box-shadow: 0 4px 15px rgba(106, 141, 255, 0.4);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Cinzel', serif;
+}
+
+#continue-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+#continue-btn:hover::before {
+    left: 100%;
+}
+
+#continue-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(106, 141, 255, 0.6);
+}
+
+#continue-btn:focus {
+    outline: 2px solid #6a8dff;
+    outline-offset: 2px;
+}
+
+/* Enhanced base roll value styling */
+#base-roll-value {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    font-family: 'Cinzel', serif;
+}
+
+/* Main roll value styling */
+#main-roll-value {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    font-family: 'Cinzel', serif;
+}
+
+/* Roll description styling */
+#roll-description {
+    font-family: 'Cinzel', serif;
+}
+
+/* Modifier display styling */
+#modifier-display {
+    font-family: 'Cinzel', serif;
+}
+
+/* Screen flash effect */
+.screen-flash {
+    mix-blend-mode: screen;
+    z-index: 105;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translate(-50%, -50%);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translate(-50%, -50%);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes modalEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translate(-50%, -50%);
+        filter: blur(4px);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05) translate(-50%, -50%);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translate(-50%, -50%);
+        filter: blur(0px);
+    }
+}
+
+@keyframes diceRollBounce {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.1) rotate(90deg);
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(270deg);
+    }
+}
+
+@keyframes numberCycle {
+    0% {
+        opacity: 0.8;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes resultReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+        filter: blur(4px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.3);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.2);
+        filter: blur(0px);
+    }
+}
+
+/* Floating Text Animation */
+.floating-text {
+    pointer-events: none;
+    user-select: none;
+    z-index: 1000;
+}
+
+/* Enhanced Dice Animation Effects */
+.dice-glow {
+    filter: drop-shadow(0 0 10px currentColor);
+}
+
+.critical-success {
+    animation: criticalPulse 1s ease-in-out infinite alternate;
+}
+
+.critical-failure {
+    animation: criticalShake 0.5s ease-in-out 3;
+}
+
+@keyframes criticalPulse {
+    from {
+        filter: drop-shadow(0 0 5px #10b981) brightness(1);
+    }
+    to {
+        filter: drop-shadow(0 0 15px #10b981) brightness(1.3);
+    }
+}
+
+@keyframes criticalShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Responsive Dice Modal */
+@media (max-width: 640px) {
+    .dice-modal-content {
+        margin: 1rem;
+        padding: 1.5rem;
+        max-width: none;
+    }
+    
+    .dice-display #dice-icon {
+        font-size: 4rem;
+    }
+    
+    #base-roll-value {
+        font-size: 3rem;
+    }
+    
+    #final-total span {
+        font-size: 3rem;
+    }
+}
+
+/* Floating Text Animation for DiceRoller */
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -80%) scale(0.8);
+    }
+}
+
+/* Advanced Inventory System Styles */
+.advanced-inventory-container {
+    max-height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.inventory-header {
+    flex-shrink: 0;
+}
+
+.inventory-main {
+    flex: 1;
+    min-height: 0;
+}
+
+.inventory-section {
+    height: fit-content;
+}
+
+.inventory-grid {
+    scrollbar-width: thin;
+    scrollbar-color: #4a5568 #2d3748;
+}
+
+.inventory-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.inventory-grid::-webkit-scrollbar-track {
+    background: #2d3748;
+    border-radius: 4px;
+}
+
+.inventory-grid::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+}
+
+.inventory-grid::-webkit-scrollbar-thumb:hover {
+    background: #5a6578;
+}
+
+.inventory-item {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.inventory-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.quantity-badge {
+    font-size: 0.75rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+}
+
+.equipment-slot .slot-content {
+    min-height: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipped-item-display {
+    text-align: center;
+}
+
+.item-detail-modal {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Filter and search styling */
+.search-container input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.filter-controls select:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Stat item hover effects */
+.stat-item {
+    transition: background-color 0.2s ease;
+}
+
+.stat-item:hover {
+    background-color: #4a5568;
+}
+
+/* Inventory item action buttons */
+.inventory-item button {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.inventory-item button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.inventory-item button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Rarity glow effects */
+.border-green-500 {
+    box-shadow: 0 0 0 1px #10b981, 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.border-blue-500 {
+    box-shadow: 0 0 0 1px #3b82f6, 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.border-purple-500 {
+    box-shadow: 0 0 0 1px #8b5cf6, 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+.border-orange-500 {
+    box-shadow: 0 0 0 1px #f59e0b, 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive adjustments for inventory */
+@media (max-width: 1280px) {
+    .inventory-main {
+        grid-template-columns: 1fr;
+    }
+    
+    .equipment-section {
+        order: 2;
+    }
+    
+    .inventory-section {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .inventory-header .flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .filter-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .inventory-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .equipment-grid .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .equipment-slot .slot-content {
+        min-height: 3rem;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .inventory-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .filter-controls select,
+    .filter-controls button {
+        width: 100%;
+    }
+}
+
+/* ===== STAT CHANGE ANIMATIONS ===== */
+
+/* Stat Change Modal Overlay */
+.stat-change-modal-overlay {
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    animation: fadeInModal 0.3s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Stat Change Modal */
+.stat-change-modal {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    border-width: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-change-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Progress Bar Animation */
+.progress-bar-fill {
+    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+    background-size: 200% 100%;
+    animation: progressGlow 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: progressShine 1.5s ease-out;
+}
+
+@keyframes progressGlow {
+    0%, 100% { background-position: 0% 0%; }
+    50% { background-position: 100% 0%; }
+}
+
+@keyframes progressShine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Stat Value Animation */
+.stat-old-value {
+    transition: all 0.5s ease-out;
+}
+
+.stat-new-value {
+    transform: scale(1.1);
+    transition: all 0.5s ease-out;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.stat-new-value.show {
+    transform: scale(1);
+}
+
+/* Transition Arrow Animation */
+.transition-arrow {
+    transform: translateX(-10px);
+    transition: all 0.5s ease-out;
+}
+
+.transition-arrow.show {
+    transform: translateX(0);
+}
+
+/* Change Indicator Animation */
+.change-indicator {
+    transform: translateY(10px) scale(0.8);
+    transition: all 0.5s ease-out;
+    text-shadow: 0 0 8px currentColor;
+}
+
+.change-indicator.show {
+    transform: translateY(0) scale(1);
+}
+
+/* Level Up Special Effects */
+.stat-change-modal[data-type="level_up"] {
+    animation: levelUpPulse 0.6s ease-out;
+}
+
+@keyframes levelUpPulse {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.stat-change-modal[data-type="level_up"]::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    animation: goldShimmer 1s infinite;
+}
+
+@keyframes goldShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Healing Animation */
+.stat-change-modal[data-type="healing"] .progress-bar-fill {
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+}
+
+/* Mana Animation */
+.stat-change-modal[data-type="mana"] .progress-bar-fill {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+}
+
+/* Stat Increases Container */
+.stat-increases {
+    transform: translateY(20px);
+    transition: all 0.7s ease-out;
+}
+
+.stat-increases.show {
+    transform: translateY(0);
+}
+
+/* Icon Animation */
+.stat-change-modal .ph-duotone {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Rarity Glow Effects for Stat Changes */
+.stat-change-modal.legendary-glow {
+    box-shadow: 
+        0 0 20px rgba(255, 165, 0, 0.5),
+        0 0 40px rgba(255, 165, 0, 0.3),
+        0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    border-color: #ffa500;
+}
+
+.stat-change-modal.epic-glow {
+    box-shadow: 
+        0 0 20px rgba(128, 0, 128, 0.5),
+        0 0 40px rgba(128, 0, 128, 0.3),
+        0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    border-color: #800080;
+}
+
+.stat-change-modal.rare-glow {
+    box-shadow: 
+        0 0 15px rgba(0, 100, 255, 0.4),
+        0 0 30px rgba(0, 100, 255, 0.2),
+        0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    border-color: #0064ff;
+}
+
+/* Button Hover Effects */
+.stat-change-modal button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-change-modal button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.stat-change-modal button:hover::before {
+    left: 100%;
+}
+
+/* Responsive Design for Stat Modals */
+@media (max-width: 640px) {
+    .stat-change-modal {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .stat-change-modal .text-3xl {
+        font-size: 1.5rem;
+    }
+    
+    .stat-change-modal .text-2xl {
+        font-size: 1.25rem;
+    }
+    
+    .stat-change-modal .w-16.h-16 {
+        width: 3rem;
+        height: 3rem;
+    }
+}

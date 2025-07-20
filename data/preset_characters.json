@@ -1,0 +1,62 @@
+{
+  "westwalker": {
+    "name": "Kael the Westwalker",
+    "title": "Ranger of the Frontier",
+    "description": "A seasoned ranger who has spent years patrolling the dangerous borders of the Griefwood. Kael relies on keen senses and a deep connection to the land rather than arcane power.",
+    "class": "ranger",
+    "species": "human",
+    "level": 1,
+    "stats": {
+      "strength": 12,
+      "dexterity": 15,
+      "constitution": 13,
+      "intelligence": 11,
+      "wisdom": 14,
+      "charisma": 10
+    },
+    "startingEquipment": ["longbow", "leather_armor", "health_potion", "rations", "bedroll"],
+    "background": "outlander",
+    "personalityTraits": ["I watch over my friends as if they were a litter of newborn pups.", "I have a lesson for every situation, drawn from observing nature."],
+    "lore": "Raised among scattered frontier clans, Kael guards the roads and watches the Griefwood for signs of encroaching darkness. The spirits of the wild whisper warnings to those who know how to listen."
+  },
+  "leonin": {
+    "name": "Thara M'ra Kaal",
+    "title": "Spirit-Speaker of the Pride",
+    "description": "A proud Leonin warrior-priest who serves as both protector and spiritual guide for her people. She bears the sacred duty of communing with ancestral spirits.",
+    "class": "paladin",
+    "species": "leonin",
+    "level": 1,
+    "stats": {
+      "strength": 15,
+      "dexterity": 10,
+      "constitution": 14,
+      "intelligence": 10,
+      "wisdom": 13,
+      "charisma": 14
+    },
+    "startingEquipment": ["ceremonial_spear", "chain_mail", "health_potion", "moonstone_amulet", "prayer_book"],
+    "background": "acolyte",
+    "personalityTraits": ["I honor my ancestors through every action.", "The spirits guide my path, and I trust their wisdom above all."],
+    "lore": "M'ra Kaal clans believe the coming Convergence will test their honor like never before. Spirit-speakers like Thara bear the voices of the ancestors into battle, channeling divine power through sacred oaths."
+  },
+  "gaian": {
+    "name": "Lyra Starweaver",
+    "title": "Scholar of the Convergence",
+    "description": "A brilliant young scholar from the Imperial capital who has dedicated her life to understanding the celestial dance of the three moons and unlocking the secrets of ancient magic.",
+    "class": "wizard",
+    "species": "human",
+    "level": 1,
+    "stats": {
+      "strength": 8,
+      "dexterity": 12,
+      "constitution": 13,
+      "intelligence": 15,
+      "wisdom": 14,
+      "charisma": 11
+    },
+    "startingEquipment": ["quarterstaff", "scholar_robes", "mana_potion", "ancient_tome", "ink_and_quill"],
+    "background": "sage",
+    "personalityTraits": ["I am horribly, horribly awkward in social situations.", "I am convinced that people are always trying to steal my secrets."],
+    "lore": "Gaian scholars preserve knowledge from before the Ascension. Lyra believes that understanding the lunar patterns will unlock unprecedented magical discoveries during the Convergence, potentially reshaping the very fabric of reality."
+  }
+}

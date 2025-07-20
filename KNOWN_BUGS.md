@@ -1,7 +1,7 @@
 # KNOWN BUGS & ISSUES
 
-**Last Updated**: July 19, 2025
-**Game Version**: 0.1.0
+**Last Updated**: December 20, 2024
+**Game Version**: 0.2.0
 
 ## 🚨 CRITICAL BUGS (Game Breaking)
 
@@ -39,6 +39,46 @@
 - `data/calendar.json` - ✅ COMPLETE (29 lines with calendar system)
 
 **Status**: All JSON files contain valid data. No action required.
+
+---
+
+### **BUG-013: Dice Roller UI Not Showing During Skill Checks**
+**Severity**: Critical
+**Status**: ✅ RESOLVED
+**Resolution Date**: December 20, 2024
+**Component**: Dice System Integration
+**Description**: DiceRoller UI was not displaying during skill checks due to missing tools.js dependency.
+
+**Root Cause**: 
+- tools.js was not included in index.html script loading
+- Combat.js functions were calling DiceRoller class before it was available
+- Script dependency order was incorrect
+
+**Fix Applied**:
+- ✅ Added tools.js to index.html before combat.js
+- ✅ Updated all combat dice functions to use DiceRoller class
+- ✅ Implemented proper dependency chain for dice functionality
+- ✅ Enhanced dice animations with 3D PNG dice and screen effects
+
+---
+
+### **BUG-014: Dice Modal Centering Issues**
+**Severity**: Critical
+**Status**: ✅ RESOLVED
+**Resolution Date**: December 20, 2024
+**Component**: DiceRoller Modal System
+**Description**: Dice roll modal would start centered but shift to bottom-right during animation sequence.
+
+**Root Cause**:
+- Screen shake animation was using `translate(0, 0)` instead of maintaining center position
+- Initial modal positioning and animation transforms were not coordinated
+- Scale animations interfered with flexbox centering
+
+**Fix Applied**:
+- ✅ Implemented proper transform-based centering with `translate(-50%, -50%)`
+- ✅ Coordinated shake effects to use `calc(-50% + offset)` for relative positioning
+- ✅ Enhanced modal animation to maintain center throughout entire sequence
+- ✅ Added proper transform-origin for scale animations
 
 ---
 
@@ -94,6 +134,21 @@ The system is actually well-designed with a proper fallback mechanism:
 
 **Impact**: Players cannot save or load their progress
 **Fix Required**: Add proper save/load UI to settings panel
+
+---
+
+### **BUG-015: Background Animation Removal**
+**Severity**: High
+**Status**: ✅ RESOLVED
+**Resolution Date**: December 20, 2024
+**Component**: DiceRoller Modal Styling
+**Description**: Animated background pattern in dice modal was distracting from dice animations.
+
+**Fix Applied**:
+- ✅ Removed gradient background animation from modal
+- ✅ Simplified background to solid base color
+- ✅ Improved focus on dice animation content
+- ✅ Maintained atmospheric design without visual noise
 
 ---
 
@@ -282,4 +337,84 @@ The system is actually well-designed with a proper fallback mechanism:
 - **Data Integrity**: Verify all JSON files are valid and complete
 - **User Experience**: Focus on core game loop functionality first
 
-*This document should be updated as bugs are fixed and new issues are discovered.*
+---
+
+## 🎯 RECENT FIXES & IMPROVEMENTS (December 2024)
+
+### **Enhancement-001: Complete DiceRoller System Implementation**
+**Component**: Tools.js, Combat.js, Main UI
+**Implementation Date**: December 20, 2024
+**Description**: Comprehensive overhaul of dice rolling system with professional-grade animations and UI.
+
+**Improvements Made**:
+- ✅ **Centralized DiceRoller Class**: Single source of truth for all dice functionality
+- ✅ **3D Dice Animations**: PNG-based dice with realistic 3D rotation and physics
+- ✅ **Perfect Modal Centering**: Advanced transform-based positioning system
+- ✅ **Screen Shake Effects**: Dynamic visual feedback for dramatic moments
+- ✅ **Floating Text Animations**: Critical success/failure notifications
+- ✅ **Enhanced Sound Integration**: Placeholder system for future audio implementation
+
+**Technical Details**:
+- Modal uses absolute positioning with `top: 50%; left: 50%; transform: translate(-50%, -50%)`
+- Shake animations maintain centering with `calc(-50% + offset)` calculations
+- Advanced CSS keyframes with cubic-bezier easing for smooth animations
+- Proper cleanup and event handling for modal lifecycle
+
+---
+
+### **Enhancement-002: Icon System Upgrade**
+**Component**: UI Icons Throughout Application
+**Implementation Date**: December 20, 2024
+**Description**: Complete replacement of emoji icons with professional Phosphor icon system.
+
+**Changes Made**:
+- ✅ **Combat Icons**: Sword, shield, spell, and action icons
+- ✅ **Navigation Icons**: Journal, character, inventory, settings
+- ✅ **Modal Icons**: Success, failure, and informational indicators
+- ✅ **Consistency**: Uniform duotone style across all interfaces
+
+**Benefits**:
+- Professional appearance
+- Consistent sizing and styling
+- Better accessibility
+- Cross-platform compatibility
+
+---
+
+### **Enhancement-003: Animation Polish & Performance**
+**Component**: CSS Animations and Visual Effects
+**Implementation Date**: December 20, 2024
+**Description**: Refined animation timing and visual effects for smoother user experience.
+
+**Optimizations**:
+- ✅ **Timing Optimization**: Coordinated animation sequences for natural flow
+- ✅ **Performance Tuning**: Efficient CSS transforms and transitions
+- ✅ **Visual Hierarchy**: Clear focus on important UI elements
+- ✅ **Responsive Design**: Animations work across different screen sizes
+
+---
+
+## 🚀 QUALITY IMPROVEMENTS IMPLEMENTED
+
+### **Code Quality Enhancements**:
+1. **Dependency Management**: Proper script loading order in index.html
+2. **Error Handling**: Comprehensive fallbacks for missing elements
+3. **Event Management**: Clean event listener setup and teardown
+4. **Performance**: Optimized CSS animations with hardware acceleration
+5. **Maintainability**: Centralized dice functionality in reusable class
+
+### **User Experience Improvements**:
+1. **Visual Feedback**: Enhanced animations provide clear action feedback
+2. **Accessibility**: Consistent icon usage and semantic HTML structure
+3. **Responsiveness**: System works well across different device sizes
+4. **Immersion**: Professional-grade dice animations enhance RPG experience
+
+### **Technical Debt Addressed**:
+1. **Code Duplication**: Eliminated redundant dice rolling functions
+2. **Inconsistent UI**: Unified icon system across all components
+3. **Animation Issues**: Fixed modal positioning and centering problems
+4. **Integration Problems**: Resolved dependency loading order issues
+
+---
+
+*This document should be updated as bugs are fixed and new issues are discovered. The recent improvements represent a significant step forward in game quality and user experience.*

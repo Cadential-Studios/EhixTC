@@ -81,7 +81,7 @@
         <div id="combat-screen" class="flex-grow flex flex-col" style="display: none;">
             <!-- Combat Header -->
             <header class="combat-header bg-red-900 bg-opacity-80 p-4 text-center">
-                <h1 class="font-cinzel text-3xl text-red-400 mb-2">⚔️ COMBAT ⚔️</h1>
+                <h1 class="font-cinzel text-3xl text-red-400 mb-2"><i class="ph-duotone ph-sword"></i> COMBAT <i class="ph-duotone ph-sword"></i></h1>
                 <div class="flex justify-between items-center">
                     <div id="combat-round-display" class="text-yellow-300 font-bold">Round 1</div>
                     <div id="current-turn-display" class="text-white bg-yellow-600 px-3 py-1 rounded font-bold">Player's Turn</div>
@@ -173,7 +173,16 @@
         <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
     </div>
 
-    <!-- Game Scripts -->
+    <!-- Game Scripts - Load in dependency order -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/tools.js"></script>
+    <script src="assets/js/character.js"></script>
+    <script src="assets/js/inventory.js"></script>
+    <script src="assets/js/statAnimator.js"></script>
+    <script src="assets/js/combat.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/scenes.js"></script>
+    <script src="assets/js/save.js"></script>
     <script src="assets/js/main.js"></script>
 
 </body>

@@ -738,7 +738,945 @@
 
 ---
 
-*This TODO list represents a comprehensive roadmap for developing "Edoria: The Triune Convergence" into a fully-featured RPG experience. Focus on completing tasks in priority order while maintaining code quality and testing standards.*
+---
+
+## � UI/UX ENHANCEMENT TASKS (High Priority)
+
+### **TASK 21: Journal UI Improvements & Optimization**
+**Branch**: `feature/journal-enhancement`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Enhance journal interface with advanced navigation, search capabilities, and improved visual design
+
+**Sub-Tasks**:
+- [ ] **21A: Advanced Journal Navigation**
+  - Tabbed interface with categories (Quests, Lore, NPCs, Locations, Events)
+  - Breadcrumb navigation for nested entries
+  - Quick jump to recent entries
+  - Bookmarking system for important entries
+  - Entry history with back/forward navigation
+
+- [ ] **21B: Search & Filter System**
+  - Real-time search across all journal entries
+  - Advanced filters by category, date, importance level
+  - Tag system for custom organization
+  - Full-text search with highlighting
+  - Saved search presets
+
+- [ ] **21C: Visual Design Improvements**
+  - Enhanced typography with custom fonts for different entry types
+  - Color-coded categories with consistent theming
+  - Icons for different entry types (quest, lore, character, etc.)
+  - Improved spacing and layout for better readability
+  - Animated transitions between entries
+
+- [ ] **21D: Entry Management Features**
+  - Mark entries as read/unread
+  - Priority levels for entries (low, medium, high, critical)
+  - Entry timestamps and date sorting
+  - Manual entry creation by player
+  - Export functionality for sharing lore
+
+**Acceptance Criteria**:
+- Journal loads quickly with thousands of entries
+- Search returns results in under 500ms
+- All categories are visually distinct and intuitive
+- Navigation feels smooth and responsive
+
+---
+
+### **TASK 22: Enhanced Hyperlink System**
+**Branch**: `feature/hyperlink-system`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Move hyperlink functionality to tools.js and create a comprehensive cross-reference system
+
+**Sub-Tasks**:
+- [ ] **22A: Centralized Hyperlink Engine**
+  - Move hyperlink processing to tools.js for reusability
+  - Create HyperlinkManager class for consistent functionality
+  - Support for different link types (character, location, item, quest, lore)
+  - Tooltip previews on hover before clicking
+  - Context-sensitive link suggestions
+
+- [ ] **22B: Advanced Link Features**
+  - Bi-directional linking (related entries automatically link back)
+  - Link previews with summary information
+  - Deep linking to specific sections within entries
+  - External link validation and safety checks
+  - Link analytics for tracking popular connections
+
+- [ ] **22C: Cross-Reference System**
+  - Automatic detection of related content
+  - "See Also" sections for relevant entries
+  - Visual relationship mapping between entries
+  - Backlink tracking (what links to this entry)
+  - Contextual recommendations based on current reading
+
+- [ ] **22D: Link Management Tools**
+  - Broken link detection and reporting
+  - Batch link updating tools
+  - Link preview customization
+  - Link styling based on target type
+  - Accessibility improvements for screen readers
+
+**Acceptance Criteria**:
+- All hyperlinks work consistently across the entire application
+- Link previews provide useful information without being intrusive
+- Cross-references enhance content discovery
+- System scales well with large amounts of interconnected content
+
+---
+
+### **TASK 23: Character Sheet Menu Optimization**
+**Branch**: `feature/character-optimization`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Redesign character sheet for better usability, visual appeal, and information density
+
+**Sub-Tasks**:
+- [ ] **23A: Layout Redesign**
+  - Collapsible sections for skills, equipment, spells, etc.
+  - Grid-based layout optimized for different screen sizes
+  - Sticky header with character name and vital stats
+  - Tabbed interface for different character aspects
+  - Quick stats summary always visible
+
+- [ ] **23B: Interactive Elements**
+  - Click to roll dice directly from ability scores
+  - Drag-and-drop equipment management
+  - Inline editing for character details
+  - Skill check shortcuts with contextual bonuses
+  - Equipment comparison tooltips
+
+- [ ] **23C: Visual Enhancements**
+  - Character portrait integration with upload functionality
+  - Progress bars for XP, health, and other resources
+  - Color-coded stats based on bonuses/penalties
+  - Animated stat changes and level-ups
+  - Equipment visualization with slot highlighting
+
+- [ ] **23D: Advanced Features**
+  - Multiple character sheet themes/layouts
+  - Export character sheet as PDF or image
+  - Character comparison tools
+  - Stat history tracking and graphs
+  - Equipment set management
+
+**Acceptance Criteria**:
+- Character sheet loads in under 2 seconds
+- All interactions feel responsive and intuitive
+- Information is well-organized and easy to find
+- Works seamlessly on mobile and desktop
+
+---
+
+### **TASK 24: Advanced Inventory System**
+**Branch**: `feature/inventory-advanced`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Create comprehensive inventory management with search, filtering, sorting, and detailed item views
+
+**Sub-Tasks**:
+- [ ] **24A: Search & Filter Implementation**
+  - Real-time text search across item names and descriptions
+  - Filter by item type (weapon, armor, consumable, quest, misc)
+  - Filter by rarity level (common, uncommon, rare, epic, legendary)
+  - Filter by equipment slot compatibility
+  - Filter by usability (can use vs. cannot use)
+  - Custom filter combinations with save presets
+
+- [ ] **24B: Advanced Sorting Options**
+  - Sort by name (A-Z, Z-A)
+  - Sort by item level/power
+  - Sort by rarity (common to legendary)
+  - Sort by value (gold value)
+  - Sort by weight (for encumbrance systems)
+  - Sort by date acquired
+  - Custom sort criteria combinations
+
+- [ ] **24C: Detailed Item Modal System**
+  - Full-screen item detail modal on click
+  - Complete item statistics and descriptions
+  - Item history (where/when acquired)
+  - Related items and set bonuses
+  - Item comparison with currently equipped
+  - 3D item preview (if applicable)
+  - Item actions (use, equip, sell, drop, etc.)
+
+- [ ] **24D: Color-Coded Rarity System**
+  - Consistent color scheme: Gray (Common), Green (Uncommon), Blue (Rare), Purple (Epic), Orange (Legendary)
+  - Rarity colors applied to item names everywhere they appear
+  - Subtle glow effects for higher rarity items
+  - Rarity-based sorting and filtering
+  - Visual rarity indicators in all UI contexts
+
+- [ ] **24E: Inventory Management Features**
+  - Bulk actions (select multiple items)
+  - Quick sell/trash functionality
+  - Inventory organization tools (auto-sort, custom bags)
+  - Item stacking for consumables
+  - Encumbrance tracking and warnings
+  - Quick equipment swap sets
+
+**Acceptance Criteria**:
+- Search returns results instantly with thousands of items
+- All filtering and sorting combinations work smoothly
+- Item modals provide comprehensive information
+- Rarity colors are consistent throughout the entire game
+- Inventory management feels intuitive and efficient
+
+---
+
+### **TASK 25: Character Portrait System**
+**Branch**: `feature/character-portraits`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement character portrait functionality with placeholder and custom upload options
+
+**Sub-Tasks**:
+- [ ] **25A: Default Portrait System**
+  - High-quality placeholder portraits for each origin/class
+  - Gender-variant portraits where applicable
+  - Consistent art style matching game theme
+  - Fallback system for missing portraits
+  - Portrait selection during character creation
+
+- [ ] **25B: Custom Portrait Upload**
+  - Secure file upload with validation
+  - Image format support (PNG, JPG, WebP)
+  - Automatic image resizing and optimization
+  - Portrait cropping tool with preview
+  - File size limits and compression
+
+- [ ] **25C: Portrait Integration**
+  - Portrait display in character sheet
+  - Portrait in dialogue systems
+  - Portrait in party/group displays
+  - Portrait in save game thumbnails
+  - Responsive portrait sizing for different contexts
+
+- [ ] **25D: Advanced Portrait Features**
+  - Portrait frames based on character achievements
+  - Animated portrait effects for special states
+  - Portrait mood/expression variants
+  - Portrait backup and restore functionality
+  - Portrait sharing between characters (for alts)
+
+**Acceptance Criteria**:
+- Default portraits are visually appealing and theme-appropriate
+- Upload process is simple and error-free
+- Portraits display correctly in all contexts
+- System handles edge cases gracefully
+
+---
+
+### **TASK 26: Developer Console & Tools**
+**Branch**: `feature/developer-console`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Create comprehensive developer menu accessible via backtick (`) key with debugging and testing tools
+
+**Sub-Tasks**:
+- [ ] **26A: Developer Console Interface**
+  - Toggle developer menu with backtick (`) key
+  - Tabbed interface for different tool categories
+  - Console output window with scrollback
+  - Command input with autocomplete
+  - Command history navigation (up/down arrows)
+  - Help system for available commands
+
+- [ ] **26B: Cheat Tools & Game Manipulation**
+  - **Player Cheats**:
+    - Add experience points (`addxp <amount>`)
+    - Set player level (`setlevel <level>`)
+    - Add gold (`addgold <amount>`)
+    - Heal player (`heal` or `fullheal`)
+    - Add items to inventory (`additem <id> <quantity>`)
+    - Toggle god mode/invincibility (`godmode`)
+  - **World Manipulation**:
+    - Change time of day (`settime <hour>`)
+    - Advance calendar (`advancedate <days>`)
+    - Set moon phases (`setmoon <moon> <phase>`)
+    - Trigger events (`triggerevent <eventid>`)
+    - Teleport to locations (`goto <locationid>`)
+
+- [ ] **26C: Performance Monitoring**
+  - Real-time FPS counter
+  - Memory usage tracking
+  - Load time measurements
+  - Animation performance metrics
+  - Network request monitoring
+  - Frame time graphs
+  - Performance bottleneck identification
+
+- [ ] **26D: Data Viewing & Editing**
+  - **Game State Inspector**:
+    - View current player data in JSON format
+    - Edit player stats in real-time
+    - View quest progress and flags
+    - Inspect inventory contents
+    - View relationship/reputation values
+  - **Data File Inspector**:
+    - View loaded JSON data files
+    - Real-time data editing with validation
+    - Data export/import functionality
+    - Schema validation tools
+    - Data integrity checking
+
+- [ ] **26E: Development Utilities**
+  - **Scene/Story Tools**:
+    - Jump to any scene (`gotoscene <sceneid>`)
+    - List all available scenes
+    - Test dialogue trees
+    - Preview story branches
+  - **Testing Tools**:
+    - Automated testing scenarios
+    - Save state creation for testing
+    - Quick character builds for testing
+    - Combat encounter simulation
+  - **Debug Information**:
+    - Show hitboxes and collision areas
+    - Display current game state
+    - Log system events
+    - Error reporting and logging
+
+**Technical Requirements**:
+- Developer mode only accessible in development builds
+- All commands logged for debugging purposes
+- Performance impact should be minimal when not in use
+- Secure command validation to prevent exploits
+- Data changes should be reversible where possible
+
+**Acceptance Criteria**:
+- Developer console opens/closes smoothly with backtick key
+- All cheat commands work reliably without breaking game state
+- Performance monitoring provides useful development insights
+- Data viewing tools help with debugging and development
+- System is completely hidden from production builds
+
+---
+
+## 🎮 GAMEPLAY SYSTEMS (High Priority)
+
+### **TASK 27: Advanced Dialogue System**
+**Branch**: `feature/dialogue-system`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Create immersive dialogue system with branching conversations and skill checks
+
+**Sub-Tasks**:
+- [ ] **27A: Dialogue Tree Engine**
+  - JSON-based dialogue tree structure
+  - Conditional dialogue based on player stats/choices
+  - Multiple dialogue paths and outcomes
+  - Dialogue history tracking
+  - Skip/replay dialogue options
+
+- [ ] **27B: Character Voice & Personality**
+  - Unique speaking patterns for different NPCs
+  - Personality traits affecting dialogue options
+  - Reputation system influencing NPC reactions
+  - Dynamic dialogue based on relationship levels
+  - Cultural/regional dialogue variations
+
+- [ ] **27C: Skill-Based Dialogue Options**
+  - Persuasion, Intimidation, Deception checks in conversations
+  - Intelligence-based lore and knowledge options
+  - Class/origin-specific dialogue choices
+  - Success/failure consequences for social encounters
+  - Multiple ways to achieve dialogue objectives
+
+- [ ] **27D: Advanced Dialogue Features**
+  - Timed dialogue choices for tension
+  - Group conversations with multiple NPCs
+  - Interrupt system for dynamic conversations
+  - Dialogue skill progression and learning
+  - Save/load mid-conversation functionality
+
+**Acceptance Criteria**:
+- Conversations feel natural and engaging
+- Skill checks integrate seamlessly with dialogue
+- NPC personalities are distinct and memorable
+- Player choices have meaningful consequences
+
+---
+
+### **TASK 28: Economy & Trading System**
+**Branch**: `feature/economy`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive economic system with merchants, currency, and trade
+
+**Sub-Tasks**:
+- [ ] **28A: Currency System**
+  - Multiple currency types (copper, silver, gold, special currencies)
+  - Currency conversion and exchange rates
+  - Regional currency variations
+  - Currency weight and storage considerations
+  - Anti-inflation mechanics for game balance
+
+- [ ] **28B: Merchant & Trading**
+  - Dynamic merchant inventories that refresh over time
+  - Reputation affecting merchant prices and availability
+  - Haggling system with skill checks
+  - Regional price variations for goods
+  - Supply and demand economics
+
+- [ ] **28C: Item Values & Pricing**
+  - Base value calculation for all items
+  - Rarity-based pricing multipliers
+  - Condition affecting item value (damaged/pristine)
+  - Market demand fluctuations
+  - Bulk buying/selling discounts
+
+- [ ] **28D: Advanced Trading Features**
+  - Barter system for non-monetary trades
+  - Trade routes and merchant caravans
+  - Player-owned shop mechanics
+  - Investment opportunities and passive income
+  - Black market and contraband systems
+
+**Acceptance Criteria**:
+- Economy feels balanced and realistic
+- Trading provides meaningful player choices
+- Currency has weight in decision-making
+- Regional economic differences are noticeable
+
+---
+
+### **TASK 29: World Exploration & Discovery**
+**Branch**: `feature/exploration`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Create engaging exploration mechanics with secrets and discoveries
+
+**Sub-Tasks**:
+- [ ] **29A: Hidden Content System**
+  - Secret areas requiring specific skills to access
+  - Hidden lore books and ancient texts
+  - Treasure caches with valuable rewards
+  - Easter eggs and developer secrets
+  - Skill-based discovery mechanics
+
+- [ ] **29B: Environmental Storytelling**
+  - Visual clues telling stories without text
+  - Interactive environmental objects
+  - Atmospheric details that enhance immersion
+  - Contextual sound effects and ambiance
+  - Weather and time-of-day affecting exploration
+
+- [ ] **29C: Landmarks & Points of Interest**
+  - Unique locations with special significance
+  - Fast travel waypoint system
+  - Photo mode for capturing memorable moments
+  - Achievement system for exploration milestones
+  - Collectible system (artifacts, specimens, etc.)
+
+- [ ] **29D: Dynamic World Events**
+  - Random encounters while traveling
+  - Seasonal events and festivals
+  - World state changes based on player actions
+  - Emergency events requiring immediate response
+  - Long-term consequences of exploration choices
+
+**Acceptance Criteria**:
+- Exploration feels rewarding and engaging
+- Hidden content provides meaningful rewards
+- World feels alive and reactive to player presence
+- Discovery mechanics encourage thorough exploration
+
+---
+
+### **TASK 30: Faction & Reputation System**
+**Branch**: `feature/factions`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement faction relationships and reputation mechanics
+
+**Sub-Tasks**:
+- [ ] **30A: Faction Framework**
+  - Multiple competing factions with different goals
+  - Faction hierarchy and leadership structures
+  - Faction-specific quests and storylines
+  - Joining/leaving faction mechanics
+  - Faction conflict and alliance systems
+
+- [ ] **30B: Reputation Mechanics**
+  - Individual reputation with each faction
+  - Actions affecting reputation positively/negatively
+  - Reputation thresholds unlocking content
+  - Reputation decay over time without interaction
+  - Anonymous actions vs. public reputation
+
+- [ ] **30C: Faction Benefits & Consequences**
+  - Exclusive faction equipment and abilities
+  - Faction-specific areas and safe houses
+  - Diplomatic immunity or hostility
+  - Faction-based pricing and trade bonuses
+  - Political consequences of faction choices
+
+- [ ] **30D: Inter-Faction Dynamics**
+  - Complex relationships between factions
+  - Player actions affecting faction relationships
+  - Faction wars and peace negotiations
+  - Double agent mechanics and espionage
+  - Neutral faction options for diplomats
+
+**Acceptance Criteria**:
+- Faction system provides meaningful player choices
+- Reputation has tangible effects on gameplay
+- Inter-faction dynamics feel complex and realistic
+- Player actions have long-term political consequences
+
+---
+
+## 🔧 TECHNICAL INFRASTRUCTURE (Medium Priority)
+
+### **TASK 31: Modding & Customization Support**
+**Branch**: `feature/modding-support`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Create modding framework for community content creation
+
+**Sub-Tasks**:
+- [ ] **31A: Data File Modding**
+  - External JSON file loading for custom content
+  - Mod validation and conflict detection
+  - Mod priority system for loading order
+  - Hot-reloading for development
+  - Mod manifest system with metadata
+
+- [ ] **31B: Asset Replacement System**
+  - Custom portrait and image loading
+  - Audio file replacement capabilities
+  - CSS theme and styling modifications
+  - Font replacement system
+  - Icon pack support
+
+- [ ] **31C: Scripting API**
+  - JavaScript API for custom game logic
+  - Event hooks for modders to use
+  - Custom scene and dialogue creation
+  - Quest scripting capabilities
+  - Combat modifier systems
+
+- [ ] **31D: Mod Management Tools**
+  - In-game mod browser and installer
+  - Mod compatibility checking
+  - Save game compatibility with mods
+  - Mod backup and restore functionality
+  - Community mod sharing platform
+
+**Acceptance Criteria**:
+- Modding system is accessible to non-programmers
+- Mods can significantly alter gameplay
+- Mod conflicts are handled gracefully
+- Community can easily share and install mods
+
+---
+
+### **TASK 32: Performance & Optimization Framework**
+**Branch**: `feature/performance`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive performance monitoring and optimization
+
+**Sub-Tasks**:
+- [ ] **32A: Performance Monitoring**
+  - Real-time FPS and frame time tracking
+  - Memory usage monitoring and alerts
+  - Load time measurement for all systems
+  - Network request performance tracking
+  - Battery usage optimization for mobile
+
+- [ ] **32B: Asset Optimization**
+  - Image compression and format optimization
+  - Lazy loading for non-critical assets
+  - Asset bundling and minification
+  - CDN integration for faster loading
+  - Progressive loading with priority systems
+
+- [ ] **32C: Code Performance**
+  - JavaScript profiling and optimization
+  - CSS performance improvements
+  - Database query optimization
+  - Caching strategies for frequently accessed data
+  - Memory leak detection and prevention
+
+- [ ] **32D: Scalability Features**
+  - Dynamic quality adjustment based on device
+  - Offline mode with essential features
+  - Progressive web app capabilities
+  - Cross-platform optimization
+  - Accessibility performance considerations
+
+**Acceptance Criteria**:
+- Game runs smoothly on low-end devices
+- Loading times are minimized across all systems
+- Memory usage remains stable during extended play
+- Performance scales appropriately with content size
+
+---
+
+### **TASK 33: Multiplayer Foundation**
+**Branch**: `feature/multiplayer-prep`
+**Priority**: 🟢 LOW
+**Status**: 📋 Planned
+
+**Objective**: Prepare architecture for future multiplayer features
+
+**Sub-Tasks**:
+- [ ] **33A: Data Architecture Preparation**
+  - Separate client/server data validation
+  - Synchronization-friendly data structures
+  - Conflict resolution for simultaneous actions
+  - State reconciliation mechanisms
+  - Anti-cheat data verification
+
+- [ ] **33B: Communication Framework**
+  - WebSocket integration for real-time communication
+  - Message serialization and compression
+  - Connection stability and reconnection handling
+  - Bandwidth optimization for mobile users
+  - Latency compensation techniques
+
+- [ ] **33C: Session Management**
+  - Room/lobby creation and management
+  - Player matchmaking systems
+  - Session persistence across disconnections
+  - Host migration capabilities
+  - Cross-platform compatibility
+
+- [ ] **33D: Multiplayer Game Modes**
+  - Cooperative story mode planning
+  - Competitive mini-games design
+  - Shared world exploration concepts
+  - Turn-based multiplayer combat
+  - Asynchronous multiplayer features
+
+**Acceptance Criteria**:
+- Single-player code is multiplayer-ready
+- Communication layer handles edge cases
+- Session management is robust and reliable
+- Foundation supports various multiplayer modes
+
+---
+
+## 🎨 CONTENT CREATION TOOLS (Medium Priority)
+
+### **TASK 34: In-Game Content Editor**
+**Branch**: `feature/content-editor`
+**Priority**: 🟡 MEDIUM
+**Status**: 📋 Planned
+
+**Objective**: Create tools for rapid content creation and testing
+
+**Sub-Tasks**:
+- [ ] **34A: Scene Editor**
+  - Visual scene creation interface
+  - Drag-and-drop dialogue tree builder
+  - Choice outcome preview system
+  - Scene flow visualization
+  - Real-time testing and iteration
+
+- [ ] **34B: Character & NPC Editor**
+  - Character stat and skill editors
+  - Portrait and appearance customization
+  - Personality trait assignment
+  - Dialogue pattern configuration
+  - Relationship web visualization
+
+- [ ] **34C: Item & Equipment Editor**
+  - Item creation wizard with templates
+  - Stat calculator and balance checking
+  - Visual item preview system
+  - Rarity and pricing suggestions
+  - Set bonus configuration tools
+
+- [ ] **34D: World Building Tools**
+  - Location creation and editing
+  - Connection mapping between areas
+  - Environmental storytelling placement
+  - Event trigger configuration
+  - Lore integration assistance
+
+**Acceptance Criteria**:
+- Content creation is faster than manual JSON editing
+- Tools provide immediate feedback and validation
+- Created content integrates seamlessly with game
+- Non-technical users can create quality content
+
+---
+
+### **TASK 35: Quality Assurance & Testing Framework**
+**Branch**: `feature/qa-framework`
+**Priority**: 🟠 HIGH
+**Status**: 📋 Planned
+
+**Objective**: Implement comprehensive testing and QA tools
+
+**Sub-Tasks**:
+- [ ] **35A: Automated Testing**
+  - Unit tests for all core game functions
+  - Integration tests for system interactions
+  - Performance regression testing
+  - Cross-browser compatibility testing
+  - Save/load integrity testing
+
+- [ ] **35B: Content Validation**
+  - JSON schema validation for all data files
+  - Link checking for hyperlinks and references
+  - Image and asset existence verification
+  - Dialogue tree completeness checking
+  - Quest progression validation
+
+- [ ] **35C: User Testing Tools**
+  - Playtest recording and analysis
+  - Crash reporting and error logging
+  - User feedback collection system
+  - A/B testing framework for features
+  - Analytics and usage pattern tracking
+
+- [ ] **35D: Bug Tracking & Resolution**
+  - Integrated bug reporting system
+  - Priority and severity classification
+  - Reproduction step tracking
+  - Fix verification workflows
+  - Regression testing automation
+
+**Acceptance Criteria**:
+- Bugs are caught before reaching players
+- Content validation prevents broken experiences
+- User testing provides actionable insights
+- Bug resolution process is efficient and thorough
+
+---
+
+**Objective**: Complete implementation of DiceRoller class with advanced animations and perfect modal centering
+
+**Completed Sub-Tasks**:
+- [x] **20A: DiceRoller Class Implementation**
+  - ✅ Centralized DiceRoller class in tools.js with comprehensive functionality
+  - ✅ Enhanced 3D dice animations using PNG assets with realistic physics
+  - ✅ Advanced modal system with perfect centering throughout animation sequences
+  - ✅ Screen shake effects and visual feedback for dramatic dice rolls
+  - ✅ Floating text animations for critical successes and failures
+
+- [x] **20B: Modal Centering & Animation Fixes**
+  - ✅ Fixed modal positioning issues where dice modal would shift during animations
+  - ✅ Implemented proper transform-based centering with translate(-50%, -50%)
+  - ✅ Coordinated shake animations to maintain centering during screen effects
+  - ✅ Enhanced animation timing and easing for smooth visual transitions
+
+- [x] **20C: UI Icon Integration & Consistency**
+  - ✅ Replaced emoji icons with Phosphor icons throughout the entire codebase
+  - ✅ Consistent icon usage across combat, inventory, journal, and settings panels
+  - ✅ Updated all button interfaces to use duotone Phosphor icon system
+  - ✅ Enhanced visual consistency and professional appearance
+
+- [x] **20D: Background Animation Removal**
+  - ✅ Removed animated background pattern from dice modal for cleaner appearance
+  - ✅ Simplified background to solid base color (rgba(26, 26, 46, 0.95))
+  - ✅ Improved focus on dice animation content without visual distractions
+  - ✅ Maintained atmospheric design while reducing visual noise
+
+- [x] **20E: Combat Integration & Dice Functionality**
+  - ✅ Integrated DiceRoller class with all combat functions
+  - ✅ Updated skill check functions to use DiceRoller for consistent UI
+  - ✅ Enhanced dice roll displays during combat encounters
+  - ✅ Proper dependency loading with tools.js included before combat.js
+
+**Technical Achievements**:
+- Perfect modal centering that maintains position throughout complex animations
+- 3D dice physics with realistic rotation and lighting effects
+- Advanced CSS keyframe animations with cubic-bezier easing
+- Comprehensive error handling and fallback systems
+- Responsive design that works across different screen sizes
+- Performance optimized animations with proper cleanup
+
+**Files Modified**:
+- `assets/js/tools.js` - Complete DiceRoller class implementation
+- `assets/js/combat.js` - Updated all dice functions to use DiceRoller
+- `index.html` - Added tools.js dependency and updated script loading order
+- `assets/css/main.css` - Enhanced animations and modal styling
+
+**Impact**: 
+The dice system now provides a professional, immersive experience that rivals commercial RPG games. The modal centering fix ensures consistent user experience across all dice interactions, while the enhanced animations add excitement to every roll.
+
+---
+
+---
+
+## 📊 PRIORITY ROADMAP & CURRENT STATUS
+
+### **IMMEDIATE PRIORITIES (Next Sprint)**
+1. **TASK 24: Advanced Inventory System** - Core gameplay functionality
+2. **TASK 23: Character Sheet Menu Optimization** - Essential UI improvements
+3. **TASK 22: Enhanced Hyperlink System** - Move to tools.js for reusability
+4. **TASK 21: Journal UI Improvements** - Search and navigation enhancements
+
+### **SHORT-TERM GOALS (Next Month)**
+1. **TASK 27: Advanced Dialogue System** - Immersive conversations
+2. **TASK 28: Economy & Trading System** - Merchant and currency mechanics
+3. **TASK 25: Character Portrait System** - Visual character customization
+4. **TASK 35: Quality Assurance Framework** - Testing and validation tools
+
+### **MEDIUM-TERM OBJECTIVES (Next Quarter)**
+1. **TASK 29: World Exploration & Discovery** - Engaging exploration mechanics
+2. **TASK 30: Faction & Reputation System** - Political and social gameplay
+3. **TASK 26: Developer Console & Tools** - Development and debugging tools
+4. **TASK 31: Modding & Customization Support** - Community content creation
+
+### **LONG-TERM VISION (6+ Months)**
+1. **TASK 32: Performance & Optimization** - Scalability and performance
+2. **TASK 33: Multiplayer Foundation** - Future multiplayer capabilities
+3. **TASK 34: In-Game Content Editor** - Rapid content creation tools
+4. **Advanced Features & Polish** - Audio, visual effects, and final polish
+
+### **COMPLETED MILESTONES** ✅
+- ✅ **TASK 1**: Code Organization (Foundation)
+- ✅ **TASK 2**: Core JSON Data Population
+- ✅ **TASK 3**: Advanced Journal & UI System
+- ✅ **TASK 20**: Enhanced Dice System & UI Polish
+- ✅ **TASK 5**: D&D-Style Skills & Dice Mechanics (December 2024)
+
+### **CURRENT FOCUS AREAS**
+- **UI/UX Enhancement**: Tasks 21-25 for better user experience
+- **Core Systems**: Inventory, character management, and dialogue
+- **Developer Tools**: Console and debugging capabilities
+- **Content Creation**: Tools for faster story and character development
+
+### **TASK 36: Audio & Sound System** 🟠
+**Branch**: audio-system  
+**Priority**: HIGH  
+**Status**: Not Started  
+**Completion**: 0%  
+
+Create comprehensive audio system for immersive gameplay:
+
+**Audio Framework:**
+- Background music system with dynamic switching based on game state
+- Sound effect library for UI interactions, dice rolls, and actions
+- Audio asset management and preloading system
+- Volume controls and audio settings in game menu
+
+**Implementation Details:**
+- Web Audio API integration for better performance
+- Audio context management for browser compatibility
+- Sound effect triggers for dice rolling, page turning, menu navigation
+- Background ambient sounds for different game areas/moods
+- Audio fade-in/fade-out transitions between tracks
+
+**Acceptance Criteria:**
+- [ ] Background music plays and loops seamlessly
+- [ ] Sound effects trigger correctly for all major interactions
+- [ ] Audio volume controls work properly in settings
+- [ ] Audio doesn't conflict with browser autoplay policies
+- [ ] Performance optimized (no audio lag or stuttering)
+
+**Files to Modify:**
+- `game.html` (audio elements and controls)
+- `js/audio.js` (new audio management system)
+- `js/dice.js` (dice roll sound effects)
+- `js/ui.js` (UI interaction sounds)
+- `css/styles.css` (audio control styling)
+
+---
+
+### **TASK 37: Visual Effects & Animation System** 🟡
+**Branch**: visual-effects  
+**Priority**: MEDIUM  
+**Status**: Not Started  
+**Completion**: 0%  
+
+Enhance visual appeal with animations and effects:
+
+**Animation Framework:**
+- CSS transition and keyframe animation library
+- JavaScript animation utilities for complex sequences
+- Particle effect system for magical/fantasy elements
+- Smooth page transitions and UI state changes
+
+**Visual Enhancements:**
+- Dice rolling animations with 3D effects
+- Character portrait hover effects and animations
+- Journal page flip animations with realistic timing
+- Skill progression visual feedback (level up effects)
+- Interactive button hover states and click feedback
+
+**Acceptance Criteria:**
+- [ ] Smooth 60fps animations on modern browsers
+- [ ] Dice rolling feels satisfying with proper physics simulation
+- [ ] Page transitions enhance immersion without being distracting
+- [ ] Animation performance doesn't impact game responsiveness
+- [ ] Reduced motion support for accessibility
+
+**Files to Modify:**
+- `css/animations.css` (new animation library)
+- `js/animations.js` (animation control system)
+- `js/dice.js` (enhanced dice rolling effects)
+- `js/ui.js` (transition management)
+
+---
+
+### **TASK 38: Save & Load System** 🔴
+**Branch**: save-load-system  
+**Priority**: CRITICAL  
+**Status**: Not Started  
+**Completion**: 0%  
+
+Implement robust game state persistence:
+
+**Save System Architecture:**
+- JSON-based save file format for cross-platform compatibility
+- Multiple save slot management (3-5 save games)
+- Auto-save functionality at key game milestones
+- Save file validation and corruption recovery
+- Character progression and story state preservation
+
+**Data Management:**
+- Character statistics, skills, and equipment state
+- Journal entries and discovered lore preservation
+- Quest progress and completion tracking
+- Game world state (NPCs met, locations discovered)
+- Settings and preferences persistence
+
+**Implementation Features:**
+- Quick save/load hotkeys for convenience
+- Save file metadata (character name, level, play time, screenshot)
+- Import/export save files for sharing or backup
+- Cloud save integration preparation (localStorage foundation)
+- Save file compression for efficient storage
+
+**Acceptance Criteria:**
+- [ ] Character state saves and loads accurately
+- [ ] Journal and story progress preserved correctly
+- [ ] Multiple save slots work independently
+- [ ] Auto-save triggers at appropriate moments
+- [ ] Save corruption gracefully handled with backups
+- [ ] Save/load operations complete within 2 seconds
+
+**Files to Modify:**
+- `js/saveSystem.js` (new save/load management)
+- `js/character.js` (save state integration)
+- `js/journal.js` (journal state persistence)
+- `js/ui.js` (save/load UI components)
+- `game.html` (save/load menu interface)
+
+---
 
 #### **2A: Character Origins (`data/classes.json`)**
 **Steps**:
