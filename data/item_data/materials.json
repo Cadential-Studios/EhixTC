@@ -7,7 +7,7 @@
     "slot": "none",
     "description": "A precious ruby that could be used in crafting or sold for coin.",
     "properties": ["valuable", "crafting_material"],
-    "rarity": "Rare",
+    "rarity": "rare",
     "value": 500,
     "weight": 0
   },
@@ -18,7 +18,7 @@
     "subtype": "mineral",
     "slot": "none",
     "description": "A Common metal ore used for crafting and trade.",
-    "rarity": "Common",
+    "rarity": "common",
     "value": 10,
     "weight": 5
   }

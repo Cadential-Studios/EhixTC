@@ -1,10 +1,4 @@
-<!DOCTY    <!-- External Dependencies -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />l>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <!-- Game Stylesheets -->
     <link rel="stylesheet" href="assets/css/main.css">
@@ -30,11 +25,11 @@
             <h1 class="font-cinzel text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
             <h2 class="font-cinzel text-2xl md:text-3xl text-gray-300 mb-8">The Triune Convergence</h2>
             <p class="max-w-2xl mx-auto mb-12 text-gray-300 text-lg">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
-            <button id="start-game-button" class="start-button font-cinzel text-xl font-bold text-white py-4 px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex';">Begin</button>
+            <button id="start-game-button" class="start-button font-cinzel text-xl font-bold text-white py-4 px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
         </div>
 
         <!-- CHARACTER CREATION SCREEN -->
-        <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+        <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4" style="display: none;">
             <h2 class="font-cinzel text-3xl text-white mb-6">Choose Your Origin</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
                 <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="westwalker">
@@ -53,7 +48,7 @@
         </div>
 
         <!-- MAIN GAME SCREEN -->
-        <div id="game-screen" class="flex-grow flex flex-col">
+        <div id="game-screen" class="flex-grow flex flex-col" style="display: none;">
             <!-- Header -->
             <header id="game-header" class="header sticky top-0 p-4 rounded-b-lg z-10">
                 <div class="flex justify-between items-center">
@@ -148,6 +143,12 @@
                         </div>
                     </div>
 
+                    <!-- Conditions Display -->
+                    <div id="conditions-display" class="mt-4 bg-gray-700 rounded-lg p-3 border border-yellow-600" style="display: none;">
+                        <h4 class="font-cinzel text-yellow-400 mb-3 text-center">🌟 Status Effects</h4>
+                        <div id="active-conditions" class="space-y-2"></div>
+                    </div>
+
                     <!-- Target Selection -->
                     <div id="target-selection" class="mt-4 bg-gray-700 rounded-lg p-3 border border-red-600" style="display: none;">
                         <h4 class="font-cinzel text-red-400 mb-3 text-center">🎯 Select Target</h4>
@@ -177,6 +178,14 @@
     <div id="character-panel" class="ui-panel">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Character</h2>
         <div id="character-content"></div>
+        
+        <!-- Character Conditions Section -->
+        <div id="character-conditions" class="mt-6 bg-gray-800 rounded-lg p-4 border border-yellow-600">
+            <h3 class="font-cinzel text-xl text-yellow-400 mb-3 border-b border-gray-600 pb-2">Active Conditions</h3>
+            <div id="character-active-conditions" class="space-y-2"></div>
+            <p id="no-conditions-text" class="text-gray-400 text-center italic">No active conditions</p>
+        </div>
+        
         <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
     </div>
     
@@ -204,17 +213,59 @@
         <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg">Close</button>
     </div>
 
+    <!-- SPELL MENU MODAL -->
+    <div id="spell-menu" class="spell-menu-overlay" style="display: none;">
+        <div class="spell-menu">
+            <div class="spell-menu-header">
+                <h2 class="font-cinzel text-2xl text-white">✨ Spellcasting</h2>
+                <button onclick="closeSpellMenu()" class="spell-menu-close">✕</button>
+            </div>
+            
+            <div class="spell-menu-content">
+                <!-- Spell Slots Display -->
+                <div class="spell-slots-display">
+                    <h4 class="font-cinzel text-lg text-blue-300 mb-3">🔮 Spell Slots</h4>
+                    <div id="spell-slots-container" class="space-y-2"></div>
+                </div>
+                
+                <!-- Available Spells -->
+                <div class="spell-categories-container">
+                    <h4 class="font-cinzel text-lg text-purple-300 mb-3">📚 Available Spells</h4>
+                    <div id="spell-categories" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Game Scripts - Load in dependency order -->
-    <script src="assets/js/core.js"></script>
-    <script src="assets/js/tools.js"></script>
-    <script src="assets/js/character.js"></script>
-    <script src="assets/js/inventory.js"></script>
-    <script src="assets/js/crafting.js"></script>
-    <script src="assets/js/statAnimator.js"></script>
-    <script src="assets/js/combat.js"></script>
-    <script src="assets/js/ui.js"></script>
+    <!-- Core Utilities -->
+    <script src="assets/js/utils/core.js"></script>
+    <script src="assets/js/utils/tools.js"></script>
+    <script src="assets/js/utils/save.js"></script>
+    
+    <!-- Game Systems -->
+    <script src="assets/js/systems/experience.js"></script>
+    <script src="assets/js/systems/experienceTracker.js"></script>
+    <script src="assets/js/systems/progression.js"></script>
+    <script src="assets/js/systems/character.js"></script>
+    <script src="assets/js/systems/consumableSystem.js"></script>
+    <script src="assets/js/systems/crafting.js"></script>
+    <script src="assets/js/systems/combat.js"></script>
+    <script src="assets/js/systems/spellcasting.js"></script>
+    <script src="assets/js/systems/conditions.js"></script>
+    
+    <!-- UI Components -->
+    <script src="assets/js/ui/advancedSorting.js"></script>
+    <script src="assets/js/ui/inventoryAnalytics.js"></script>
+    <script src="assets/js/ui/inventoryUIFeatures.js"></script>
+    <script src="assets/js/ui/inventory.js"></script>
+    <script src="assets/js/ui/activeEffectsDisplay.js"></script>
+    <script src="assets/js/ui/statAnimator.js"></script>
+    <script src="assets/js/ui/ui.js"></script>
+    
+    <!-- Game Flow -->
     <script src="assets/js/scenes.js"></script>
-    <script src="assets/js/save.js"></script>
+    <script src="assets/js/developerMenu.js"></script>
     <script src="assets/js/main.js"></script>
 
 </body>

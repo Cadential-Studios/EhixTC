@@ -9,7 +9,7 @@
     "armorClass": 0,
     "properties": ["precious"],
     "statBonus": { "charisma": 1 },
-    "rarity": "Uncommon",
+    "rarity": "uncommon",
     "value": 25,
     "weight": 0
   },
@@ -23,20 +23,20 @@
     "armorClass": 0,
     "properties": ["magical", "lunar_affinity"],
     "statBonus": { "wisdom": 2, "intelligence": 1 },
-    "rarity": "Rare",
+    "rarity": "rare",
     "value": 200,
     "weight": 1
   },
   "ring_of_power": {
     "id": "ring_of_power",
     "name": "Ring of Power",
-    "type": "Accessory",
+    "type": "accessory",
     "subtype": "Ring",
     "slot": "finger1",
     "description": "A Legendary ring that amplifies the wearer's magical abilities.",
     "statBonus": { "intelligence": 3, "wisdom": 2, "charisma": 1 },
     "properties": ["spell_power", "mana_regeneration"],
-    "rarity": "Legendary",
+    "rarity": "legendary",
     "value": 5000,
     "weight": 0.1
   },
@@ -50,7 +50,7 @@
     "armorClass": 1,
     "properties": ["defensive"],
     "statBonus": { "armorClass": 1},
-    "rarity": "Uncommon",
+    "rarity": "uncommon",
     "value": 150,
     "weight": 0.5
   }

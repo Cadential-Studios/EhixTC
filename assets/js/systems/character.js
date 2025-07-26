@@ -303,16 +303,38 @@ function levelUp() {
 }
 
 function showLevelUpModal(oldLevel, newLevel) {
-    // This function is deprecated - level up is now handled by progression.js
-    console.log('showLevelUpModal() called from character.js - redirecting to progression system');
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+    modal.style.zIndex = '9999';
     
-    // Call the new progression system instead
-    if (typeof checkForLevelUp === 'function') {
-        checkForLevelUp();
-    } else {
-        console.warn('Progression system not available - using basic level up notification');
-        showGameMessage(`Level Up! You are now level ${newLevel}!`, 'success');
-    }
+    const modalContent = document.createElement('div');
+    modalContent.className = 'bg-gradient-to-br from-yellow-900 to-orange-900 rounded-lg p-8 max-w-md w-full mx-4 border-4 border-yellow-500 shadow-2xl text-center';
+    
+    modalContent.innerHTML = `
+        <h2 class="font-cinzel text-3xl text-yellow-300 mb-4">Level Up!</h2>
+        <div class="text-white text-xl mb-4">
+            Level ${oldLevel} → Level <span class="text-yellow-300 font-bold">${newLevel}</span>
+        </div>
+        <div class="space-y-2 text-sm text-yellow-100 mb-6">
+            <div>• Health and Mana increased</div>
+            <div>• Proficiency bonus: +${gameData.player.proficiencyBonus}</div>
+            <div>• New abilities may be available</div>
+        </div>
+        <button onclick="this.closest('.fixed').remove()" 
+                class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+            Continue Adventure
+        </button>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Auto-close after 10 seconds
+    setTimeout(() => {
+        if (modal.parentNode) {
+            modal.parentNode.removeChild(modal);
+        }
+    }, 10000);
 }
 
 // Character Sheet Rendering

@@ -10,7 +10,7 @@
     "maxDexMod": null,
     "properties": ["light"],
     "statBonus": {},
-    "rarity": "Common",
+    "rarity": "common",
     "value": 10,
     "weight": 10
   },
@@ -25,7 +25,7 @@
     "maxDexMod": null,
     "properties": ["academic_authority"],
     "statBonus": { "intelligence": 1 },
-    "rarity": "Common",
+    "rarity": "common",
     "value": 15,
     "weight": 4
   },
@@ -34,12 +34,12 @@
     "name": "Iron Shield",
     "type": "armor",
     "subtype": "shield",
-    "slot": "offhand",
+    "slot": "offHand",
     "description": "A sturdy iron shield with reinforced edges.",
     "armorClass": 2,
     "properties": ["shield"],
     "statBonus": {},
-    "rarity": "Common",
+    "rarity": "common",
     "value": 10,
     "weight": 6
   },
@@ -54,7 +54,7 @@
     "maxDexMod": 2,
     "properties": ["medium"],
     "statBonus": {},
-    "rarity": "Common",
+    "rarity": "common",
     "value": 75,
     "weight": 55
   },
@@ -68,7 +68,7 @@
     "armorClass": 0,
     "properties": ["comfort"],
     "statBonus": { "dexterity": 1 },
-    "rarity": "Common",
+    "rarity": "common",
     "value": 8,
     "weight": 2
   },
@@ -82,7 +82,7 @@
     "armorClass": 1,
     "properties": ["protection"],
     "statBonus": {},
-    "rarity": "Common",
+    "rarity": "common",
     "value": 12,
     "weight": 3
   },
@@ -104,14 +104,14 @@
   "enchanted_cloak": {
     "id": "enchanted_cloak",
     "name": "Cloak of Shadows",
-    "type": "Armor",
-    "subtype": "Cloak",
+    "type": "armor",
+    "subtype": "cloak",
     "slot": "back",
     "description": "A mysterious cloak that seems to bend light around its wearer.",
     "armorClass": 1,
     "properties": ["stealth_bonus", "magical"],
     "statBonus": { "dexterity": 2 },
-    "rarity": "Rare",
+    "rarity": "rare",
     "value": 200,
     "weight": 1
   },
@@ -120,12 +120,12 @@
     "name": "Chain Mail",
     "type": "armor",
     "subtype": "medium",
-    "slot": "body",
+    "slot": "chest",
     "description": "A suit of armor made from interlocking metal rings.",
     "armorClass": 4,
     "properties": ["metal", "medium"],
     "statBonus": { "dexterity": -2 },
-    "rarity": "Uncommon",
+    "rarity": "uncommon",
     "value": 75,
     "weight": 20
   }

@@ -1,6 +1,8 @@
 // Main Game Initialization Module
 // Edoria: The Triune Convergence - Main Controller
 
+console.log('🎮 Main.js loaded successfully');
+
 // Helper function to map class skills to game skills
 function mapClassSkillToGameSkill(classSkill) {
     const skillMapping = {
@@ -350,6 +352,11 @@ async function initializeGame() {
     gameData.player.rumors.add(
         "Travelers whisper of strange happenings near the Griefwood when Umbralmoon is full."
     );
+    
+    // Initialize experience system after everything is loaded
+    if (typeof initializeExperienceSystem === 'function') {
+        initializeExperienceSystem();
+    }
     
     console.log('Game initialization complete!');
 }
