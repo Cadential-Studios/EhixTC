@@ -1,0 +1,81 @@
+{
+  "saveId": "save_001",
+  "timestamp": "2025-07-19T15:30:00.000Z",
+  "gameVersion": "0.1.0",
+  "player": {
+    "name": "Adventurer",
+    "origin": "westwalker",
+    "level": 1,
+    "experience": 0,
+    "location": "westwalker_camp",
+    "attributes": {
+      "strength": 14,
+      "dexterity": 16,
+      "constitution": 15,
+      "intelligence": 12,
+      "wisdom": 16,
+      "charisma": 11
+    },
+    "hitPoints": {
+      "current": 25,
+      "maximum": 25
+    },
+    "inventory": [
+      {
+        "itemId": "rangers_bow",
+        "quantity": 1,
+        "equipped": true
+      },
+      {
+        "itemId": "leather_armor", 
+        "quantity": 1,
+        "equipped": true
+      },
+      {
+        "itemId": "survival_kit",
+        "quantity": 1,
+        "equipped": false
+      },
+      {
+        "itemId": "healing_herbs",
+        "quantity": 1,
+        "uses": 3,
+        "equipped": false
+      }
+    ],
+    "quests": {
+      "active": ["the_vision"],
+      "completed": []
+    },
+    "lore": [
+      "The Triune Convergence is a time of great upheaval."
+    ],
+    "rumors": []
+  },
+  "world": {
+    "time": {
+      "day": 2,
+      "month": 0,
+      "year": 998
+    },
+    "story": {
+      "currentScene": null,
+      "completedScenes": ["start_vision", "vision"],
+      "choicesMade": [
+        {
+          "sceneId": "vision",
+          "choice": "This is an omen. I must understand it."
+        }
+      ]
+    },
+    "discoveredLocations": ["westwalker_camp"],
+    "unlockedFeatures": []
+  },
+  "settings": {
+    "textSpeed": "normal",
+    "autoSave": true,
+    "soundEnabled": true,
+    "musicVolume": 0.7,
+    "effectsVolume": 0.8
+  }
+}

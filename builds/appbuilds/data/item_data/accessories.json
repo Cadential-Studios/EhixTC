@@ -1,0 +1,57 @@
+{
+  "silver_ring": {
+    "id": "silver_ring",
+    "name": "Silver Ring",
+    "type": "accessory",
+    "subtype": "ring",
+    "slot": "finger",
+    "description": "A simple silver band that gleams in the light.",
+    "armorClass": 0,
+    "properties": ["precious"],
+    "statBonus": { "charisma": 1 },
+    "rarity": "uncommon",
+    "value": 25,
+    "weight": 0
+  },
+  "moonstone_amulet": {
+    "id": "moonstone_amulet",
+    "name": "Moonstone Amulet",
+    "type": "accessory",
+    "subtype": "amulet",
+    "slot": "neck",
+    "description": "An amulet containing a fragment of moonstone that glows softly.",
+    "armorClass": 0,
+    "properties": ["magical", "lunar_affinity"],
+    "statBonus": { "wisdom": 2, "intelligence": 1 },
+    "rarity": "rare",
+    "value": 200,
+    "weight": 1
+  },
+  "ring_of_power": {
+    "id": "ring_of_power",
+    "name": "Ring of Power",
+    "type": "accessory",
+    "subtype": "Ring",
+    "slot": "finger1",
+    "description": "A Legendary ring that amplifies the wearer's magical abilities.",
+    "statBonus": { "intelligence": 3, "wisdom": 2, "charisma": 1 },
+    "properties": ["spell_power", "mana_regeneration"],
+    "rarity": "legendary",
+    "value": 5000,
+    "weight": 0.1
+  },
+  "amulet_protection": {
+    "id": "amulet_protection",
+    "name": "Amulet of Protection",
+    "type": "accessory",
+    "subtype": "amulet",
+    "slot": "neck",
+    "description": "An amulet that grants the wearer additional protection against harm.",
+    "armorClass": 1,
+    "properties": ["defensive"],
+    "statBonus": { "armorClass": 1},
+    "rarity": "uncommon",
+    "value": 150,
+    "weight": 0.5
+  }
+}

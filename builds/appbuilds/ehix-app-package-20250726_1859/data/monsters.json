@@ -1,0 +1,71 @@
+{
+  "shadow_wraith": {
+    "id": "shadow_wraith",
+    "name": "Shadow Wraith",
+    "description": "A malevolent spirit born from the darkness between realms during the Convergence.",
+    "level": 5,
+    "hitPoints": 45,
+    "armorClass": 14,
+    "attributes": {
+      "strength": 8,
+      "dexterity": 18,
+      "constitution": 14,
+      "intelligence": 12,
+      "wisdom": 15,
+      "charisma": 16
+    },
+    "abilities": [
+      {
+        "name": "Shadow Step",
+        "description": "Can teleport through shadows",
+        "type": "movement"
+      },
+      {
+        "name": "Life Drain",
+        "description": "Drains life force on touch",
+        "damage": "2d6",
+        "type": "special"
+      }
+    ],
+    "resistances": ["necrotic", "cold"],
+    "weaknesses": ["radiant"],
+    "loot": [
+      { "item": "shadow_essence", "chance": 0.7 },
+      { "item": "wraith_cloak", "chance": 0.3 }
+    ]
+  },
+  "corrupted_leonin": {
+    "id": "corrupted_leonin",
+    "name": "Corrupted Leonin Warrior",
+    "description": "A once-proud Leonin warrior, twisted by dark magic during the Convergence.",
+    "level": 7,
+    "hitPoints": 68,
+    "armorClass": 16,
+    "attributes": {
+      "strength": 18,
+      "dexterity": 14,
+      "constitution": 16,
+      "intelligence": 10,
+      "wisdom": 8,
+      "charisma": 6
+    },
+    "abilities": [
+      {
+        "name": "Corrupted Roar",
+        "description": "Fear-inducing roar that may cause paralysis",
+        "type": "fear"
+      },
+      {
+        "name": "Berserker Rage",
+        "description": "Increases damage but reduces defense",
+        "type": "buff"
+      }
+    ],
+    "resistances": ["physical"],
+    "weaknesses": ["holy"],
+    "loot": [
+      { "item": "corrupted_mane", "chance": 0.8 },
+      { "item": "tainted_claws", "chance": 0.6 }
+    ]
+  }
+}

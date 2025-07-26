@@ -1,0 +1,28 @@
+{
+  "months": ["Alphi", "Brenn", "Frutia", "Dorona", "Evorn", "Filik", "Grenn", "Halbar"],
+  "monthDescriptions": ["The Awakening", "The Growing", "The Zenith", "The Bounty", "The Waning", "The Reaping", "The Fading", "The Sleeping"],
+  "daysPerMonth": 40,
+  "moons": {
+    "edyria": {
+      "name": "Edyria",
+      "color": "#6a8dff",
+      "cycle": 15,
+      "description": "The blue moon of wisdom and magic"
+    },
+    "kapra": {
+      "name": "Kapra", 
+      "color": "#ff6a6a",
+      "cycle": 28,
+      "description": "The red moon of passion and war"
+    },
+    "enia": {
+      "name": "Enia",
+      "color": "#fffb8a", 
+      "cycle": 38,
+      "description": "The yellow moon of growth and nature"
+    }
+  },
+  "convergenceYear": 999,
+  "currentEra": "Post-Arcanum",
+  "eraAbbreviation": "PA"
+}

@@ -1,0 +1,58 @@
+{
+    "weapon_template": {
+        "id": "weapon_template",
+        "name": "Weapon Template",
+        "type": "Weapon",
+        "subtype": "Melee",
+        "slot": "mainhand",
+        "description": "A generic weapon template. Replace with specific weapon details.",
+        "damage": "1d6",
+        "damageType": "slashing",
+        "properties": ["versatile"],
+        "statBonus": { "strength": 1 },
+        "rarity": "Common",
+        "value": 10,
+        "weight": 2
+    },
+    "armor_template": {
+        "id": "armor_template",
+        "name": "Armor Template",
+        "type": "Armor",
+        "subtype": "Light",
+        "slot": "chest",
+        "description": "A generic armor template. Replace with specific armor details.",
+        "armorClass": 11,
+        "properties": ["lightweight"],
+        "statBonus": { "dexterity": 1 },
+        "rarity": "Common",
+        "value": 15,
+        "weight": 5
+    },
+    "accessory_template": {
+        "id": "accessory_template",
+        "name": "Accessory Template",
+        "type": "Accessory",
+        "subtype": "Ring",
+        "slot": "1finger",
+        "description": "A generic accessory template. Replace with specific accessory details.",
+        "armorClass": 0,
+        "properties": ["decorative"],
+        "statBonus": { "charisma": 1 },
+        "rarity": "Common",
+        "value": 20,
+        "weight": 0
+    },
+    "equipment_template": {
+        "id": "equipment_template",
+        "name": "Equipment Template",
+        "type": "Equipment",
+        "subtype": "Utility",
+        "slot": "none",
+        "description": "A generic equipment template. Replace with specific equipment details.",
+        "effect": "utility",
+        "uses": 1,
+        "rarity": "Common",
+        "value": 5,
+        "weight": 1
+    }
+}

@@ -1,0 +1,25 @@
+{
+  "gem_ruby": {
+    "id": "gem_ruby",
+    "name": "Ruby Gem",
+    "type": "material",
+    "subtype": "gem",
+    "slot": "none",
+    "description": "A precious ruby that could be used in crafting or sold for coin.",
+    "properties": ["valuable", "crafting_material"],
+    "rarity": "rare",
+    "value": 500,
+    "weight": 0
+  },
+  "iron_ore": {
+    "id": "iron_ore",
+    "name": "Iron Ore",
+    "type": "material",
+    "subtype": "mineral",
+    "slot": "none",
+    "description": "A Common metal ore used for crafting and trade.",
+    "rarity": "common",
+    "value": 10,
+    "weight": 5
+  }
+}

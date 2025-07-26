@@ -1,0 +1,26 @@
+{
+  "survival_kit": {
+    "id": "survival_kit",
+    "name": "Survival Kit",
+    "type": "tool",
+    "slot": "none",
+    "description": "Contains basic tools for wilderness survival: rope, tinderbox, fishing hooks, and small knife.",
+    "uses": "unlimited",
+    "rarity": "Common",
+    "value": 5,
+    "weight": 3
+  },
+  "thieves_tools": {
+    "id": "thieves_tools",
+    "name": "Thieves' Tools",
+    "type": "Tool",
+    "subtype": "Utility",
+    "slot": "none",
+    "description": "A set of lockpicks and tools useful for disabling traps and opening locks.",
+    "effect": "lockpicking_bonus",
+    "uses": "unlimited",
+    "rarity": "Uncommon",
+    "value": 25,
+    "weight": 1
+  }
+}

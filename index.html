@@ -22,27 +22,35 @@
 
         <!-- START SCREEN -->
         <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
-            <h1 class="font-cinzel text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
-            <h2 class="font-cinzel text-2xl md:text-3xl text-gray-300 mb-8">The Triune Convergence</h2>
-            <p class="max-w-2xl mx-auto mb-12 text-gray-300 text-lg">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
-            <button id="start-game-button" class="start-button font-cinzel text-xl font-bold text-white py-4 px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
+            <!-- Mobile Mode Toggle -->
+            <div class="mobile-toggle-container absolute top-4 right-4 z-20">
+                <button id="mobile-mode-toggle" class="mobile-toggle-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors" onclick="toggleMobileMode()">
+                    <i class="ph-duotone ph-device-mobile"></i>
+                    <span id="mobile-toggle-text">Mobile Mode</span>
+                </button>
+            </div>
+            
+            <h1 class="font-cinzel text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
+            <h2 class="font-cinzel text-xl sm:text-2xl md:text-3xl text-gray-300 mb-6 sm:mb-8">The Triune Convergence</h2>
+            <p class="max-w-2xl mx-auto mb-8 sm:mb-12 text-gray-300 text-base sm:text-lg px-4">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
+            <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
         </div>
 
         <!-- CHARACTER CREATION SCREEN -->
         <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4" style="display: none;">
-            <h2 class="font-cinzel text-3xl text-white mb-6">Choose Your Origin</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="westwalker">
-                    <h3 class="font-cinzel text-xl text-white mb-2">Westwalker of the Frontier</h3>
-                    <p class="text-gray-300">You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.</p>
+            <h2 class="font-cinzel text-2xl sm:text-3xl text-white mb-4 sm:mb-6">Choose Your Origin</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full max-w-4xl">
+                <div class="choice-button p-4 sm:p-6 rounded-lg cursor-pointer" data-origin="westwalker">
+                    <h3 class="font-cinzel text-lg sm:text-xl text-white mb-2">Westwalker of the Frontier</h3>
+                    <p class="text-gray-300 text-sm sm:text-base">You are a ranger, born to the rugged plains and wary of complex magic. You trust your instincts, the land, and the spirits of the Griefwood.</p>
                 </div>
-                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="leonin">
-                    <h3 class="font-cinzel text-xl text-white mb-2">M'ra Kaal Spirit-Speaker</h3>
-                    <p class="text-gray-300">You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.</p>
+                <div class="choice-button p-4 sm:p-6 rounded-lg cursor-pointer" data-origin="leonin">
+                    <h3 class="font-cinzel text-lg sm:text-xl text-white mb-2">M'ra Kaal Spirit-Speaker</h3>
+                    <p class="text-gray-300 text-sm sm:text-base">You are a Leonin, bound by honor and a sacred pact with the spirits of nature. You feel the growing turmoil of the Pridelands in your very soul.</p>
                 </div>
-                <div class="choice-button p-6 rounded-lg cursor-pointer" data-origin="gaian">
-                    <h3 class="font-cinzel text-xl text-white mb-2">Gaian Scholar</h3>
-                    <p class="text-gray-400">You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.</p>
+                <div class="choice-button p-4 sm:p-6 rounded-lg cursor-pointer" data-origin="gaian">
+                    <h3 class="font-cinzel text-lg sm:text-xl text-white mb-2">Gaian Scholar</h3>
+                    <p class="text-gray-400 text-sm sm:text-base">You are a student of history and the arcane from the Imperial capital. You seek knowledge and believe reason can overcome the superstitions of the past.</p>
                 </div>
             </div>
         </div>
@@ -50,24 +58,24 @@
         <!-- MAIN GAME SCREEN -->
         <div id="game-screen" class="flex-grow flex flex-col" style="display: none;">
             <!-- Header -->
-            <header id="game-header" class="header sticky top-0 p-4 rounded-b-lg z-10">
+            <header id="game-header" class="header sticky top-0 p-2 sm:p-4 rounded-b-lg z-10">
                 <div class="flex justify-between items-center">
-                    <div>
-                        <p class="font-cinzel text-lg" id="current-date">Alphi 1, 998 PA</p>
-                        <p class="text-sm text-gray-400" id="month-description">The Awakening</p>
-                        <p class="text-sm text-gray-300" id="current-time">8:00 AM</p>
+                    <div class="text-xs sm:text-base">
+                        <p class="font-cinzel text-sm sm:text-lg" id="current-date">Alphi 1, 998 PA</p>
+                        <p class="text-xs sm:text-sm text-gray-400" id="month-description">The Awakening</p>
+                        <p class="text-xs sm:text-sm text-gray-300" id="current-time">8:00 AM</p>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-center"><div id="moon-edyria" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
-                        <div class="text-center"><div id="moon-kapra" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-kapra"></div><p class="text-xs text-red-300">Kapra</p></div>
-                        <div class="text-center"><div id="moon-enia" class="moon w-8 h-8 rounded-full mx-auto mb-1 moon-enia"></div><p class="text-xs text-yellow-300">Enia</p></div>
+                    <div class="flex items-center space-x-2 sm:space-x-4">
+                        <div class="text-center"><div id="moon-edyria" class="moon w-6 h-6 sm:w-8 sm:h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
+                        <div class="text-center"><div id="moon-kapra" class="moon w-6 h-6 sm:w-8 sm:h-8 rounded-full mx-auto mb-1 moon-kapra"></div><p class="text-xs text-red-300">Kapra</p></div>
+                        <div class="text-center"><div id="moon-enia" class="moon w-6 h-6 sm:w-8 sm:h-8 rounded-full mx-auto mb-1 moon-enia"></div><p class="text-xs text-yellow-300">Enia</p></div>
                     </div>
                 </div>
             </header>
 
             <!-- Time Controls -->
-            <div id="time-controls" class="time-controls px-4 py-2 bg-gray-900 bg-opacity-50 border-b border-gray-700">
-                <div class="flex items-center justify-center space-x-4">
+            <div id="time-controls" class="time-controls px-2 sm:px-4 py-2 bg-gray-900 bg-opacity-50 border-b border-gray-700">
+                <div class="flex items-center justify-center space-x-2 sm:space-x-4">
                     <button id="time-play-pause" class="time-control-btn" onclick="toggleTime()" title="Pause/Resume Time">
                         <i class="fas fa-pause"></i>
                     </button>
@@ -76,17 +84,35 @@
             </div>
 
             <!-- Main Content Area -->
-            <main id="main-content" class="flex-grow p-4 flex flex-col"></main>
+            <main id="main-content" class="flex-grow p-2 sm:p-4 flex flex-col overflow-y-auto"></main>
 
             <!-- Bottom Nav -->
-            <footer class="bottom-nav sticky bottom-0 py-2 px-4 mt-auto">
+            <footer class="bottom-nav sticky bottom-0 py-2 px-2 sm:px-4 mt-auto">
                 <div class="flex justify-around items-center text-gray-400">
-                    <button class="nav-icon text-center" data-panel="journal-panel" title="Journal"><i class="ph-duotone ph-book-open"></i></button>
-                    <button class="nav-icon text-center" data-panel="character-panel" title="Character"><i class="ph-duotone ph-user"></i></button>
-                    <button class="nav-icon text-center" data-panel="effects-panel" title="Effects"><i class="ph-duotone ph-sparkle"></i></button>
-                    <button class="nav-icon text-center" data-panel="inventory-panel" title="Inventory"><i class="ph-duotone ph-backpack"></i></button>
-                    <button class="nav-icon text-center" data-panel="crafting-panel" title="Crafting"><i class="ph-duotone ph-hammer"></i></button>
-                    <button class="nav-icon text-center" data-panel="settings-panel" title="Settings"><i class="ph-duotone ph-gear-six"></i></button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="journal-panel" title="Journal">
+                        <i class="ph-duotone ph-book-open text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Journal</span>
+                    </button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="character-panel" title="Character">
+                        <i class="ph-duotone ph-user text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Character</span>
+                    </button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="effects-panel" title="Effects">
+                        <i class="ph-duotone ph-sparkle text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Effects</span>
+                    </button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="inventory-panel" title="Inventory">
+                        <i class="ph-duotone ph-backpack text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Inventory</span>
+                    </button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="crafting-panel" title="Crafting">
+                        <i class="ph-duotone ph-hammer text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Crafting</span>
+                    </button>
+                    <button class="nav-icon text-center p-2 rounded-lg" data-panel="settings-panel" title="Settings">
+                        <i class="ph-duotone ph-gear-six text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Settings</span>
+                    </button>
                 </div>
             </footer>
         </div>
@@ -94,12 +120,12 @@
         <!-- COMBAT SCREEN -->
         <div id="combat-screen" class="flex-grow flex flex-col" style="display: none;">
             <!-- Combat Header -->
-            <header class="combat-header bg-red-900 bg-opacity-80 p-4 text-center">
-                <h1 class="font-cinzel text-3xl text-red-400 mb-2"><i class="ph-duotone ph-sword"></i> COMBAT <i class="ph-duotone ph-sword"></i></h1>
-                <div class="flex justify-between items-center">
+            <header class="combat-header bg-red-900 bg-opacity-80 p-2 sm:p-4 text-center">
+                <h1 class="font-cinzel text-xl sm:text-3xl text-red-400 mb-2"><i class="ph-duotone ph-sword"></i> COMBAT <i class="ph-duotone ph-sword"></i></h1>
+                <div class="flex justify-between items-center text-xs sm:text-base">
                     <div id="combat-round-display" class="text-yellow-300 font-bold">Round 1</div>
-                    <div id="current-turn-display" class="text-white bg-yellow-600 px-3 py-1 rounded font-bold">Player's Turn</div>
-                    <button onclick="exitCombat()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm">
+                    <div id="current-turn-display" class="text-white bg-yellow-600 px-2 sm:px-3 py-1 rounded font-bold">Player's Turn</div>
+                    <button onclick="exitCombat()" class="bg-gray-600 hover:bg-gray-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm">
                         Flee Combat
                     </button>
                 </div>
@@ -262,6 +288,9 @@
     <script src="assets/js/ui/activeEffectsDisplay.js"></script>
     <script src="assets/js/ui/statAnimator.js"></script>
     <script src="assets/js/ui/ui.js"></script>
+    
+    <!-- Mobile Support -->
+    <script src="assets/js/mobile.js"></script>
     
     <!-- Game Flow -->
     <script src="assets/js/scenes.js"></script>

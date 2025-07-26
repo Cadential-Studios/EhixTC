@@ -1,0 +1,145 @@
+{
+  "config.xml": {
+    "widget": {
+      "id": "com.cadentialstudios.ehix",
+      "version": "1.0.0",
+      "name": "Ehix: The Triune Convergence",
+      "description": "An interactive fantasy adventure where your choices shape the fate of nations as three moons align in a once-in-a-generation convergence.",
+      "author": {
+        "email": "contact@cadentialstudios.com",
+        "href": "https://cadentialstudios.com",
+        "text": "Cadential Studios"
+      },
+      "content": {
+        "src": "index.html"
+      },
+      "access": {
+        "origin": "*"
+      },
+      "allow-intent": [
+        {"href": "http://*/*"},
+        {"href": "https://*/*"},
+        {"href": "tel:*"},
+        {"href": "sms:*"},
+        {"href": "mailto:*"},
+        {"href": "geo:*"}
+      ],
+      "platform": {
+        "name": "android",
+        "preferences": {
+          "android-minSdkVersion": "24",
+          "android-targetSdkVersion": "35",
+          "android-compileSdkVersion": "35",
+          "Orientation": "portrait",
+          "Fullscreen": "false",
+          "BackgroundColor": "0xff1a1a2e",
+          "SplashScreenDelay": "2000",
+          "FadeSplashScreenDuration": "500",
+          "ShowSplashScreenSpinner": "false"
+        }
+      },
+      "preferences": {
+        "DisallowOverscroll": "true",
+        "HideKeyboardFormAccessoryBar": "true",
+        "SuppressesIncrementalRendering": "false",
+        "TopActivityIndicator": "gray",
+        "KeyboardDisplayRequiresUserAction": "true"
+      }
+    }
+  },
+  "build_instructions": {
+    "phonegap_build": {
+      "steps": [
+        "1. Zip all files in this directory",
+        "2. Go to build.phonegap.com",
+        "3. Upload zip file",
+        "4. Download generated APK",
+        "5. Install on Android device"
+      ],
+      "requirements": [
+        "PhoneGap Build account",
+        "Internet connection",
+        "ZIP utility"
+      ]
+    },
+    "local_cordova": {
+      "steps": [
+        "1. Install Node.js and npm",
+        "2. Install Cordova: npm install -g cordova",
+        "3. Install Android Studio and SDK",
+        "4. Set ANDROID_HOME environment variable",
+        "5. Create project: cordova create myapp",
+        "6. Copy these files to www/ directory",
+        "7. Add platform: cordova platform add android",
+        "8. Build: cordova build android"
+      ],
+      "requirements": [
+        "Node.js 14+",
+        "Android Studio",
+        "Android SDK",
+        "Java JDK 8-21"
+      ]
+    },
+    "capacitor": {
+      "steps": [
+        "1. Install Capacitor: npm install @capacitor/core @capacitor/cli",
+        "2. Initialize: npx cap init",
+        "3. Add platform: npx cap add android",
+        "4. Copy files to src/ directory",
+        "5. Build: npx cap build android",
+        "6. Open in Android Studio: npx cap open android"
+      ],
+      "requirements": [
+        "Node.js 14+",
+        "Android Studio",
+        "Capacitor CLI"
+      ]
+    }
+  },
+  "deployment_options": {
+    "web_app": {
+      "description": "Deploy as web application",
+      "steps": [
+        "Upload all files to web server",
+        "Access via browser URL",
+        "Add to home screen on mobile"
+      ],
+      "advantages": [
+        "No app store approval needed",
+        "Instant updates",
+        "Cross-platform compatibility",
+        "Easy deployment"
+      ]
+    },
+    "pwa": {
+      "description": "Progressive Web App",
+      "steps": [
+        "Deploy as web app",
+        "Ensure HTTPS connection",
+        "Service worker enables offline use",
+        "Install prompt appears automatically"
+      ],
+      "advantages": [
+        "App-like experience",
+        "Offline functionality",
+        "Push notifications (future)",
+        "Home screen installation"
+      ]
+    },
+    "native_app": {
+      "description": "Native mobile application",
+      "steps": [
+        "Use Cordova/Capacitor build process",
+        "Generate signed APK/IPA",
+        "Submit to app stores",
+        "Users download from store"
+      ],
+      "advantages": [
+        "App store distribution",
+        "Native device integration",
+        "Better performance",
+        "Professional appearance"
+      ]
+    }
+  }
+}

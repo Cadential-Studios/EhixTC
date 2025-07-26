@@ -2270,3 +2270,107 @@ body {
     background: rgba(16, 185, 129, 1);
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
+
+/* ==================== MOBILE MODE SPECIFIC STYLES ==================== */
+.mobile-toggle-btn {
+    background: linear-gradient(45deg, #10b981, #34d399);
+    border: 2px solid #047857;
+    color: white;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.mobile-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(45deg, #047857, #10b981);
+}
+
+.mobile-toggle-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Mobile Mode Enhancements */
+body.mobile-mode {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+body.mobile-mode .game-container {
+    padding: 0.5rem;
+}
+
+body.mobile-mode .moon {
+    width: 2rem;
+    height: 2rem;
+}
+
+body.mobile-mode .header {
+    padding: 0.75rem;
+}
+
+body.mobile-mode .choice-button,
+body.mobile-mode .action-button {
+    min-height: 80px;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+}
+
+body.mobile-mode .ui-panel {
+    padding: 1rem;
+}
+
+body.mobile-mode .inventory-slot,
+body.mobile-mode .equipped-item {
+    min-height: 50px;
+}
+
+/* Mobile-specific touch targets */
+@media (max-width: 430px) {
+    /* Optimized for Google Pixel 9 (430px width) */
+    .game-container {
+        padding: 0.25rem;
+    }
+    
+    .header {
+        padding: 0.5rem;
+    }
+    
+    .choice-button,
+    .action-button {
+        min-height: 70px;
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+    
+    .moon {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+    
+    .story-text {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+}
+
+/* Enhanced touch interactions for mobile */
+body.mobile-mode button,
+body.mobile-mode .choice-button,
+body.mobile-mode .action-button {
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    touch-action: manipulation;
+}
+
+body.mobile-mode input,
+body.mobile-mode textarea,
+body.mobile-mode select {
+    font-size: 16px; /* Prevents zoom on iOS */
+}

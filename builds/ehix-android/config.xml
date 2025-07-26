@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.cadentialstudios.ehix" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Ehix: The Triune Convergence</name>
+    <description>
+        An interactive fantasy adventure where your choices shape the fate of nations as three moons align in a once-in-a-generation convergence.
+    </description>
+    <author email="contact@cadentialstudios.com" href="https://cadentialstudios.com">
+        Cadential Studios
+    </author>
+    <content src="index.html" />
+    
+    <!-- External Access -->
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    
+    <!-- Android Platform Configuration -->
+    <platform name="android">
+        <allow-intent href="market:*" />
+        
+        <!-- Android App Settings -->
+        <preference name="android-minSdkVersion" value="24" />
+        <preference name="android-targetSdkVersion" value="35" />
+        <preference name="android-compileSdkVersion" value="35" />
+        
+        <!-- Performance and Display -->
+        <preference name="LoadingDialog" value="Loading Ehix..." />
+        <preference name="LoadingPageDialog" value="Loading..." />
+        <preference name="ErrorUrl" value="file:///android_asset/www/error.html" />
+        <preference name="Fullscreen" value="false" />
+        <preference name="Orientation" value="portrait" />
+        
+        <!-- Hardware Access -->
+        <preference name="permissions" value="none" />
+        <preference name="KeepRunning" value="true" />
+        <preference name="DisallowOverscroll" value="true" />
+        
+        <!-- App Icon and Splash Screen -->
+        <icon density="ldpi" src="res/icon/android/icon-36-ldpi.png" />
+        <icon density="mdpi" src="res/icon/android/icon-48-mdpi.png" />
+        <icon density="hdpi" src="res/icon/android/icon-72-hdpi.png" />
+        <icon density="xhdpi" src="res/icon/android/icon-96-xhdpi.png" />
+        <icon density="xxhdpi" src="res/icon/android/icon-144-xxhdpi.png" />
+        <icon density="xxxhdpi" src="res/icon/android/icon-192-xxxhdpi.png" />
+    </platform>
+    
+    <!-- Global Preferences -->
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="BackgroundColor" value="0xff1a1a2e" />
+    <preference name="HideKeyboardFormAccessoryBar" value="true" />
+    <preference name="SuppressesIncrementalRendering" value="false" />
+    <preference name="TopActivityIndicator" value="gray" />
+    <preference name="KeyboardDisplayRequiresUserAction" value="true" />
+    <preference name="SplashScreenDelay" value="2000" />
+    <preference name="FadeSplashScreenDuration" value="500" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    
+    <!-- Content Security Policy -->
+    <access origin="*" />
+    <allow-navigation href="*" />
+</widget>on='1.0' encoding='utf-8'?>
+<widget id="com.cadentialstudios.ehix" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Ehix: The Triune Convergence</name>
+    <description>Sample Apache Cordova App</description>
+    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
+        Apache Cordova Team
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+</widget>

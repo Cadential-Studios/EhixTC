@@ -1,0 +1,15 @@
+{
+  "bedroll": {
+    "id": "bedroll",
+    "name": "Bedroll",
+    "type": "equipment",
+    "subtype": "sleeping",
+    "slot": "none",
+    "description": "A simple roll of fabric for sleeping outdoors.",
+    "effect": "comfort",
+    "uses": "unlimited",
+    "rarity": "Common",
+    "value": 5,
+    "weight": 3
+  }
+}
