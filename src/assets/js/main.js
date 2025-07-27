@@ -363,9 +363,27 @@ async function initializeGame() {
     
     // Add some test journal entries to demonstrate the system
     gameData.player.quests.active.push(
-        "Explore the mysterious Griefwood and discover its ancient secrets.",
-        "Seek out the Keeper of Jorn to learn about the coming Convergence."
+        {
+            id: 'griefwood_secret',
+            text: 'Explore the mysterious Griefwood and discover its ancient secrets.',
+            progress: 0.3,
+            started: Date.now()
+        },
+        {
+            id: 'keeper_of_jorn',
+            text: 'Seek out the Keeper of Jorn to learn about the coming Convergence.',
+            progress: 0.0,
+            started: Date.now()
+        }
     );
+
+    gameData.player.quests.completed.push({
+        id: 'intro_complete',
+        text: 'Attend the festival at Westwalker',
+        progress: 1,
+        started: Date.now() - 86400000,
+        completedAt: Date.now() - 43200000
+    });
     
     gameData.player.lore.add(
         "The Aethermoon governs all magical energies in the world of Edoria."

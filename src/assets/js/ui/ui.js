@@ -341,36 +341,54 @@ function renderSettings() {
 // Journal Panel Rendering
 function renderJournal(activeTab = 'all') {
     if (!journalContentEl) return;
-    
+
+    const searchEl = document.getElementById('journal-search-input');
+    const searchQuery = searchEl ? searchEl.value.toLowerCase() : '';
+
     let content = '<div class="journal-container">';
-    
-    // Tab Navigation
+
+    // Tab Navigation + Search
     content += `
-        <div class="journal-tabs mb-6">
-            <div class="flex space-x-1 bg-gray-800 rounded-lg p-1">
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('all')">All</button>
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('quests')">Quests</button>
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')">Lore</button>
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'rumors' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('rumors')">Rumors</button>
+        <div class="journal-tabs mb-4">
+            <div class="flex flex-wrap items-center space-x-1 bg-gray-800 rounded-lg p-1">
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('all')"><i class='ph-duotone ph-book-open mr-1'></i>All</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('quests')"><i class='ph-duotone ph-scroll mr-1'></i>Quests</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')"><i class='ph-duotone ph-book mr-1'></i>Lore</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'rumors' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('rumors')"><i class='ph-duotone ph-chats-circle mr-1'></i>Rumors</button>
+                <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." oninput="renderJournal('${activeTab}')" />
             </div>
         </div>
     `;
     
     // Content based on active tab
     if (activeTab === 'all' || activeTab === 'quests') {
+        const activeQuests = gameData.player.quests.active.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
+        const completedQuests = gameData.player.quests.completed.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
                     📋 Active Quests
                 </h4>
                 <div class="space-y-2">
-                    ${gameData.player.quests.active.length > 0 ? 
-                        gameData.player.quests.active.map(quest => `
-                            <div class="quest-item bg-gray-800 p-3 rounded border-l-4 border-blue-500">
-                                <div class="text-blue-300 font-semibold">Active</div>
-                                <div class="text-white">${quest}</div>
+                    ${activeQuests.length > 0 ?
+                        activeQuests.map(quest => {
+                            const qid = quest.id || quest.text || quest;
+                            const pinned = gameData.player.journalPins.has(qid);
+                            const progress = quest.progress !== undefined ? quest.progress : null;
+                            return `
+                            <div class="journal-entry quest ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-amber-300 font-semibold">Active</div>
+                                    <div class="flex items-center gap-2">
+                                        <button class="text-blue-400 text-xs" onclick="trackQuest('${qid}')">Track</button>
+                                        <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${qid}')">${pinned ? '★' : '☆'}</button>
+                                    </div>
+                                </div>
+                                <div class="text-white">${quest.text || quest}</div>
+                                ${progress !== null ? `<div class="quest-progress"><div class="quest-progress-fill" style="width:${Math.round(progress * 100)}%"></div></div>` : ''}
                             </div>
-                        `).join('') : 
+                            `;
+                        }).join('') :
                         '<div class="text-gray-400 italic">No active quests</div>'
                     }
                 </div>
@@ -379,13 +397,20 @@ function renderJournal(activeTab = 'all') {
                     ✅ Completed Quests
                 </h4>
                 <div class="space-y-2">
-                    ${gameData.player.quests.completed.length > 0 ? 
-                        gameData.player.quests.completed.map(quest => `
-                            <div class="quest-item bg-gray-800 p-3 rounded border-l-4 border-green-500">
-                                <div class="text-green-300 font-semibold">Completed</div>
-                                <div class="text-white">${quest}</div>
+                    ${completedQuests.length > 0 ?
+                        completedQuests.map(quest => {
+                            const qid = quest.id || quest.text || quest;
+                            const pinned = gameData.player.journalPins.has(qid);
+                            return `
+                            <div class="journal-entry quest completed ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-green-300 font-semibold">Completed</div>
+                                    <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${qid}')">${pinned ? '★' : '☆'}</button>
+                                </div>
+                                <div class="text-white">${quest.text || quest}</div>
                             </div>
-                        `).join('') : 
+                            `;
+                        }).join('') :
                         '<div class="text-gray-400 italic">No completed quests</div>'
                     }
                 </div>
@@ -394,19 +419,26 @@ function renderJournal(activeTab = 'all') {
     }
     
     if (activeTab === 'all' || activeTab === 'lore') {
+        const loreEntries = Array.from(gameData.player.lore).filter(l => l.toLowerCase().includes(searchQuery));
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
                     📚 Lore & Knowledge
                 </h4>
                 <div class="space-y-2 max-h-64 overflow-y-auto">
-                    ${gameData.player.lore.size > 0 ? 
-                        Array.from(gameData.player.lore).map(lore => `
-                            <div class="lore-item bg-gray-800 p-3 rounded border-l-4 border-yellow-500">
-                                <div class="text-yellow-300 font-semibold">Knowledge</div>
+                    ${loreEntries.length > 0 ?
+                        loreEntries.map(lore => {
+                            const pinned = gameData.player.journalPins.has(lore);
+                            return `
+                            <div class="journal-entry lore ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-blue-300 font-semibold">Knowledge</div>
+                                    <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${lore}')">${pinned ? '★' : '☆'}</button>
+                                </div>
                                 <div class="text-white">${processJournalText(lore)}</div>
                             </div>
-                        `).join('') : 
+                            `;
+                        }).join('') :
                         '<div class="text-gray-400 italic">No lore discovered</div>'
                     }
                 </div>
@@ -415,19 +447,26 @@ function renderJournal(activeTab = 'all') {
     }
     
     if (activeTab === 'all' || activeTab === 'rumors') {
+        const rumorEntries = Array.from(gameData.player.rumors).filter(r => r.toLowerCase().includes(searchQuery));
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
                     🗣️ Rumors & Whispers
                 </h4>
                 <div class="space-y-2 max-h-64 overflow-y-auto">
-                    ${gameData.player.rumors.size > 0 ? 
-                        Array.from(gameData.player.rumors).map(rumor => `
-                            <div class="rumor-item bg-gray-800 p-3 rounded border-l-4 border-purple-500">
-                                <div class="text-purple-300 font-semibold">Rumor</div>
+                    ${rumorEntries.length > 0 ?
+                        rumorEntries.map(rumor => {
+                            const pinned = gameData.player.journalPins.has(rumor);
+                            return `
+                            <div class="journal-entry rumor ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-purple-300 font-semibold">Rumor</div>
+                                    <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${rumor}')">${pinned ? '★' : '☆'}</button>
+                                </div>
                                 <div class="text-white">${processJournalText(rumor)}</div>
                             </div>
-                        `).join('') : 
+                            `;
+                        }).join('') :
                         '<div class="text-gray-400 italic">No rumors heard</div>'
                     }
                 </div>
@@ -884,4 +923,19 @@ function activateItem(itemId) {
     } else {
         showGameMessage('Failed to activate the item.', 'failure');
     }
+}
+
+// Toggle pin status for journal entries
+function toggleJournalPin(id) {
+    if (gameData.player.journalPins.has(id)) {
+        gameData.player.journalPins.delete(id);
+    } else {
+        gameData.player.journalPins.add(id);
+    }
+    renderJournal();
+}
+
+// Simulated quest tracking
+function trackQuest(id) {
+    showGameMessage(`Tracking quest: ${id}`, 'info');
 }
