@@ -149,9 +149,14 @@ function openPanel(panelId) {
 }
 
 function closeAllPanels() {
+    if (!uiPanels || typeof uiPanels.forEach !== 'function') {
+        return;
+    }
     uiPanels.forEach(panel => {
-        panel.style.display = 'none';
-        panel.classList.remove('open');
+        if (panel) {
+            panel.style.display = 'none';
+            panel.classList.remove('open');
+        }
     });
 }
 
