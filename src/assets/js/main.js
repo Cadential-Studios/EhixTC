@@ -270,7 +270,28 @@ function setDefaultCraftingSkills(characterClass) {
             closeAllPanels();
         }
     });
-    
+
+    // Quit Game button
+    const quitBtn = document.getElementById('quit-game-btn');
+    const quitOverlay = document.getElementById('quit-confirm');
+    const confirmQuit = document.getElementById('confirm-quit');
+    const cancelQuit = document.getElementById('cancel-quit');
+    if (quitBtn && quitOverlay) {
+        quitBtn.addEventListener('click', () => {
+            quitOverlay.style.display = 'flex';
+        });
+    }
+    if (cancelQuit && quitOverlay) {
+        cancelQuit.addEventListener('click', () => {
+            quitOverlay.style.display = 'none';
+        });
+    }
+    if (confirmQuit) {
+        confirmQuit.addEventListener('click', () => {
+            window.location.href = 'about:blank';
+        });
+    }
+
     console.log('Event listeners setup complete');
 }
 

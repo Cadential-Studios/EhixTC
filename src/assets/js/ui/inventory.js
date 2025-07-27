@@ -861,9 +861,9 @@ class InventoryManager {
                                 <i class="ph-duotone ph-flask mr-2"></i>Use
                             </button>
                         ` : ''}
-                        <button onclick="inventoryManager.closeItemModal()" 
+                        <button onclick="inventoryManager.closeItemModal()"
                                 class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded font-semibold transition-colors">
-                            Close
+                            <i class="ph-duotone ph-x"></i><span class="sr-only">Close</span>
                         </button>
                     </div>
                 </div>
