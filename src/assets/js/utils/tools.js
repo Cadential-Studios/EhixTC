@@ -42,7 +42,7 @@ class DiceRoller {
                     <!-- Dice Icon -->
                     <div class="dice-display mb-6">
                         <div id="dice-icon" class="mb-2 transition-transform duration-200 transform flex justify-center items-center">
-                            <img src="assets/images/dice.png" alt="D20" class="w-20 h-20 filter drop-shadow-lg" style="filter: drop-shadow(0 0 15px rgba(106, 141, 255, 0.8));" />
+                            <img src="src/assets/images/dice.png" alt="D20" class="w-20 h-20 filter drop-shadow-lg" style="filter: drop-shadow(0 0 15px rgba(106, 141, 255, 0.8));" />
                         </div>
                         <div class="dice-type text-blue-400 font-cinzel text-lg font-bold opacity-0 transition-opacity duration-500" id="dice-type-label">d${sides}</div>
                     </div>

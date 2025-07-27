@@ -34,7 +34,7 @@ Familiarize yourself with the directory layout. Keep new files organized and fol
 
 ### Asset Structure
 ```
-assets/
+src/assets/
 ├── css/
 │   └── main.css           # All game styling - extracted from HTML
 ├── js/
@@ -46,7 +46,7 @@ assets/
 
 ### Data Structure (JSON-Based Game Content)
 ```
-data/
+src/data/
 ├── locations.json         # Game world locations
 ├── scenes.json           # Story scenes and dialogue trees
 ├── classes.json          # Character origins/classes
@@ -71,9 +71,9 @@ These guidelines ensure code quality, maintainability, and a smooth collaborativ
 
 
 ### When Editing Content
-1. **Story Content**: Edit JSON files in `data/` directory. Ensure new content fits the established lore and narrative style.
-2. **Styling**: Edit `assets/css/main.css`. Use Tailwind CSS classes where possible for consistency and responsiveness.
-3. **Game Logic**: Edit `assets/js/main.js` and modular JS files. Keep logic modular and reusable.
+1. **Story Content**: Edit JSON files in `src/data/` directory. Ensure new content fits the established lore and narrative style.
+2. **Styling**: Edit `src/assets/css/main.css`. Use Tailwind CSS classes where possible for consistency and responsiveness.
+3. **Game Logic**: Edit `src/assets/js/main.js` and modular JS files. Keep logic modular and reusable.
 4. **Main Structure**: Only edit `index.html` for major structural changes. Avoid breaking the main entry point.
 
 
@@ -351,10 +351,13 @@ These rules help prevent common mistakes and maintain project integrity. AI assi
 Proper documentation and task tracking are essential for project transparency and future maintenance. Use the following workflow for all features, bug fixes, and improvements.
 
 
+
 ### Managing TODO Documents
 - Track all planned features, bug fixes, and improvements as markdown documents in the `docs/todo/` directory, organized by category (e.g., `features`, `bugs`, `other`).
 - Each TODO document must clearly describe the tasks, issues, and planned solutions, with enough detail for any developer or AI to understand and implement.
 - Upon completion, update the document status, add a completion date at the top, and move it to the appropriate `complete` subfolder (e.g., `docs/todo/bugs/complete/`).
+- When moving a document to a `complete` folder, append the contents of `docs/implementation_log_template.md` to the end of the document and fill it out. This ensures every completed bugfix, feature, or improvement document includes the latest Implementation Results Log template for future reference and traceability.
+- Always reference the `implementation_log_template.md` for the most up-to-date log format.
 - If follow-up actions are required, create a new TODO document and link it from the completed one.
 
 
