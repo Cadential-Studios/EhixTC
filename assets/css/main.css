@@ -2332,6 +2332,11 @@ body.mobile-mode .equipped-item {
     min-height: 50px;
 }
 
+body.mobile-mode .inventory-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-height: 70vh;
+}
+
 body.mobile-mode .bottom-nav .mobile-nav-text {
     display: none;
 }
