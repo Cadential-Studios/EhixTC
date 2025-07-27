@@ -6,7 +6,7 @@
     <title>Edoria: The Triune Convergence</title>
     
     <!-- External Dependencies -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="src/assets/css/tailwind.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
@@ -75,6 +75,7 @@
                         <p class="font-cinzel text-sm sm:text-lg" id="current-date">Alphi 1, 998 PA</p>
                         <p class="text-xs sm:text-sm text-gray-400" id="month-description">The Awakening</p>
                         <p class="text-xs sm:text-sm text-gray-300" id="current-time">8:00 AM</p>
+                        <input type="range" id="time-speed-slider" min="0.25" max="2" step="0.25" value="1" class="w-24 ml-2 align-middle" title="Game Speed">
                     </div>
                     <div class="flex items-center space-x-2 sm:space-x-4">
                         <div class="text-center"><div id="moon-edyria" class="moon w-6 h-6 sm:w-8 sm:h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
@@ -84,15 +85,6 @@
                 </div>
             </header>
 
-            <!-- Time Controls -->
-            <div id="time-controls" class="time-controls px-2 sm:px-4 py-2 bg-gray-900 bg-opacity-50 border-b border-gray-700">
-                <div class="flex items-center justify-center space-x-2 sm:space-x-4">
-                    <button id="time-play-pause" class="time-control-btn" onclick="toggleTime()" title="Pause/Resume Time">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <div class="text-sm text-gray-400">Time Controls</div>
-                </div>
-            </div>
 
             <!-- Main Content Area -->
             <main id="main-content" class="flex-grow p-2 sm:p-4 flex flex-col overflow-y-auto"></main>
@@ -227,31 +219,31 @@
             <p id="no-conditions-text" class="text-gray-400 text-center italic">No active conditions</p>
         </div>
         
-        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
+        <button class="close-panel-btn absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl bg-transparent border-none shadow-none p-0 m-0" style="background:none;box-shadow:none;"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
     </div>
     
     <div id="effects-panel" class="ui-panel">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Active Effects</h2>
         <div id="effects-content"></div>
-        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
+        <button class="close-panel-btn absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl bg-transparent border-none shadow-none p-0 m-0" style="background:none;box-shadow:none;"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
     </div>
     
     <div id="inventory-panel" class="ui-panel w-full max-w-6xl">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Inventory & Equipment</h2>
         <div id="inventory-content" class="w-full"></div>
-        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
+        <button class="close-panel-btn absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl bg-transparent border-none shadow-none p-0 m-0" style="background:none;box-shadow:none;"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
     </div>
     
     <div id="crafting-panel" class="ui-panel">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Crafting Workshop</h2>
         <div id="crafting-content" class="w-full"></div>
-        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
+        <button class="close-panel-btn absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl bg-transparent border-none shadow-none p-0 m-0" style="background:none;box-shadow:none;"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
     </div>
     
     <div id="settings-panel" class="ui-panel">
         <h2 class="font-cinzel text-3xl text-white mb-6 border-b border-gray-600 pb-2">Settings</h2>
         <div id="settings-content"></div>
-        <button class="close-panel-btn action-button absolute top-4 right-4 py-2 px-4 rounded-lg"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
+        <button class="close-panel-btn absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl bg-transparent border-none shadow-none p-0 m-0" style="background:none;box-shadow:none;"><i class='ph-duotone ph-x'></i><span class='sr-only'>Close</span></button>
     </div>
 
     <!-- SPELL MENU MODAL -->
