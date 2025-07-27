@@ -195,6 +195,12 @@ class ExperienceManager {
         // Update experience display after level up
         this.updateExperienceDisplay();
 
+        // Ensure the XP bar visually resets for the new level
+        const xpBar = document.querySelector('#experience-bar');
+        if (xpBar) {
+            xpBar.style.width = '0%';
+        }
+
         // Update character sheet if open
         if (typeof renderCharacterSheet === 'function') {
             renderCharacterSheet();

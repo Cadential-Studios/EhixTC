@@ -136,7 +136,7 @@ function triggerSkillCheck(skillName, dc, description, successCallback, failureC
         } else if (!success && failureCallback) {
             failureCallback(result);
         }
-    }, gameData.settings.showDiceAnimations ? 1500 / gameData.settings.combatAnimationSpeed : 0);
+    }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 0);
 }
 
 function performSkillCheck(skillName, dc = 15, advantage = false, disadvantage = false) {

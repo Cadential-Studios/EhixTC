@@ -740,7 +740,7 @@ function applyEffect(effectId, source = null) {
                                 gameData.player.derivedStats.health = Math.max(0, gameData.player.derivedStats.health - damage);
                                 showInfoBox(`${failEffect.message || 'You take damage!'} (${damage} ${failEffect.damageType} damage)`, 'damage');
                                 updateDisplay();
-                            }, gameData.settings.showDiceAnimations ? 1500 / gameData.settings.combatAnimationSpeed : 100);
+                            }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 100);
                         }, 500); // Additional delay to ensure saving throw window is fully closed
                     }
                 }
@@ -750,7 +750,7 @@ function applyEffect(effectId, source = null) {
                     showInfoBox(effectTemplate.skillCheck.onSuccess.message, 'success');
                 }
             }
-        }, gameData.settings.showDiceAnimations ? 1500 / gameData.settings.combatAnimationSpeed : 100);
+        }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 100);
     }
 
     // Apply immediate effects
