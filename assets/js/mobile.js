@@ -45,6 +45,17 @@ function updateMobileUI() {
             button.style.padding = '';
         }
     });
+
+    const grid = document.querySelector('.inventory-grid');
+    if (grid) {
+        if (isMobileMode) {
+            grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            grid.style.maxHeight = '70vh';
+        } else {
+            grid.style.gridTemplateColumns = '';
+            grid.style.maxHeight = '';
+        }
+    }
 }
 
 function initializeMobileMode() {

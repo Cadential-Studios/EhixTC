@@ -226,7 +226,7 @@ const DC = {
 // Save System Constants
 const SAVE_KEY = 'edoriaSaves';
 const SAVE_SLOT_LIMIT = 5;
-const GAME_VERSION = '0.1.0';
+let GAME_VERSION = 'dev';
 
 // Utility Functions
 function getAbilityModifier(ability) {
