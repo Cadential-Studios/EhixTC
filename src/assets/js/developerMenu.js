@@ -55,6 +55,8 @@ class DeveloperMenu {
             this.hide();
             this.log('Developer mode DISABLED');
         };
+
+        return this.isEnabled;
     }
 
     /**

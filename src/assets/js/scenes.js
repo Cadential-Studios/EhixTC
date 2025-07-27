@@ -64,9 +64,13 @@ function renderLocation(locationId) {
         </div>
     `;
     
-    document.querySelectorAll('.action-button').forEach(button => {
-        button.addEventListener('click', handleActionButton);
-    });
+    // Only bind actions within the rendered location to avoid interference with
+    // unrelated UI elements (e.g., close buttons)
+    if (mainContentEl) {
+        mainContentEl.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', handleActionButton);
+        });
+    }
 }
 
 function handleActionButton(e) {
@@ -99,14 +103,14 @@ function handleActionButton(e) {
                     setTimeout(() => {
                         showGameMessage(successText, 'success');
                         gameData.player.lore.add(successText);
-                    }, gameData.settings.showDiceAnimations ? 2000 / gameData.settings.combatAnimationSpeed : 500);
+                    }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 500);
                 },
                 function(result) {
                     // Failure callback
                     setTimeout(() => {
                         showGameMessage(failureText, 'failure');
                         gameData.player.lore.add(failureText);
-                    }, gameData.settings.showDiceAnimations ? 2000 / gameData.settings.combatAnimationSpeed : 500);
+                    }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 500);
                 }
             );
             break;
