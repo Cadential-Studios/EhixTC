@@ -13,6 +13,7 @@
   - Very Rare
   - Legendary
 - the level up menu with the button "Continue Adventure" should be removed.
+- The save popup should be in the game as a modal dialog instead of a browseer alert.
 
 
 ### Errors
@@ -21,5 +22,7 @@
     at updateSpellSlotsForLevel (C:\Users\scott\OneDrive\Desktop\Game Development\Ehix - The Triune Convergence\src\assets\js\systems\spellcasting.js:77:5)
     at initializeSpellSystem (http://127.0.0.1:3000/src/assets/js/systems/spellcasting.js:34:9) {stack: 'ReferenceError: updateCharacterStats is not d…0/src/assets/js/systems/spellcasting.js:34:9)', message: 'updateCharacterStats is not defined'}
 
-- 
+- Uncaught ReferenceError ReferenceError: pauseMenu is not defined
+    at <anonymous> (C:\Users\scott\OneDrive\Desktop\Game Development\Ehix - The Triune Convergence\src\assets\js\main.js:432:17)
+
 
