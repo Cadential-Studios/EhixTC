@@ -5,6 +5,7 @@
 class InventoryManager {
     constructor() {
         this.searchTerm = '';
+        this.filtersCollapsed = window.innerWidth <= 768;
         this.activeFilters = {
             type: 'all',
             rarity: 'all',
@@ -27,20 +28,21 @@ class InventoryManager {
                 <!-- Inventory Header with Search and Controls -->
                 <div class="inventory-header bg-gray-800 rounded-lg p-4 mb-4">
                     <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
-                        <!-- Search Bar -->
-                        <div class="search-container flex-1 max-w-md">
-                            <div class="relative">
-                                <input type="text" 
-                                       id="inventory-search" 
-                                       placeholder="Search items..." 
+                        <!-- Search Bar / Filter Toggle -->
+                        <div class="w-full flex items-center gap-2">
+                            <div class="search-container flex-1 max-w-md relative">
+                                <input type="text"
+                                       id="inventory-search"
+                                       placeholder="Search items..."
                                        value="${this.searchTerm}"
                                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 pl-10 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
                                 <i class="ph-duotone ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
+                            <button id="filter-toggle" class="lg:hidden bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white text-sm">Filters</button>
                         </div>
-                        
+
                         <!-- Filter Controls -->
-                        <div class="filter-controls flex gap-2 flex-wrap">
+                        <div class="filter-controls flex gap-2 flex-wrap ${this.filtersCollapsed ? 'collapsed' : ''}">
                             <select id="type-filter" class="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white text-sm">
                                 <option value="all">All Types</option>
                                 <option value="weapon">Weapons</option>
@@ -517,6 +519,14 @@ class InventoryManager {
             });
         }
 
+        // Filter toggle for mobile
+        const filterToggle = document.getElementById('filter-toggle');
+        if (filterToggle) {
+            filterToggle.addEventListener('click', () => {
+                this.toggleFilters();
+            });
+        }
+
         // Filter dropdowns
         const typeFilter = document.getElementById('type-filter');
         if (typeFilter) {
@@ -923,6 +933,10 @@ class InventoryManager {
         // Small delay to ensure DOM is updated before initializing drag/drop
         setTimeout(() => {
             this.initializeDragAndDrop();
+            const controls = document.querySelector('.filter-controls');
+            if (controls) {
+                controls.classList.toggle('collapsed', this.filtersCollapsed);
+            }
         }, 100);
     }
 
@@ -936,6 +950,15 @@ class InventoryManager {
             this.renderAnalytics(content);
         } else {
             panel.style.display = 'none';
+        }
+    }
+
+    // Toggle filter controls visibility (mobile)
+    toggleFilters() {
+        this.filtersCollapsed = !this.filtersCollapsed;
+        const controls = document.querySelector('.filter-controls');
+        if (controls) {
+            controls.classList.toggle('collapsed', this.filtersCollapsed);
         }
     }
 

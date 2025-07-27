@@ -1837,6 +1837,20 @@ body {
     outline-offset: 2px;
 }
 
+/* Mobile filter toggle */
+#filter-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .filter-controls.collapsed {
+        display: none;
+    }
+    #filter-toggle {
+        display: block;
+    }
+}
+
 /* Stat item hover effects */
 .stat-item {
     transition: background-color 0.2s ease;

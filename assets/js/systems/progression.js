@@ -316,7 +316,11 @@ function confirmLevelUp() {
     // Update character display
     updateCharacterStats();
     initializeStartingSpells(); // Update spells for new level
-    
+
+    if (typeof experienceManager !== 'undefined' && experienceManager.updateExperienceDisplay) {
+        experienceManager.updateExperienceDisplay();
+    }
+
     showGameMessage('Level up complete! Congratulations!', 'success');
 }
 
