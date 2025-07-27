@@ -45,10 +45,14 @@
                 </div>
             </div>
             <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
+            <button id="check-updates-btn" class="mt-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Check for Updates</button>
         </div>
 
         <!-- CHARACTER CREATION SCREEN -->
         <div id="character-creation-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4" style="display: none;">
+            <button id="origin-back-btn" class="absolute top-4 left-4 bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded">
+                <i class="ph-duotone ph-arrow-left"></i> Back
+            </button>
             <h2 class="font-cinzel text-2xl sm:text-3xl text-white mb-4 sm:mb-6">Choose Your Origin</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full max-w-4xl">
                 <div class="choice-button p-4 sm:p-6 rounded-lg cursor-pointer" data-origin="westwalker">
@@ -75,7 +79,12 @@
                         <p class="font-cinzel text-sm sm:text-lg" id="current-date">Alphi 1, 998 PA</p>
                         <p class="text-xs sm:text-sm text-gray-400" id="month-description">The Awakening</p>
                         <p class="text-xs sm:text-sm text-gray-300" id="current-time">8:00 AM</p>
-                        <input type="range" id="time-speed-slider" min="0.25" max="2" step="0.25" value="1" class="w-24 ml-2 align-middle" title="Game Speed">
+                        <div class="flex items-center space-x-2">
+                            <button id="time-toggle-btn" class="bg-gray-700 hover:bg-gray-800 text-white px-2 py-1 rounded">
+                                <i class="ph-duotone ph-pause"></i>
+                            </button>
+                            <input type="range" id="time-speed-slider" min="0.25" max="2" step="0.25" value="1" class="w-24 align-middle" title="Game Speed">
+                        </div>
                     </div>
                     <div class="flex items-center space-x-2 sm:space-x-4">
                         <div class="text-center"><div id="moon-edyria" class="moon w-6 h-6 sm:w-8 sm:h-8 rounded-full mx-auto mb-1 moon-edyria"></div><p class="text-xs text-blue-300">Edyria</p></div>
@@ -267,6 +276,36 @@
                     <div id="spell-categories" class="space-y-4"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-menu" class="version-overlay" style="display:none;">
+        <div class="version-popup space-y-4 text-center">
+            <h2 class="font-cinzel text-2xl text-white">Game Paused</h2>
+            <button id="pause-resume" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Resume</button>
+            <button id="pause-save" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Save</button>
+            <button id="pause-load" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Load</button>
+            <button id="pause-settings" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Settings</button>
+            <button id="pause-quit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Quit to Menu</button>
+        </div>
+    </div>
+
+    <!-- Save Menu -->
+    <div id="save-menu" class="version-overlay" style="display:none;">
+        <div class="version-popup" style="max-height:80vh;overflow-y:auto;">
+            <h3 class="font-cinzel text-xl text-white mb-4">Save Game</h3>
+            <div id="save-list" class="space-y-2"></div>
+            <button id="close-save-menu" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded mt-4">Close</button>
+        </div>
+    </div>
+
+    <!-- Load Menu -->
+    <div id="load-menu" class="version-overlay" style="display:none;">
+        <div class="version-popup" style="max-height:80vh;overflow-y:auto;">
+            <h3 class="font-cinzel text-xl text-white mb-4">Load Game</h3>
+            <div id="load-list" class="space-y-2"></div>
+            <button id="close-load-menu" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded mt-4">Close</button>
         </div>
     </div>
 

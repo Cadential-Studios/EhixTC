@@ -36,3 +36,18 @@ async function displayVersion() {
 }
 
 document.addEventListener('DOMContentLoaded', displayVersion);
+
+async function checkForUpdates() {
+    try {
+        const response = await fetch('version.json?cache=' + Date.now());
+        if (!response.ok) throw new Error('Unable to fetch version');
+        const data = await response.json();
+        if (window.GAME_VERSION && data.commit !== window.GAME_VERSION) {
+            alert('A new version is available. Please refresh the page.');
+        } else {
+            alert('You have the latest version.');
+        }
+    } catch (err) {
+        alert('Update check failed');
+    }
+}

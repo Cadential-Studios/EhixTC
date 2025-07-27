@@ -25,10 +25,83 @@ function mapClassSkillToGameSkill(classSkill) {
 
 // Global DOM element references (initialized after DOM load)
 let startScreen, characterCreationScreen, gameScreen;
-let startGameButton, originChoices, navButtons, closePanelButtons;
+let startGameButton, originChoices, navButtons, closePanelButtons, originBackBtn;
 let mainContentEl, dateEl, monthDescEl;
 let moonEdyriaEl, moonKapraEl, moonEniaEl;
 let uiPanels, characterContentEl, journalContentEl, inventoryContentEl, settingsContent;
+
+function openPauseMenu() {
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseMenu) {
+        pauseMenu.style.display = 'flex';
+        pauseTime();
+    }
+}
+
+function closePauseMenu() {
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseMenu) {
+        pauseMenu.style.display = 'none';
+        resumeTime();
+    }
+}
+
+function openSaveMenu() {
+    const saveMenu = document.getElementById('save-menu');
+    const list = document.getElementById('save-list');
+    if (saveMenu) {
+        populateSaveList(list, true);
+        saveMenu.style.display = 'flex';
+    }
+}
+
+function openLoadMenu() {
+    const loadMenu = document.getElementById('load-menu');
+    const list = document.getElementById('load-list');
+    if (loadMenu) {
+        populateSaveList(list, false);
+        loadMenu.style.display = 'flex';
+    }
+}
+
+function closeSaveMenus() {
+    const saveMenu = document.getElementById('save-menu');
+    const loadMenu = document.getElementById('load-menu');
+    if (saveMenu) saveMenu.style.display = 'none';
+    if (loadMenu) loadMenu.style.display = 'none';
+}
+
+function populateSaveList(container, showSaveButtons) {
+    if (!container) return;
+    const slots = getSaveSlots();
+    container.innerHTML = slots.map((s,i)=>`<div class="flex justify-between items-center mb-2">
+            <span class="text-sm">Slot ${i+1} - ${new Date(s.timestamp).toLocaleString()} (${s.data.player.location || 'Unknown'})</span>
+            <div>
+                ${showSaveButtons ? `<button class='overwrite-save-btn action-button px-2 py-1 mr-1' data-slot='${i}'>Overwrite</button>` : `<button class='load-save-btn action-button px-2 py-1 mr-1' data-slot='${i}'>Load</button>`}
+                <button class='delete-save-btn action-button px-2 py-1' data-slot='${i}'>Delete</button>
+            </div>
+        </div>`).join('') || '<p class="text-gray-400">No saves.</p>';
+
+    container.querySelectorAll('.load-save-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ loadGame(parseInt(btn.dataset.slot)); closeSaveMenus(); });
+    });
+    container.querySelectorAll('.overwrite-save-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            if(confirm('Overwrite this save?')) {
+                saveToSlot(parseInt(btn.dataset.slot));
+                populateSaveList(container, showSaveButtons);
+            }
+        });
+    });
+    container.querySelectorAll('.delete-save-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            if(confirm('Delete this save?')) {
+                deleteSave(parseInt(btn.dataset.slot));
+                populateSaveList(container, showSaveButtons);
+            }
+        });
+    });
+}
 
 function initializeDOMReferences() {
     console.log('Initializing DOM references...');
@@ -41,6 +114,7 @@ function initializeDOMReferences() {
     // Interactive elements
     startGameButton = document.getElementById('start-game-button');
     originChoices = document.querySelectorAll('#character-creation-screen .choice-button');
+    originBackBtn = document.getElementById('origin-back-btn');
     navButtons = document.querySelectorAll('.nav-icon');
     uiPanels = document.querySelectorAll('.ui-panel');
     closePanelButtons = document.querySelectorAll('.close-panel-btn');
@@ -86,6 +160,13 @@ function setupEventListeners() {
         };
     } else {
         console.error('Start button not found!');
+    }
+
+    if (originBackBtn) {
+        originBackBtn.addEventListener('click', () => {
+            characterCreationScreen.style.display = 'none';
+            startScreen.style.display = 'flex';
+        });
     }
 
     // Origin choices
@@ -276,6 +357,18 @@ function setDefaultCraftingSkills(characterClass) {
     const quitOverlay = document.getElementById('quit-confirm');
     const confirmQuit = document.getElementById('confirm-quit');
     const cancelQuit = document.getElementById('cancel-quit');
+    const pauseMenu = document.getElementById('pause-menu');
+    const pauseResume = document.getElementById('pause-resume');
+    const pauseSave = document.getElementById('pause-save');
+    const pauseLoad = document.getElementById('pause-load');
+    const pauseSettings = document.getElementById('pause-settings');
+    const pauseQuit = document.getElementById('pause-quit');
+    const saveMenu = document.getElementById('save-menu');
+    const loadMenu = document.getElementById('load-menu');
+    const saveList = document.getElementById('save-list');
+    const loadList = document.getElementById('load-list');
+    const closeSaveMenu = document.getElementById('close-save-menu');
+    const closeLoadMenu = document.getElementById('close-load-menu');
     if (quitBtn && quitOverlay) {
         quitBtn.addEventListener('click', () => {
             quitOverlay.style.display = 'flex';
@@ -294,6 +387,20 @@ function setDefaultCraftingSkills(characterClass) {
         });
     }
 
+    if (pauseResume) pauseResume.addEventListener('click', closePauseMenu);
+    if (pauseSettings) pauseSettings.addEventListener('click', () => { closePauseMenu(); openPanel('settings-panel'); });
+    if (pauseQuit) pauseQuit.addEventListener('click', () => {
+        if (confirm('Quit to main menu? Unsaved progress may be lost.')) {
+            closePauseMenu();
+            startScreen.style.display = 'flex';
+            gameScreen.style.display = 'none';
+        }
+    });
+    if (pauseSave) pauseSave.addEventListener('click', () => { openSaveMenu(); });
+    if (pauseLoad) pauseLoad.addEventListener('click', () => { openLoadMenu(); });
+    if (closeSaveMenu) closeSaveMenu.addEventListener('click', closeSaveMenus);
+    if (closeLoadMenu) closeLoadMenu.addEventListener('click', closeSaveMenus);
+
     const timeSlider = document.getElementById('time-speed-slider');
     if (timeSlider) {
         timeSlider.addEventListener('input', (e) => {
@@ -302,15 +409,35 @@ function setDefaultCraftingSkills(characterClass) {
         });
     }
 
+    const timeToggle = document.getElementById('time-toggle-btn');
+    if (timeToggle) {
+        timeToggle.addEventListener('click', () => {
+            toggleTime();
+        });
+    }
+
+    const updateBtn = document.getElementById('check-updates-btn');
+    if (updateBtn && typeof checkForUpdates === 'function') {
+        updateBtn.addEventListener('click', checkForUpdates);
+    }
+
     console.log('Event listeners setup complete');
 }
 
 function setupKeyboardShortcuts() {
     document.addEventListener('keydown', function(e) {
-        // Escape key closes modals and panels
+        // Escape key opens or closes pause menu
         if (e.key === 'Escape') {
-            closeAllPanels();
-            closeModal();
+            if (gameScreen && gameScreen.style.display !== 'none') {
+                if (pauseMenu && pauseMenu.style.display === 'flex') {
+                    closePauseMenu();
+                } else if(!document.querySelector('.ui-panel.open')) {
+                    openPauseMenu();
+                } else {
+                    closeAllPanels();
+                    closeModal();
+                }
+            }
         }
         
         // Quick panel shortcuts (Ctrl + key)

@@ -912,6 +912,10 @@ function updateTimeControlDisplay() {
     if (speedSlider) {
         speedSlider.value = gameData.time.realTimeMultiplier;
     }
+    const toggleBtn = document.getElementById('time-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.innerHTML = gameData.time.isPaused ? '<i class="ph-duotone ph-play"></i>' : '<i class="ph-duotone ph-pause"></i>';
+    }
 }
 
 // Dice Rolling System Enhancement
