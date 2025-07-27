@@ -282,7 +282,7 @@ ENHANCED: index.html (spell menu UI, script loading order)
 ### 🎯 **Level Up Modal Duplication Issue - RESOLVED**
 **Date**: Current Session  
 **Files Modified**:
-- ✅ Fixed `assets/js/character.js` - Disabled old level up modal
+- ✅ Fixed `assets/js/systems/character.js` - Disabled old level up modal
 - ✅ Enhanced `assets/js/systems/experience.js` - Redirected to progression system
 - ✅ Updated `assets/js/systems/progression.js` - Added duplicate prevention
 
