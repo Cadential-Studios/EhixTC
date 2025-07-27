@@ -1772,13 +1772,19 @@ body {
     flex-shrink: 0;
 }
 
+
 .inventory-main {
     flex: 1;
     min-height: 0;
+    align-items: stretch;
 }
 
 .inventory-section {
-    height: fit-content;
+    height: 100%;
+}
+
+.equipment-section {
+    height: 100%;
 }
 
 .inventory-grid {
@@ -1812,6 +1818,23 @@ body {
 .inventory-item:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.item-tag {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+.tag-consumable {
+    background-color: #dc2626;
+    color: #fff;
+}
+
+.tag-equippable {
+    background-color: #3b82f6;
+    color: #fff;
 }
 
 .quantity-badge {

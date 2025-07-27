@@ -383,7 +383,10 @@ class InventoryManager {
         const rarityBorderColor = this.getRarityBorderColor(item.data.rarity);
         const rarityTextColor = this.getRarityTextColor(item.data.rarity);
         const canUse = this.canUseItem(item.data);
-        const isEquippable = item.data.slot && item.data.slot !== 'none';
+        const isEquippable = item.data.slot && item.data.slot !== 'none' && item.data.type !== 'consumable';
+        const itemTag = item.data.type === 'consumable'
+            ? '<span class="item-tag tag-consumable">Consumable</span>'
+            : (isEquippable ? '<span class="item-tag tag-equippable">Equipment</span>' : '');
         const isActivatable = item.data.properties && item.data.properties.includes('activatable');
         const isComparisonMode = inventoryUIFeatures && inventoryUIFeatures.comparisonMode;
         const isSelected = inventoryUIFeatures && inventoryUIFeatures.selectedItems.has(item.id);
@@ -408,6 +411,7 @@ class InventoryManager {
                     <div class="flex-1">
                         <div class="flex items-center gap-2">
                             <span class="font-semibold ${rarityTextColor}">${item.data.name}</span>
+                            ${itemTag}
                             ${item.quantity > 1 ? `<span class="quantity-badge bg-blue-600 text-white px-2 py-1 rounded text-xs">${item.quantity}</span>` : ''}
                             ${isComparisonMode ? `<i class="ph-duotone ph-check-circle text-blue-400"></i>` : ''}
                         </div>
@@ -769,7 +773,7 @@ class InventoryManager {
 
     showItemDetailModal(item, quantity) {
         const rarityTextColor = this.getRarityTextColor(item.rarity);
-        const isEquippable = item.slot && item.slot !== 'none';
+        const isEquippable = item.slot && item.slot !== 'none' && item.type !== 'consumable';
         const isConsumable = item.type === 'consumable';
         
         // Create modal overlay
