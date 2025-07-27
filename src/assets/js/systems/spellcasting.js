@@ -28,7 +28,7 @@ let spellData = null;
 // Initialize spell system
 async function initializeSpellSystem() {
     try {
-        const response = await fetch('./data/spells.json');
+        const response = await fetch('src/data/spells.json');
         spellData = await response.json();
         console.log('Spell system initialized');
         updateSpellSlotsForLevel();

@@ -288,7 +288,17 @@ function setDefaultCraftingSkills(characterClass) {
     }
     if (confirmQuit) {
         confirmQuit.addEventListener('click', () => {
-            window.location.href = 'about:blank';
+            quitOverlay.style.display = 'none';
+            startScreen.style.display = 'flex';
+            gameScreen.style.display = 'none';
+        });
+    }
+
+    const timeSlider = document.getElementById('time-speed-slider');
+    if (timeSlider) {
+        timeSlider.addEventListener('input', (e) => {
+            const speed = parseFloat(e.target.value);
+            setTimeSpeed(speed);
         });
     }
 

@@ -320,8 +320,6 @@ function confirmLevelUp() {
     if (typeof experienceManager !== 'undefined' && experienceManager.updateExperienceDisplay) {
         experienceManager.updateExperienceDisplay();
     }
-
-    showGameMessage('Level up complete! Congratulations!', 'success');
 }
 
 /**

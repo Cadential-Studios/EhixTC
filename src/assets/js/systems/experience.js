@@ -276,24 +276,10 @@ class ExperienceManager {
      * @param {number} levelsGained - Number of levels gained
      */
     showLevelUpNotification(oldLevel, newLevel, levelsGained) {
-        // Show floating text
-        if (typeof showFloatingText === 'function') {
-            const message = levelsGained === 1 
-                ? `Level Up! Now Level ${newLevel}` 
-                : `${levelsGained} Levels Up! Now Level ${newLevel}`;
-            showFloatingText(message, 'gold');
-        }
-
         // Use the new progression system instead of old modal
         if (typeof checkForLevelUp === 'function') {
             console.log('🌟 Triggering progression system for level up');
             checkForLevelUp();
-        } else {
-            console.warn('Progression system not available - using fallback');
-            // Fallback to basic notification if progression system isn't loaded
-            if (typeof showGameMessage === 'function') {
-                showGameMessage(`Level Up! You are now level ${newLevel}!`, 'success');
-            }
         }
 
         // Show level up animation (visual effects only, no modal)
