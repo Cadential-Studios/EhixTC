@@ -263,6 +263,13 @@ function setDefaultCraftingSkills(characterClass) {
     // Navigation buttons
     navButtons.forEach(button => button.addEventListener('click', () => openPanel(button.dataset.panel)));
     closePanelButtons.forEach(button => button.addEventListener('click', closeAllPanels));
+
+    // Fallback delegation in case panels are created dynamically
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.close-panel-btn')) {
+            closeAllPanels();
+        }
+    });
     
     console.log('Event listeners setup complete');
 }

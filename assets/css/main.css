@@ -2332,6 +2332,14 @@ body.mobile-mode .equipped-item {
     min-height: 50px;
 }
 
+body.mobile-mode .bottom-nav .mobile-nav-text {
+    display: none;
+}
+
+body.mobile-mode .bottom-nav .nav-icon i {
+    font-size: 1.75rem;
+}
+
 /* Mobile-specific touch targets */
 @media (max-width: 430px) {
     /* Optimized for Google Pixel 9 (430px width) */
