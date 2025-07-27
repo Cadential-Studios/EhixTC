@@ -1,0 +1,3 @@
+- Add a test file to the `tests` directory that tests the developer mode features.
+- Finalize all the developer mode features and ensure they are functional.
+- Look at each developer mode feature and ensure it is working as intended.

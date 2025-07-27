@@ -912,6 +912,29 @@ body {
     background-color: rgba(26, 26, 46, 0.2);
 }
 
+/* Build/Version Overlay */
+.version-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.version-popup {
+    background: #1a1a2e;
+    border: 1px solid #4a4a6a;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: #e0e0e0;
+}
+
 .spell-menu-content {
     padding: 1rem;
     color: #e0e0e0;
@@ -1749,13 +1772,19 @@ body {
     flex-shrink: 0;
 }
 
+
 .inventory-main {
     flex: 1;
     min-height: 0;
+    align-items: stretch;
 }
 
 .inventory-section {
-    height: fit-content;
+    height: 100%;
+}
+
+.equipment-section {
+    height: 100%;
 }
 
 .inventory-grid {
@@ -1789,6 +1818,23 @@ body {
 .inventory-item:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.item-tag {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+.tag-consumable {
+    background-color: #dc2626;
+    color: #fff;
+}
+
+.tag-equippable {
+    background-color: #3b82f6;
+    color: #fff;
 }
 
 .quantity-badge {
@@ -2420,3 +2466,21 @@ body.mobile-mode textarea,
 body.mobile-mode select {
     font-size: 16px; /* Prevents zoom on iOS */
 }
+
+/* Journal UI Styles */
+.journal-entry {
+    background-color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    padding: 0.75rem;
+    border-left-width: 4px;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+.journal-entry.quest { border-color: #d97706; }
+.journal-entry.quest.completed { border-color: #16a34a; }
+.journal-entry.lore { border-color: #0284c7; }
+.journal-entry.rumor { border-color: #7e22ce; }
+.quest-progress { height: 0.25rem; background-color: #374151; border-radius: 0.25rem; margin-top: 0.5rem; }
+.quest-progress-fill { background-color: #d97706; height: 100%; border-radius: 0.25rem; }
+.pin-btn.active { color: #fbbf24; }

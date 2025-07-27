@@ -512,7 +512,8 @@ class InventoryUIFeatures {
         // Global event delegation for equipped item tooltips only
         document.addEventListener('mouseenter', (e) => {
             // Only show tooltips for equipped items (not inventory items)
-            if (e.target.hasAttribute('data-item-id') && 
+            if (e.target instanceof Element &&
+                e.target.hasAttribute('data-item-id') &&
                 e.target.closest('.equipped-item-display')) {
                 const itemId = e.target.getAttribute('data-item-id');
                 const item = this.findItemById(itemId);
@@ -523,7 +524,8 @@ class InventoryUIFeatures {
         }, true);
 
         document.addEventListener('mouseleave', (e) => {
-            if (e.target.hasAttribute('data-item-id') && 
+            if (e.target instanceof Element &&
+                e.target.hasAttribute('data-item-id') &&
                 e.target.closest('.equipped-item-display')) {
                 this.hideTooltip();
             }

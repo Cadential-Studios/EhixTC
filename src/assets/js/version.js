@@ -4,9 +4,31 @@ async function displayVersion() {
         if (!response.ok) throw new Error('Version file not found');
         const data = await response.json();
         const el = document.getElementById('version-info');
+        const overlay = document.getElementById('version-overlay');
+        const dateEl = document.getElementById('build-date');
+        const closeBtn = document.getElementById('close-version-overlay');
+
+
         if (el) {
-            el.textContent = `Build ${data.commit} \u2014 ${new Date(data.buildTime).toLocaleString()}`;
+            const buildDate = new Date(data.buildTime);
+            const dateStr = buildDate.toLocaleDateString();
+            const timeStr = buildDate.toLocaleTimeString();
+            el.innerHTML = `Version <b>${data.buildType}</b> - <b>${data.commit}</b>`;
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', () => {
+                if (dateEl) {
+                    dateEl.innerHTML = `Version: <b>${data.buildType} - ${data.commit}</b><br>Build Date: <b>${dateStr}</b><br>Build Time: <b>${timeStr}</b><br><a href='docs/CHANGE_LOG.md#${data.commit}' target='_blank' style='color:#4af;text-decoration:underline'>View Changelog</a>`;
+                }
+                if (overlay) overlay.style.display = 'flex';
+            });
         }
+
+        if (closeBtn && overlay) {
+            closeBtn.addEventListener('click', () => {
+                overlay.style.display = 'none';
+            });
+        }
+
         window.GAME_VERSION = `${data.commit}`;
     } catch (err) {
         console.warn('Unable to load version info', err);
@@ -14,3 +36,18 @@ async function displayVersion() {
 }
 
 document.addEventListener('DOMContentLoaded', displayVersion);
+
+async function checkForUpdates() {
+    try {
+        const response = await fetch('version.json?cache=' + Date.now());
+        if (!response.ok) throw new Error('Unable to fetch version');
+        const data = await response.json();
+        if (window.GAME_VERSION && data.commit !== window.GAME_VERSION) {
+            alert('A new version is available. Please refresh the page.');
+        } else {
+            alert('You have the latest version.');
+        }
+    } catch (err) {
+        alert('Update check failed');
+    }
+}

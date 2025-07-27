@@ -35,23 +35,21 @@ class DeveloperMenu {
         
         this.isEnabled = isLocalhost || isFileProtocol || hasDevParam || hasConsoleFlag || isDebugEnv;
         
-        // Show dev mode indicator
+        // Enable developer mode if detected
         if (this.isEnabled) {
-            this.showDevModeIndicator();
+            console.log('Developer mode detected');
         }
         
         // Allow forcing dev mode via console
         window.enableDevMode = () => {
             localStorage.setItem('devMode', 'true');
             this.isEnabled = true;
-            this.showDevModeIndicator();
             this.log('Developer mode ENABLED');
         };
         
         window.disableDevMode = () => {
             localStorage.setItem('devMode', 'false');
             this.isEnabled = false;
-            this.hideDevModeIndicator();
             this.hide();
             this.log('Developer mode DISABLED');
         };

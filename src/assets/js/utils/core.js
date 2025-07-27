@@ -35,6 +35,8 @@ const gameData = {
         quests: { active: [], completed: [] },
         lore: new Set(),
         rumors: new Set(),
+        journalPins: new Set(),
+        journalNotes: {},
         stats: {
             strength: 10,
             dexterity: 10,
@@ -264,16 +266,16 @@ async function loadGameData() {
     try {
         // Load all JSON data files
         const responses = await Promise.all([
-            fetch('./data/locations.json'),
-            fetch('./data/scenes.json'),
-            fetch('./data/classes.json'),
-            fetch('./data/preset_characters.json'),
-            fetch('./data/species.json'),
-            fetch('./data/recipes.json'),
-            fetch('./data/quests.json'),
-            fetch('./data/monsters.json'),
-            fetch('./data/calendar.json'),
-            fetch('./data/effects.json')
+            fetch('src/data/locations.json'),
+            fetch('src/data/scenes.json'),
+            fetch('src/data/classes.json'),
+            fetch('src/data/preset_characters.json'),
+            fetch('src/data/species.json'),
+            fetch('src/data/recipes.json'),
+            fetch('src/data/quests.json'),
+            fetch('src/data/monsters.json'),
+            fetch('src/data/calendar.json'),
+            fetch('src/data/effects.json')
         ]);
 
         const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse, 
@@ -304,15 +306,15 @@ async function loadItemData() {
     try {
         // Load all item category files
         const itemResponses = await Promise.all([
-            fetch('./data/item_data/weapons.json'),
-            fetch('./data/item_data/armor.json'),
-            fetch('./data/item_data/accessories.json'),
-            fetch('./data/item_data/consumables.json'),
-            fetch('./data/item_data/magical.json'),
-            fetch('./data/item_data/tools.json'),
-            fetch('./data/item_data/materials.json'),
-            fetch('./data/item_data/quest_items.json'),
-            fetch('./data/item_data/equipment.json')
+            fetch('src/data/item_data/weapons.json'),
+            fetch('src/data/item_data/armor.json'),
+            fetch('src/data/item_data/accessories.json'),
+            fetch('src/data/item_data/consumables.json'),
+            fetch('src/data/item_data/magical.json'),
+            fetch('src/data/item_data/tools.json'),
+            fetch('src/data/item_data/materials.json'),
+            fetch('src/data/item_data/quest_items.json'),
+            fetch('src/data/item_data/equipment.json')
         ]);
 
         const [weaponsResponse, armorResponse, accessoriesResponse, consumablesResponse, 
@@ -364,7 +366,7 @@ async function loadItemData() {
         console.error('Error loading item data:', error);
         // Fall back to loading from the old items.json if new structure fails
         try {
-            const fallbackResponse = await fetch('./data/items.json');
+            const fallbackResponse = await fetch('src/data/items.json');
             if (fallbackResponse.ok) {
                 itemsData = await fallbackResponse.json();
                 console.log('Loaded fallback items.json');
@@ -884,6 +886,12 @@ function toggleTime() {
     }
 }
 
+function setTimeSpeed(multiplier) {
+    gameData.time.realTimeMultiplier = multiplier;
+    startGameTime();
+    updateTimeControlDisplay();
+}
+
 function formatGameTime() {
     const hour = gameData.time.hour;
     const minute = gameData.time.minute.toString().padStart(2, '0');
@@ -900,12 +908,13 @@ function updateTimeDisplay() {
 }
 
 function updateTimeControlDisplay() {
-    const playPauseBtn = document.getElementById('time-play-pause');
-    if (playPauseBtn) {
-        playPauseBtn.innerHTML = gameData.time.isPaused ? 
-            '<i class="fas fa-play"></i>' : 
-            '<i class="fas fa-pause"></i>';
-        playPauseBtn.title = gameData.time.isPaused ? 'Resume Time' : 'Pause Time';
+    const speedSlider = document.getElementById('time-speed-slider');
+    if (speedSlider) {
+        speedSlider.value = gameData.time.realTimeMultiplier;
+    }
+    const toggleBtn = document.getElementById('time-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.innerHTML = gameData.time.isPaused ? '<i class="ph-duotone ph-play"></i>' : '<i class="ph-duotone ph-pause"></i>';
     }
 }
 
@@ -991,18 +1000,6 @@ function showInfoBox(message, type = 'info') {
                 infoBox.parentNode.removeChild(infoBox);
             }
         }, 300);
+
     }, 3000);
 }
-
-    if (edyriaPhase === 0) {
-        gameData.player.rumors.add("Whispers speak of increased magical energies during Edyria's dark phase.");
-    }
-    
-    if (kapraPhase === Math.floor(gameData.moons.kapra.cycle / 2)) {
-        gameData.player.rumors.add("The red light of Kapra's full phase stirs restless spirits in the night.");
-    }
-    
-    if (eniaPhase === Math.floor(gameData.moons.enia.cycle / 2)) {
-        gameData.player.rumors.add("Enia's golden glow brings luck to travelers and fortune to merchants.");
-    }
-

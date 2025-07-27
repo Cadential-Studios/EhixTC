@@ -25,11 +25,21 @@ function createSaveData() {
 }
 
 function saveGame() {
+    if(!confirm('Save game? This may overwrite the oldest save.')) return;
     const slots = getSaveSlots();
     if(slots.length >= SAVE_SLOT_LIMIT) {
         slots.shift();
     }
     slots.push(createSaveData());
+    setSaveSlots(slots);
+    populateSaveSlots();
+    displaySaveMessage('Game saved');
+}
+
+function saveToSlot(index) {
+    if(!confirm('Overwrite save slot ' + (index+1) + '?')) return;
+    const slots = getSaveSlots();
+    slots[index] = createSaveData();
     setSaveSlots(slots);
     populateSaveSlots();
     displaySaveMessage('Game saved');
@@ -84,6 +94,7 @@ function populateSaveSlots() {
 }
 
 function deleteSave(index) {
+    if(!confirm('Delete this save?')) return;
     const slots = getSaveSlots();
     slots.splice(index,1);
     setSaveSlots(slots);
