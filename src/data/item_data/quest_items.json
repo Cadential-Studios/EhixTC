@@ -18,7 +18,7 @@
     "slot": "none",
     "description": "An ancient book containing forgotten knowledge and powerful secrets.",
     "properties": ["quest_item", "knowledge"],
-    "rarity": "Very Rare",
+    "rarity": "uncommon",
     "value": 0,
     "weight": 2
   }
