@@ -4,7 +4,7 @@
   "description": "Ehix - The Triune Convergence: A browser-based RPG system.",
   "main": "src/assets/js/main.js",
   "scripts": {
-    "start": "python -m http.server 8000",
+    "start": "node scripts/updateVersion.js && python -m http.server 8000",
     "build": "echo 'No build step defined'",
     "test": "echo 'No test specified'"
   },

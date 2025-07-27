@@ -8,11 +8,16 @@ async function displayVersion() {
         const dateEl = document.getElementById('build-date');
         const closeBtn = document.getElementById('close-version-overlay');
 
+
         if (el) {
-            el.textContent = `Build ${data.commit}`;
+            const buildDate = new Date(data.buildTime);
+            const dateStr = buildDate.toLocaleDateString();
+            const timeStr = buildDate.toLocaleTimeString();
+            el.innerHTML = `Version <b>${data.buildType}</b> - <b>${data.commit}</b>`;
+            el.style.cursor = 'pointer';
             el.addEventListener('click', () => {
                 if (dateEl) {
-                    dateEl.textContent = `Build Date: ${new Date(data.buildTime).toLocaleDateString()}`;
+                    dateEl.innerHTML = `Version: <b>${data.buildType} - ${data.commit}</b><br>Build Date: <b>${dateStr}</b><br>Build Time: <b>${timeStr}</b><br><a href='docs/CHANGE_LOG.md#${data.commit}' target='_blank' style='color:#4af;text-decoration:underline'>View Changelog</a>`;
                 }
                 if (overlay) overlay.style.display = 'flex';
             });
