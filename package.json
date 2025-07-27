@@ -1,0 +1,26 @@
+{
+  "name": "ehix-the-triune-convergence",
+  "version": "1.0.0",
+  "description": "Ehix - The Triune Convergence: A browser-based RPG system.",
+  "main": "src/assets/js/main.js",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "build": "echo 'No build step defined'",
+    "test": "echo 'No test specified'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cadential-Studios/EhixTC.git"
+  },
+  "author": "Cadential Studios",
+  "license": "MIT",
+  "keywords": [
+    "rpg",
+    "browser",
+    "game",
+    "javascript",
+    "ehix"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
