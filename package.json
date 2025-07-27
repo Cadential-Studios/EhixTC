@@ -4,9 +4,10 @@
   "description": "Ehix - The Triune Convergence: A browser-based RPG system.",
   "main": "src/assets/js/main.js",
   "scripts": {
-    "start": "node scripts/updateVersion.js && python -m http.server 8000",
+    "start": "python -m http.server 8000",
     "build": "echo 'No build step defined'",
-    "test": "echo 'No test specified'"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,9 @@
     "javascript",
     "ehix"
   ],
-  "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^30.0.5",
+        "jsdom": "^22.0.0"
+    }
 }
