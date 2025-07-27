@@ -56,6 +56,18 @@ function updateMobileUI() {
             grid.style.maxHeight = '';
         }
     }
+
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.height = isMobileMode ? '64px' : '';
+    }
+}
+
+function hideBottomNavForMobile(hidden) {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (isMobileMode && bottomNav) {
+        bottomNav.style.display = hidden ? 'none' : '';
+    }
 }
 
 function initializeMobileMode() {

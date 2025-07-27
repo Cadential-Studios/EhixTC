@@ -126,6 +126,9 @@ function openPanel(panelId) {
     if (panel) {
         panel.style.display = 'block';
         panel.classList.add('open');
+        if (typeof hideBottomNavForMobile !== 'undefined') {
+            hideBottomNavForMobile(true);
+        }
         
         // Populate panel content based on panel type
         switch (panelId) {
@@ -158,6 +161,9 @@ function closeAllPanels() {
             panel.classList.remove('open');
         }
     });
+    if (typeof hideBottomNavForMobile !== 'undefined') {
+        hideBottomNavForMobile(false);
+    }
 }
 
 function updateDisplayOriginal() {
