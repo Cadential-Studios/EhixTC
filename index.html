@@ -16,12 +16,12 @@
     <!-- Game Stylesheets -->
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body class="min-h-screen">
 
-    <div id="game-container" class="game-container">
+    <div id="game-container" class="game-container min-h-screen flex flex-col">
 
         <!-- START SCREEN -->
-        <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow p-4">
+        <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow min-h-screen p-4">
             <!-- Mobile Mode Toggle -->
             <div class="mobile-toggle-container absolute top-4 right-4 z-20">
                 <button id="mobile-mode-toggle" class="mobile-toggle-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors" onclick="toggleMobileMode()">

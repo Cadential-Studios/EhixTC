@@ -1,8 +1,0 @@
-{
-    "researcher": {
-        "enabled": true,
-        "description": "Unlocks advanced research options and access to hidden lore.",
-        "abilities" : ["lore_insight", "moon_study", "ancient_texts"],
-        "icon": "book-open"
-    }
-}
