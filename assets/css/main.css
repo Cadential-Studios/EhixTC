@@ -121,6 +121,14 @@ body {
     opacity: 1;
 }
 
+/* Close panel button positioning */
+.close-panel-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 60;
+}
+
 /* Inventory and Crafting specific styles */
 #inventory-panel, #crafting-panel {
     max-width: none;
@@ -1837,6 +1845,20 @@ body {
     outline-offset: 2px;
 }
 
+/* Mobile filter toggle */
+#filter-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .filter-controls.collapsed {
+        display: none;
+    }
+    #filter-toggle {
+        display: block;
+    }
+}
+
 /* Stat item hover effects */
 .stat-item {
     transition: background-color 0.2s ease;
@@ -2343,6 +2365,17 @@ body.mobile-mode .bottom-nav .mobile-nav-text {
 
 body.mobile-mode .bottom-nav .nav-icon i {
     font-size: 1.75rem;
+}
+
+/* Larger touch area for bottom navigation */
+body.mobile-mode .bottom-nav {
+    height: 64px;
+}
+
+/* Bigger close buttons in mobile mode */
+body.mobile-mode .close-panel-btn {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
 }
 
 /* Mobile-specific touch targets */
