@@ -12,6 +12,7 @@
   - Rare
   - Very Rare
   - Legendary
+- the level up menu with the button "Continue Adventure" should be removed.
 
 
 ### Errors
