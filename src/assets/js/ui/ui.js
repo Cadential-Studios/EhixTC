@@ -355,7 +355,7 @@ function renderJournal(activeTab = 'all') {
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('quests')"><i class='ph-duotone ph-scroll mr-1'></i>Quests</button>
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')"><i class='ph-duotone ph-book mr-1'></i>Lore</button>
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'rumors' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('rumors')"><i class='ph-duotone ph-chats-circle mr-1'></i>Rumors</button>
-                <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." oninput="renderJournal('${activeTab}')" />
+                <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." value="${searchQuery}" oninput="renderJournal('${activeTab}')" />
             </div>
         </div>
     `;
