@@ -83,6 +83,9 @@ Save files are stored as JSON and contain:
 - Define game content in `data/` JSON files
 - Player saves go in `saves/` directory
 
+## Game Mechanics Documentation
+Detailed information about how systems interact and where to find related data files can be found in [docs/Game_Mechanics.md](docs/Game_Mechanics.md).
+
 ## Game Lore
 
 ### The World of Edoria

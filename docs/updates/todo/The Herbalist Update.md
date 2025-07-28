@@ -50,7 +50,7 @@ This section includes quality-of-life changes, user interface enhancements, and 
     - **Locations** — Contains region entries and travel discoveries.
     - **Items** — Contains item descriptions and lore.
     - **NPCs** — Contains entries for NPCs, including relationship tracking, quest involvement, and notes on interactions.
-- [ ] Add a `relationship_score` field to each NPC’s data file. This score should be influenced by player dialogue choices, quest completion, and other interactions, and will represent the current relationship level with the NPC.
+- [x] Add a `relationship_score` field to each NPC’s data file. This score should be influenced by player dialogue choices, quest completion, and other interactions, and will represent the current relationship level with the NPC.
 - [ ] Increase the width of the dice roll UI by approximately 50%. The height should remain fixed. Currently, the UI expands vertically as more content is added, which is not ideal for visual usability.
 
 ---
@@ -58,7 +58,7 @@ This section includes quality-of-life changes, user interface enhancements, and 
 ## Documentation Additions  
 This section includes tasks related to internal documentation and clarity for contributors and developers.
 
-- [ ] Add a new section to the project’s documentation called **Game Mechanics** (or a similarly appropriate name). This section should explain:
+- [x] Add a new section to the project’s documentation called **Game Mechanics** (or a similarly appropriate name). This section should explain:
     - How core systems interact with one another (e.g., inventory, skills, foraging).
     - What each game data field does (e.g., `rarity`, `container_contents`, `required_dc_threshold`, etc.).
     - Where to find specific assets and data files in the project folder structure.
@@ -68,6 +68,6 @@ This section includes tasks related to internal documentation and clarity for co
 ## Bugs  
 Known issues that need to be fixed before release.
 
-- [ ] When using the search bar in the Journal UI, typing does not register. Fix this so users can enter search terms and receive matching results.
+- [x] When using the search bar in the Journal UI, typing does not register. Fix this so users can enter search terms and receive matching results.
 - [ ] The height of the inventory UI window (next to the equipment UI) should match the equipment window for consistency and a cleaner layout.
 - [ ] Both the inventory UI window and the equipment UI window should be resizable. Add a gear icon to the top-right of each screen to open a UI editor. Players should be able to drag and snap these windows to predefined layout zones (not freely floating). This will allow for layout customization without breaking interface consistency.
