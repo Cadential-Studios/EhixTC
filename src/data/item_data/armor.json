@@ -97,7 +97,7 @@
     "maxDexMod": 2,
     "properties": ["fire_resistance"],
     "statBonus": { "constitution": 2, "strength": 1 },
-    "rarity": "epic",
+    "rarity": "very_rare",
     "value": 1000,
     "weight": 25
   },

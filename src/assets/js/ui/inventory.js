@@ -58,7 +58,7 @@ class InventoryManager {
                                 <option value="common">Common</option>
                                 <option value="uncommon">Uncommon</option>
                                 <option value="rare">Rare</option>
-                                <option value="epic">Epic</option>
+                                <option value="very_rare">Very Rare</option>
                                 <option value="legendary">Legendary</option>
                             </select>
                             
@@ -320,7 +320,7 @@ class InventoryManager {
                     valueB = b.data.type;
                     break;
                 case 'rarity':
-                    const rarityOrder = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 };
+                    const rarityOrder = { common: 0, uncommon: 1, rare: 2, very_rare: 3, legendary: 4 };
                     valueA = rarityOrder[a.data.rarity] || 0;
                     valueB = rarityOrder[b.data.rarity] || 0;
                     break;
@@ -369,7 +369,7 @@ class InventoryManager {
                 return `
                     <div class="text-center py-8">
                         <i class="ph-duotone ph-backpack text-gray-400 text-4xl mb-4"></i>
-                        <p class="text-gray-400">Your inventory is empty.</p>
+                        <p class="text-gray-400">No items to display.</p>
                     </div>
                 `;
             }
@@ -473,7 +473,7 @@ class InventoryManager {
             common: 'border-gray-500',
             uncommon: 'border-green-500',
             rare: 'border-blue-500',
-            epic: 'border-purple-500',
+            very_rare: 'border-purple-500',
             legendary: 'border-orange-500'
         };
         return colors[rarity] || colors.common;
@@ -484,7 +484,7 @@ class InventoryManager {
             common: 'text-gray-300',
             uncommon: 'text-green-400',
             rare: 'text-blue-400',
-            epic: 'text-purple-400',
+            very_rare: 'text-purple-400',
             legendary: 'text-orange-400'
         };
         return colors[rarity] || colors.common;
@@ -792,11 +792,11 @@ class InventoryManager {
                     <div class="flex justify-between items-start">
                         <div>
                             <h2 class="text-2xl font-cinzel ${rarityTextColor} mb-2">${item.name}</h2>
-                            <div class="flex gap-4 text-sm text-gray-400">
-                                <span>${item.type.charAt(0).toUpperCase() + item.type.slice(1)}</span>
-                                ${item.subtype ? `<span>• ${item.subtype}</span>` : ''}
-                                <span>• ${item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)}</span>
-                                ${quantity > 1 ? `<span>• Quantity: ${quantity}</span>` : ''}
+                            <div class="flex gap-2 text-sm text-gray-400">
+                                <span>${capitalizeFirst(item.type)}</span>
+                                ${item.subtype ? `<span>- ${capitalizeFirst(item.subtype)}</span>` : ''}
+                                <span>- ${capitalizeFirst(item.rarity)}</span>
+                                ${quantity > 1 ? `<span>- Quantity: ${quantity}</span>` : ''}
                             </div>
                         </div>
                         <button onclick="inventoryManager.closeItemModal()" 
@@ -821,7 +821,7 @@ class InventoryManager {
                             <div class="space-y-2 text-sm">
                                 ${item.value ? `<div><span class="text-gray-400">Value:</span> <span class="text-green-400">${item.value} gold</span></div>` : ''}
                                 ${item.weight ? `<div><span class="text-gray-400">Weight:</span> <span class="text-yellow-400">${item.weight} lb</span></div>` : ''}
-                                ${item.slot ? `<div><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${item.slot}</span></div>` : ''}
+                                ${item.slot ? `<div><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${formatSlotName(item.slot)}</span></div>` : ''}
                                 ${item.damage ? `<div><span class="text-gray-400">Damage:</span> <span class="text-red-400">${item.damage} ${item.damageType}</span></div>` : ''}
                                 ${item.armorClass ? `<div><span class="text-gray-400">Armor Class:</span> <span class="text-blue-400">${item.armorClass}</span></div>` : ''}
                                 ${item.range ? `<div><span class="text-gray-400">Range:</span> <span class="text-purple-400">${item.range}</span></div>` : ''}
@@ -1129,4 +1129,16 @@ function renderAdvancedInventory() {
 // Maintain backward compatibility
 function renderInventory() {
     inventoryManager.updateDisplay();
+}
+
+function formatSlotName(slot) {
+    return slot
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/_/g, ' ')
+        .replace(/^./, s => s.toUpperCase())
+        .trim();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { formatSlotName };
 }
