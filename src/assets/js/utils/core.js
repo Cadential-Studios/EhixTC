@@ -172,6 +172,9 @@ let monstersData = {};
 let calendarData = {};
 let effectsData = {};
 
+// Base path for JSON data files. This is resolved dynamically at runtime.
+let dataPath = 'src/data/';
+
 // Skills System Constants
 const skillAbilityMap = {
     athletics: 'strength',
@@ -262,20 +265,72 @@ function rollDice(sides, count = 1) {
 }
 
 // Data Loading Functions
+/**
+ * Attempts to determine the correct base path for game data files.
+ * It first checks for a `config.json` file with a `dataPath` setting. If not
+ * found, it tries a series of common relative paths based on the location of
+ * this script. The detected path is stored in the global `dataPath` variable.
+ */
+async function determineDataPath() {
+    if (window.dataPath) return window.dataPath;
+
+    // 1. Optional configuration file
+    try {
+        const cfgResp = await fetch('config.json');
+        if (cfgResp.ok) {
+            const cfg = await cfgResp.json();
+            if (cfg.dataPath) {
+                dataPath = cfg.dataPath.endsWith('/') ? cfg.dataPath : cfg.dataPath + '/';
+                window.dataPath = dataPath;
+                return dataPath;
+            }
+        }
+    } catch (_) { /* ignore */ }
+
+    // 2. Derive from script location
+    const scriptEl = document.currentScript || document.querySelector('script[src*="main.js"]');
+    if (scriptEl) {
+        const scriptUrl = new URL(scriptEl.src, window.location.href);
+        const base = scriptUrl.pathname.split('/').slice(0, -1).join('/');
+        const candidates = [
+            `${base}/../../data/`,
+            `${base}/../data/`,
+            `${base}/../src/data/`,
+            `${base}/data/`,
+            'src/data/',
+            'data/'
+        ];
+        for (const candidate of candidates) {
+            try {
+                const resp = await fetch(candidate + 'locations.json');
+                if (resp.ok) {
+                    dataPath = candidate;
+                    window.dataPath = dataPath;
+                    return dataPath;
+                }
+            } catch (_) { /* ignore */ }
+        }
+    }
+
+    window.dataPath = dataPath;
+    return dataPath;
+}
+
 async function loadGameData() {
     try {
+        const base = await determineDataPath();
         // Load all JSON data files
         const responses = await Promise.all([
-            fetch('src/data/locations.json'),
-            fetch('src/data/scenes.json'),
-            fetch('src/data/classes.json'),
-            fetch('src/data/preset_characters.json'),
-            fetch('src/data/species.json'),
-            fetch('src/data/recipes.json'),
-            fetch('src/data/quests.json'),
-            fetch('src/data/monsters.json'),
-            fetch('src/data/calendar.json'),
-            fetch('src/data/effects.json')
+            fetch(base + 'locations.json'),
+            fetch(base + 'scenes.json'),
+            fetch(base + 'classes.json'),
+            fetch(base + 'preset_characters.json'),
+            fetch(base + 'species.json'),
+            fetch(base + 'recipes.json'),
+            fetch(base + 'quests.json'),
+            fetch(base + 'monsters.json'),
+            fetch(base + 'calendar.json'),
+            fetch(base + 'effects.json')
         ]);
 
         const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse, 
@@ -293,7 +348,7 @@ async function loadGameData() {
         if (effectsResponse.ok) effectsData = await effectsResponse.json();
 
         // Load item data from multiple files
-        await loadItemData();
+        await loadItemData(base);
 
         console.log('Game data loaded successfully');
     } catch (error) {
@@ -302,19 +357,19 @@ async function loadGameData() {
     }
 }
 
-async function loadItemData() {
+async function loadItemData(base = dataPath) {
     try {
         // Load all item category files
         const itemResponses = await Promise.all([
-            fetch('src/data/item_data/weapons.json'),
-            fetch('src/data/item_data/armor.json'),
-            fetch('src/data/item_data/accessories.json'),
-            fetch('src/data/item_data/consumables.json'),
-            fetch('src/data/item_data/magical.json'),
-            fetch('src/data/item_data/tools.json'),
-            fetch('src/data/item_data/materials.json'),
-            fetch('src/data/item_data/quest_items.json'),
-            fetch('src/data/item_data/equipment.json')
+            fetch(base + 'item_data/weapons.json'),
+            fetch(base + 'item_data/armor.json'),
+            fetch(base + 'item_data/accessories.json'),
+            fetch(base + 'item_data/consumables.json'),
+            fetch(base + 'item_data/magical.json'),
+            fetch(base + 'item_data/tools.json'),
+            fetch(base + 'item_data/materials.json'),
+            fetch(base + 'item_data/quest_items.json'),
+            fetch(base + 'item_data/equipment.json')
         ]);
 
         const [weaponsResponse, armorResponse, accessoriesResponse, consumablesResponse, 
@@ -366,7 +421,7 @@ async function loadItemData() {
         console.error('Error loading item data:', error);
         // Fall back to loading from the old items.json if new structure fails
         try {
-            const fallbackResponse = await fetch('src/data/items.json');
+            const fallbackResponse = await fetch(base + 'items.json');
             if (fallbackResponse.ok) {
                 itemsData = await fallbackResponse.json();
                 console.log('Loaded fallback items.json');
