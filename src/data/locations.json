@@ -28,6 +28,8 @@
     "description": "A small clearing bathed in dim light where ancient stones rise from the earth. The air here hums with old power.",
     "image": "assets/images/locations/griefwood_clearing.jpg",
     "region": "frontier",
+    "foragable": true,
+    "loot_table": "forest",
     "actions": [
       { "text": "Study the standing stones", "type": "info", "info": "Strange runes glow faintly, hinting at forgotten rituals." },
       { "text": "Head back to the edge", "type": "travel", "target": "griefwood_edge" }

@@ -22,5 +22,17 @@
     "rarity": "Uncommon",
     "value": 25,
     "weight": 1
+  },
+  "herbalism_kit": {
+    "id": "herbalism_kit",
+    "name": "Herbalism Kit",
+    "type": "Tool",
+    "subtype": "Herbalism",
+    "slot": "none",
+    "description": "A collection of pouches and vials used to gather and prepare herbs.",
+    "uses": "unlimited",
+    "rarity": "Common",
+    "value": 5,
+    "weight": 2
   }
 }

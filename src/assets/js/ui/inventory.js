@@ -175,6 +175,11 @@ class InventoryManager {
                             ${gameData.player.equipment.chest ? this.renderEquippedItem('chest') : '<i class="ph-duotone ph-t-shirt text-gray-400"></i><br><span class="text-xs text-gray-400">Chest</span>'}
                         </div>
                     </div>
+                    <div class="equipment-slot" data-slot="clothing">
+                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
+                            ${gameData.player.equipment.clothing ? this.renderEquippedItem('clothing') : '<i class="ph-duotone ph-scales text-gray-400"></i><br><span class="text-xs text-gray-400">Clothing</span>'}
+                        </div>
+                    </div>
                     <div class="equipment-slot" data-slot="offhand">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
                             ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
@@ -844,9 +849,20 @@ class InventoryManager {
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold text-white mb-3">Special Properties</h3>
                             <div class="flex flex-wrap gap-2">
-                                ${item.properties.map(prop => 
+                                ${item.properties.map(prop =>
                                     `<span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">${prop}</span>`
                                 ).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${item.properties && item.properties.includes('container') ? `
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-white mb-3">Contents</h3>
+                            <div class="text-sm text-gray-300">
+                                ${item.container_contents && item.container_contents.length > 0 ?
+                                    item.container_contents.map(id => itemsData[id]?.name || id).join(', ') : 'Empty'}
+                                <div class="mt-2 text-xs text-gray-400">Weight: ${item.container_contents ? item.container_contents.reduce((w, id) => w + (itemsData[id]?.weight || 0), 0) : 0}/${item.capacity || 0} lb</div>
                             </div>
                         </div>
                     ` : ''}

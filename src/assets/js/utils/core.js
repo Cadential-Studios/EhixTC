@@ -26,6 +26,7 @@ const gameData = {
             head: null,
             neck: null,
             chest: null,
+            clothing: null,
             mainhand: null,
             offhand: null,
             finger1: null,
@@ -171,6 +172,7 @@ let questsData = {};
 let monstersData = {};
 let calendarData = {};
 let effectsData = {};
+let lootTablesData = {};
 
 /**
  * Base path to JSON data files. Determined at runtime by detectDataPath().
@@ -320,11 +322,13 @@ async function loadGameData() {
             fetch(`${DATA_BASE_PATH}quests.json`),
             fetch(`${DATA_BASE_PATH}monsters.json`),
             fetch(`${DATA_BASE_PATH}calendar.json`),
-            fetch(`${DATA_BASE_PATH}effects.json`)
+            fetch(`${DATA_BASE_PATH}effects.json`),
+            fetch(`${DATA_BASE_PATH}loot_tables/foraging.json`)
         ]);
 
-        const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse, 
-               speciesResponse, recipesResponse, questsResponse, monstersResponse, calendarResponse, effectsResponse] = responses;
+        const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse,
+               speciesResponse, recipesResponse, questsResponse, monstersResponse,
+               calendarResponse, effectsResponse, foragingLootResponse] = responses;
 
         if (locationsResponse.ok) locationsData = await locationsResponse.json();
         if (scenesResponse.ok) scenesData = await scenesResponse.json();
@@ -336,6 +340,7 @@ async function loadGameData() {
         if (monstersResponse.ok) monstersData = await monstersResponse.json();
         if (calendarResponse.ok) calendarData = await calendarResponse.json();
         if (effectsResponse.ok) effectsData = await effectsResponse.json();
+        if (foragingLootResponse.ok) lootTablesData = await foragingLootResponse.json();
 
         // Load item data from multiple files
         await loadItemData();
