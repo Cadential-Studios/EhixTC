@@ -1,0 +1,38 @@
+{
+    "npcs": [
+        {
+            "id": "tarn",
+            "name": "Tarn",
+            "gender": "male",
+            "age": 35,
+            "race": "human",
+            "type": "shopkeeper",
+            "description": "A seasoned warrior with a scarred face and a no-nonsense attitude.",
+            "location": "The Rusty Blade Tavern",
+            "shopkeeper": true,
+            "inventory": [
+                {
+                    "item_id": "healing_potion",
+                    "quantity": 5,
+                    "price": 50
+                },
+                {
+                    "item_id": "iron_sword",
+                    "quantity": 2,
+                    "price": 150
+                }
+            ],
+            "quests": [
+                {
+                    "quest_id": "find_missing_sword",
+                    "status": "available",
+                    "reward": {
+                        "item_id": "gold_coin",
+                        "quantity": 100
+                    }
+                }
+            ],
+            "rumors": ["westhaven_missing_blacksmith", "tarn_wants_to_retire"]
+        }
+    ]
+}

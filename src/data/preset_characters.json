@@ -6,7 +6,12 @@
     "class": "ranger",
     "species": "human",
     "level": 1,
-    "relationship_score": 0,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 12,
       "dexterity": 15,
@@ -37,7 +42,12 @@
     "class": "paladin",
     "species": "leonin",
     "level": 1,
-    "relationship_score": 0,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 15,
       "dexterity": 10,
@@ -68,7 +78,12 @@
     "class": "wizard",
     "species": "human",
     "level": 1,
-    "relationship_score": 0,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 8,
       "dexterity": 12,

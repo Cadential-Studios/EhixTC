@@ -1,0 +1,10 @@
+{
+    "rumor_id": {
+        "id": "rumor_name",
+        "name": "Rumor Name",
+        "text": "This is a rumor that can be spread among NPCs and players.",
+        "source": "The source of the rumor, e.g., 'Tarn', '[name of NPC]'",
+        "type": "type of rumor, e.g., 'gossip', 'news'",
+        "properties": ["property1", "property2"]
+    }
+}

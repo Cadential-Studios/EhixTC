@@ -1,0 +1,20 @@
+{
+    "westhaven_missing_blacksmith": {
+        "id": "westhaven_missing_blacksmith",
+        "name": "Missing Blacksmith in Westhaven",
+        "text": "Rumor has it that the blacksmith in Westhaven has gone missing under... mysterious circumstances.",
+        "source": "Tarn",
+        "location": "Westhaven",
+        "type": "gossip",
+        "properties": null
+    },
+    "tarn_wants_to_retire": {
+        "id": "tarn_wants_to_retire",
+        "name": "Tarn Wants to Retire",
+        "text": "Tarn has been overheard expressing a desire to retire from his shopkeeping duties and travel the world.",
+        "source": "Tarn",
+        "location": "Westhaven",
+        "type": "news",
+        "properties": null
+    }
+}
