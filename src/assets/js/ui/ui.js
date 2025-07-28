@@ -590,7 +590,7 @@ function renderCraftingWorkshop() {
                 <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
                     <i class="ph-duotone ph-scroll mr-2"></i>Available Recipes
                 </h3>
-                <div id="recipe-list-content" class="space-y-3 max-h-96 overflow-y-auto">
+                <div id="recipe-list-content" class="space-y-3">
                     <!-- Recipes will be populated here -->
                 </div>
             </div>
