@@ -1383,14 +1383,14 @@ window.toggleDevMenu = () => devMenu.toggle();
 
 // Additional global dev functions
 window.enableDevMode = () => {
-    localStorage.setItem('developerMode', 'true');
-    devMenu.isDeveloperMode = true;
+    localStorage.setItem('devMode', 'true');
+    devMenu.isEnabled = true;
     devMenu.log('Developer mode enabled globally');
 };
 
 window.disableDevMode = () => {
-    localStorage.removeItem('developerMode');
-    devMenu.isDeveloperMode = false;
+    localStorage.removeItem('devMode');
+    devMenu.isEnabled = false;
     devMenu.hide();
     devMenu.log('Developer mode disabled');
 };
