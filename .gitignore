@@ -1,3 +1,5 @@
+# Ignore code coverage output
+coverage/
 # Edoria: The Triune Convergence - .gitignore
 
 # Player save files (except sample)
