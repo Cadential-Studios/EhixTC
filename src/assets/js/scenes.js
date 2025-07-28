@@ -1,5 +1,6 @@
 // Scene and Location Management Module
 // Edoria: The Triune Convergence - Scenes & Locations
+import { addLoreEntry } from './utils/core.js';
 
 // Scene rendering and management
 function renderScene(sceneId) {
@@ -41,10 +42,11 @@ function renderLocation(locationId) {
     if (!location) return;
 
     gameData.player.location = locationId;
+    gameData.player.visitedLocations.add(locationId);
     gameData.story.currentScene = null;
     
     mainContentEl.innerHTML = `
-        <div class="mb-4 rounded-lg overflow-hidden"><img src="${location.image}" alt="${location.name}" class="w-full h-full object-cover"></div>
+        <div class="mb-4 rounded-lg overflow-hidden"><img src="${location.image}" alt="${location.name}" class="w-full h-full object-cover" loading="lazy"></div>
         <h2 class="font-cinzel text-2xl text-white mb-2">${location.name}</h2>
         <p class="text-gray-300 mb-6">${location.description}</p>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
@@ -102,14 +104,14 @@ function handleActionButton(e) {
                     // Success callback
                     setTimeout(() => {
                         showGameMessage(successText, 'success');
-                        gameData.player.lore.add(successText);
+                        addLoreEntry(successText);
                     }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 500);
                 },
                 function(result) {
                     // Failure callback
                     setTimeout(() => {
                         showGameMessage(failureText, 'failure');
-                        gameData.player.lore.add(failureText);
+                        addLoreEntry(failureText);
                     }, gameData.settings.showDiceAnimations ? 3000 / gameData.settings.combatAnimationSpeed : 500);
                 }
             );
@@ -149,7 +151,7 @@ function loadFallbackScenes() {
             },
             vision: {
                 onEnter: () => {
-                    gameData.player.lore.add("You have witnessed a prophetic vision of the Triune Convergence.");
+                    addLoreEntry("You have witnessed a prophetic vision of the Triune Convergence.");
                 },
                 text: "You see flashes: A throne of twisted iron under a black sky. A Leonin warrior with a shattered mane. A dwarven forge, cold and dark. A tidal wave of shadow washing over the plains of Ehix. And through it all, three moons burning like hateful eyes, their light not illuminating, but consuming. You gasp and return to yourself, heart hammering in your chest, the horrifying images seared into your memory.",
                 choices: [

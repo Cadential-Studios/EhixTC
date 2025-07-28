@@ -75,9 +75,12 @@ class CraftingManager {
 
         const conditions = recipe.unlockConditions;
 
-        // Check quest completion (simplified - assume all completed for now)
+        // Check quest completion
         if (conditions.questsCompleted && conditions.questsCompleted.length > 0) {
-            // TODO: Implement quest tracking
+            for (const questId of conditions.questsCompleted) {
+                const completed = gameData.player.quests.completed.some(q => (q.id || q) === questId);
+                if (!completed) return false;
+            }
         }
 
         // Check item discovery
@@ -88,9 +91,13 @@ class CraftingManager {
             }
         }
 
-        // Check locations visited (simplified - assume all visited for now)
+        // Check locations visited
         if (conditions.locationsVisited && conditions.locationsVisited.length > 0) {
-            // TODO: Implement location tracking
+            for (const locId of conditions.locationsVisited) {
+                if (!gameData.player.visitedLocations || !gameData.player.visitedLocations.has(locId)) {
+                    return false;
+                }
+            }
         }
 
         return true;

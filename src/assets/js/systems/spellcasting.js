@@ -28,15 +28,14 @@ let spellData = null;
 // Initialize spell system
 async function initializeSpellSystem() {
     try {
-        if (typeof detectDataPath === 'function' && !DATA_BASE_PATH) {
-            await detectDataPath();
-        }
-        const response = await fetch(`${DATA_BASE_PATH}spells.json`);
+        const response = await fetch('src/data/spells.json');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
         spellData = await response.json();
         console.log('Spell system initialized');
         updateSpellSlotsForLevel();
     } catch (error) {
         console.error('Failed to load spell data:', error);
+        spellData = { cantrips: {}, spells: {} };
     }
 }
 

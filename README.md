@@ -8,7 +8,6 @@ An interactive RPG game set in a fantasy world shaped by the celestial dance of 
 Ehix - The Triune Convergence/
 │
 ├── index.html              # Main game entry point
-├── index_new.html          # Updated version with organized structure
 │
 ├── assets/                 # Game assets
 │   ├── css/
@@ -73,7 +72,7 @@ Save files are stored as JSON and contain:
 
 ### Getting Started
 1. Clone the repository
-2. Open `index_new.html` in a web browser
+2. Open `index.html` in a web browser
 3. Start playing!
 
 ### File Organization

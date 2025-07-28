@@ -539,7 +539,8 @@ class InventoryUIFeatures {
 
         // Comparison mode clicks (for inventory items)
         document.addEventListener('click', (e) => {
-            if (e.target.hasAttribute('data-inventory-item-id') && this.comparisonMode) {
+            if (e.target instanceof Element &&
+                e.target.hasAttribute('data-inventory-item-id') && this.comparisonMode) {
                 e.preventDefault();
                 e.stopPropagation();
                 const itemId = e.target.getAttribute('data-inventory-item-id');

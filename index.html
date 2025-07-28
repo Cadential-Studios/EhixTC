@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/duotone/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="src/assets/css/phosphor-duotone.css" rel="stylesheet" />
+    <link rel="stylesheet" href="src/assets/css/font-awesome.min.css" />
     
     <!-- Game Stylesheets -->
     <link rel="stylesheet" href="src/assets/css/main.css">
@@ -44,8 +44,17 @@
                     </div>
                 </div>
             </div>
-            <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
+            <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">${t('BEGIN')}</button>
             <button id="check-updates-btn" class="mt-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Check for Updates</button>
+        </div>
+
+        <!-- Tutorial Overlay -->
+        <div id="tutorial-overlay" class="version-overlay" style="display:none;">
+            <div class="version-popup">
+                <h3 class="font-cinzel text-xl text-white mb-4">Welcome to Edoria</h3>
+                <p class="text-gray-300">Use the bottom navigation to access your journal, inventory and settings. Explore locations to uncover lore.</p>
+                <button id="close-tutorial" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mt-4">Begin Adventure</button>
+            </div>
         </div>
 
         <!-- CHARACTER CREATION SCREEN -->
@@ -79,6 +88,9 @@
                         <p class="font-cinzel text-sm sm:text-lg" id="current-date">Alphi 1, 998 PA</p>
                         <p class="text-xs sm:text-sm text-gray-400" id="month-description">The Awakening</p>
                         <p class="text-xs sm:text-sm text-gray-300" id="current-time">8:00 AM</p>
+                        <div class="w-full h-2 bg-gray-700 rounded-full mt-1">
+                            <div id="lore-meter" class="h-full bg-green-500 rounded-full" style="width:0%"></div>
+                        </div>
                         <div class="flex items-center space-x-2">
                             <button id="time-toggle-btn" class="bg-gray-700 hover:bg-gray-800 text-white px-2 py-1 rounded">
                                 <i class="ph-duotone ph-pause"></i>
@@ -325,6 +337,7 @@
     <script src="src/assets/js/utils/core.js"></script>
     <script src="src/assets/js/utils/tools.js"></script>
     <script src="src/assets/js/utils/save.js"></script>
+    <script src="src/assets/js/utils/i18n.js"></script>
     
     <!-- Game Systems -->
     <script src="src/assets/js/systems/experience.js"></script>
@@ -336,6 +349,10 @@
     <script src="src/assets/js/systems/combat.js"></script>
     <script src="src/assets/js/systems/spellcasting.js"></script>
     <script src="src/assets/js/systems/conditions.js"></script>
+    <script src="src/assets/js/systems/restSystem.js"></script>
+    <script src="src/assets/js/systems/questSystem.js"></script>
+    <script src="src/assets/js/systems/dialogueSystem.js"></script>
+    <script src="src/assets/js/systems/audioSystem.js"></script>
     
     <!-- UI Components -->
     <script src="src/assets/js/ui/advancedSorting.js"></script>

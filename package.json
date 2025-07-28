@@ -7,7 +7,8 @@
     "start": "python -m http.server 8000",
     "build": "echo 'No build step defined'",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "validate:json": "node utils/validateJSON.js src/data/*.json"
   },
   "repository": {
     "type": "git",
