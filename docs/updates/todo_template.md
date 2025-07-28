@@ -1,12 +1,20 @@
 [[Feature or Module Name]] — Development To-Do List
 
-Status: [[Planned | In Progress | Complete]]Created: [[YYYY-MM-DD — HH:MM]]Completed: [[YYYY-MM-DD — HH:MM or leave blank]]Owner: @[[Developer Handle or Team Name]]
+Status: [[Planned | In Progress | Complete]]
+Created: [[YYYY-MM-DD — HH:MM]]
+Completed: [[YYYY-MM-DD — HH:MM]]
+Owner: @[[Developer Handle or Team Name]]
 
 [[Section Name]]
 
 [[Brief description of the purpose of this section]]
 
-To-Do Items
+To-Do Items:
+[[A list of tasks or features to be implemented, with checkboxes for tracking progress]]
+- [ ] Task 1 description
+- [ ] Task 2 description
+- [ ] Task 3 description
+- [[Additional tasks as needed]]
 
 
 
@@ -83,6 +91,13 @@ Validate all data using [[Tool | Schema | Linter]]
 Include inline comments or [[JSDoc | Docstrings]] where needed
 
 Bug Prevention & CI Integration
+
+
+
+### Notes for Developers
+- Make sure to include the date and time on each update.
+- Complete each section with relevant details.
+- Follow the project's coding standards and guidelines.
 
 
 

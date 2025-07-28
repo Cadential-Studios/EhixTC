@@ -2,8 +2,8 @@
   "bedroll": {
     "id": "bedroll",
     "name": "Bedroll",
-    "type": "equipment",
-    "subtype": "sleeping",
+    "type": "Equipment",
+    "subtype": "Sleeping",
     "slot": "none",
     "description": "A simple roll of fabric for sleeping outdoors.",
     "effect": "comfort",
@@ -11,5 +11,85 @@
     "rarity": "Common",
     "value": 5,
     "weight": 3
+  },
+  "common_clothes": {
+    "id": "common_clothes",
+    "name": "Common Clothes",
+    "type": "Equipment",
+    "subtype": "Clothing",
+    "slot": "Clothing",
+    "description": "A set of simple, everyday clothing suitable for most occasions.",
+    "rarity": "Common",
+    "value": 1,
+    "weight": 1
+  },
+  "scholars_pack": {
+    "id": "scholars_pack",
+    "name": "Scholar's Pack",
+    "type": "Equipment",
+    "subtype": "Pack",
+    "description": "A pack containing essential items for a scholar.",
+    "properties": ["container"],
+    "container_items": [
+      "Book",
+      "Ink",
+      "Quill"
+    ],
+    "rarity": "Common",
+    "value": 10,
+    "weight": 5
+  },
+  "priests_robes": {
+    "id": "priests_robes",
+    "name": "Priest's Robes",
+    "type": "Equipment",
+    "subtype": "Clothing",
+    "slot": "Clothing",
+    "description": "Robes worn by priests, symbolizing their faith and authority.",
+    "rarity": "Common",
+    "value": 15,
+    "weight": 2
+  },
+  "holy_symbol": {
+    "id": "holy_symbol",
+    "name": "Holy Symbol",
+    "type": "Equipment",
+    "subtype": "Religious",
+    "slot": "none",
+    "description": "A symbol of faith used in religious practices.",
+    "effect": "arcane_focus",
+    "rarity": "Common",
+    "value": 20,
+    "weight": 0.5
+  },
+  "prayer_book": {
+    "id": "prayer_book",
+    "name": "Prayer Book",
+    "type": "Equipment",
+    "subtype": "Book",
+    "slot": "none",
+    "description": "A book containing prayers and religious texts.",
+    "effect": "spellcasting_focus",
+    "rarity": "Common",
+    "value": 25,
+    "weight": 1,
+    "book_contents": {
+      "page_1": {
+      "text": "O light of the dawn, guide my steps through shadow and doubt. Grant me wisdom to discern, courage to act, and compassion to heal.",
+      "language": "Common"
+      },
+      "page_2": {
+      "text": "Blessed be the hands that mend, the hearts that forgive, and the souls that seek peace. May the radiance of hope shine upon all who walk in faith.",
+      "language": "Common"
+      },
+      "page_3": {
+      "text": "In the hour of darkness, I call upon the strength within and the unity of all. Shield me from evil, strengthen my resolve, and let my words be true.",
+      "language": "Common"
+      },
+      "page_4": {
+      "text": "Let this book be a beacon to the lost, a comfort to the weary, and a reminder of the sacred path. As it is written, so may it be.",
+      "language": "Common"
+      }
+    }
   }
 }

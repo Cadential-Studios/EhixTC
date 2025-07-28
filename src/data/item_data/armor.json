@@ -2,8 +2,8 @@
   "leather_armor": {
     "id": "leather_armor",
     "name": "Leather Armor",
-    "type": "armor",
-    "subtype": "light",
+    "type": "Armor",
+    "subtype": "Light",
     "slot": "chest",
     "description": "Flexible protection made from treated animal hide.",
     "armorClass": 11,

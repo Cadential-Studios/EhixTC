@@ -13,16 +13,14 @@
     "value": 100,
     "weight": 1
   },
-  "arcane_focus": {
-    "id": "arcane_focus",
-    "name": "Arcane Focus",
+  "arcane_focus_crystal": {
+    "id": "arcane_focus_crystal",
+    "name": "Arcane Focus Crystal",
     "type": "magical",
     "subtype": "focus",
     "slot": "offhand",
     "description": "A crystal that helps channel magical energies.",
     "effect": "spell_focus",
-    "uses": "unlimited",
-    "statBonus": { "intelligence": 1 },
     "rarity": "Uncommon",
     "value": 50,
     "weight": 1

@@ -103,5 +103,19 @@
     "rarity": "common",
     "value": 20,
     "weight": 4
+  },
+  "staff": {
+    "id": "staff",
+    "name": "Staff",
+    "type": "Weapon",
+    "subtype": "Melee",
+    "slot": "mainHand",
+    "description": "A sturdy wooden staff, useful for spellcasting and as a walking aid.",
+    "damage": "1d6",
+    "damageType": "bludgeoning",
+    "properties": ["versatile"],
+    "rarity": "common",
+    "value": 10,
+    "weight": 4
   }
 }
