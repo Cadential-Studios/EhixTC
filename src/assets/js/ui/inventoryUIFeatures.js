@@ -212,7 +212,7 @@ class InventoryUIFeatures {
             'common': '#9ca3af',
             'uncommon': '#22c55e',
             'rare': '#3b82f6',
-            'epic': '#a855f7',
+            'very_rare': '#a855f7',
             'legendary': '#f59e0b',
             'mythic': '#ef4444'
         };
@@ -433,7 +433,7 @@ class InventoryUIFeatures {
             'common': '#9ca3af',
             'uncommon': '#22c55e', 
             'rare': '#3b82f6',
-            'epic': '#a855f7',
+            'very_rare': '#a855f7',
             'legendary': '#f59e0b',
             'mythic': '#ef4444'
         };
