@@ -104,7 +104,7 @@ class InventoryAnalytics {
 
     calculateRarityDistribution(items) {
         const distribution = {};
-        const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
+        const rarities = ['common', 'uncommon', 'rare', 'very_rare', 'legendary', 'mythic'];
         
         rarities.forEach(rarity => {
             distribution[rarity] = {

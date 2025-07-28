@@ -10,7 +10,7 @@ class AdvancedSortingSystem {
                 'common': 0,
                 'uncommon': 1,
                 'rare': 2,
-                'epic': 3,
+                'very_rare': 3,
                 'legendary': 4,
                 'mythic': 5
             },

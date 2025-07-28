@@ -426,6 +426,7 @@ function setDefaultCraftingSkills(characterClass) {
 
 function setupKeyboardShortcuts() {
     document.addEventListener('keydown', function(e) {
+        const pauseMenu = document.getElementById('pause-menu');
         // Escape key opens or closes pause menu
         if (e.key === 'Escape') {
             if (gameScreen && gameScreen.style.display !== 'none') {
