@@ -2507,3 +2507,5 @@ input[type=range]::-webkit-slider-thumb {
 input[type=range]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
+body.high-contrast { filter: contrast(1.5); }
+

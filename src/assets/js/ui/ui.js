@@ -179,6 +179,11 @@ function updateDisplayOriginal() {
     
     // Update moon phases
     updateMoonPhases();
+
+    const loreMeter = document.getElementById('lore-meter');
+    if (loreMeter) {
+        loreMeter.style.width = Math.round(gameData.player.loreDiscovery * 100) + '%';
+    }
 }
 
 function updateMoonPhases() {
@@ -228,9 +233,21 @@ function renderSettings() {
                 
                 <div class="setting-item mb-4">
                     <label class="block text-gray-300 mb-2">Volume</label>
-                    <input type="range" min="0" max="1" step="0.1" value="${gameData.settings.volume}" 
+                    <input type="range" min="0" max="1" step="0.1" value="${gameData.settings.volume}"
                            class="w-full" id="volume-slider">
                     <div class="text-gray-400 text-sm mt-1">Current: ${Math.round(gameData.settings.volume * 100)}%</div>
+                </div>
+
+                <div class="setting-item mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" ${gameData.settings.highContrast ? 'checked' : ''} id="high-contrast-toggle" class="rounded">
+                        <span class="text-gray-300">High Contrast Mode</span>
+                    </label>
+                </div>
+
+                <div class="setting-item mb-4">
+                    <label class="block text-gray-300 mb-2">Text Size</label>
+                    <input type="range" min="0.8" max="1.5" step="0.1" value="${gameData.settings.textScale || 1}" class="w-full" id="text-scale-slider">
                 </div>
             </div>
             
@@ -290,6 +307,8 @@ function renderSettings() {
     const combatSpeedSlider = document.getElementById('combat-speed-slider');
     const autoScrollToggle = document.getElementById('auto-scroll-toggle');
     const statAnimationsToggle = document.getElementById('stat-animations-toggle');
+    const highContrastToggle = document.getElementById('high-contrast-toggle');
+    const textScaleSlider = document.getElementById('text-scale-slider');
     
     if (textSpeedSlider) {
         textSpeedSlider.addEventListener('input', function() {
@@ -302,6 +321,20 @@ function renderSettings() {
         volumeSlider.addEventListener('input', function() {
             gameData.settings.volume = parseFloat(this.value);
             this.nextElementSibling.textContent = `Current: ${Math.round(gameData.settings.volume * 100)}%`;
+        });
+    }
+
+    if (highContrastToggle) {
+        highContrastToggle.addEventListener('change', function() {
+            gameData.settings.highContrast = this.checked;
+            document.body.classList.toggle('high-contrast', this.checked);
+        });
+    }
+
+    if (textScaleSlider) {
+        textScaleSlider.addEventListener('input', function() {
+            gameData.settings.textScale = parseFloat(this.value);
+            document.documentElement.style.fontSize = (gameData.settings.textScale * 100) + '%';
         });
     }
     
@@ -356,14 +389,28 @@ function renderJournal(activeTab = 'all') {
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')"><i class='ph-duotone ph-book mr-1'></i>Lore</button>
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'rumors' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('rumors')"><i class='ph-duotone ph-chats-circle mr-1'></i>Rumors</button>
                 <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." oninput="renderJournal('${activeTab}')" />
+                <select id="journal-sort" class="ml-2 px-1 py-1 rounded text-black" onchange="renderJournal('${activeTab}')">
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
+                </select>
             </div>
         </div>
     `;
     
     // Content based on active tab
     if (activeTab === 'all' || activeTab === 'quests') {
-        const activeQuests = gameData.player.quests.active.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
-        const completedQuests = gameData.player.quests.completed.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
+        const sortDir = document.getElementById('journal-sort')?.value || 'az';
+        const sortFn = (a,b) => {
+            const t1 = (a.text || a).toLowerCase();
+            const t2 = (b.text || b).toLowerCase();
+            return sortDir === 'az' ? t1.localeCompare(t2) : t2.localeCompare(t1);
+        };
+        const activeQuests = gameData.player.quests.active
+            .filter(q => (q.text || q).toLowerCase().includes(searchQuery))
+            .sort(sortFn);
+        const completedQuests = gameData.player.quests.completed
+            .filter(q => (q.text || q).toLowerCase().includes(searchQuery))
+            .sort(sortFn);
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
@@ -376,7 +423,7 @@ function renderJournal(activeTab = 'all') {
                             const pinned = gameData.player.journalPins.has(qid);
                             const progress = quest.progress !== undefined ? quest.progress : null;
                             return `
-                            <div class="journal-entry quest ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                            <div class="journal-entry quest ${pinned ? 'ring-2 ring-yellow-400' : ''}" title="${(quest.text || quest).slice(0,40)}">
                                 <div class="flex justify-between items-center mb-1">
                                     <div class="text-amber-300 font-semibold">Active</div>
                                     <div class="flex items-center gap-2">
@@ -386,6 +433,7 @@ function renderJournal(activeTab = 'all') {
                                 </div>
                                 <div class="text-white">${quest.text || quest}</div>
                                 ${progress !== null ? `<div class="quest-progress"><div class="quest-progress-fill" style="width:${Math.round(progress * 100)}%"></div></div>` : ''}
+                                <textarea class="journal-note w-full mt-1" onchange="saveJournalNote('${qid}', this.value)" placeholder="Add note">${gameData.player.journalNotes[qid] || ''}</textarea>
                             </div>
                             `;
                         }).join('') :
@@ -402,12 +450,13 @@ function renderJournal(activeTab = 'all') {
                             const qid = quest.id || quest.text || quest;
                             const pinned = gameData.player.journalPins.has(qid);
                             return `
-                            <div class="journal-entry quest completed ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                            <div class="journal-entry quest completed ${pinned ? 'ring-2 ring-yellow-400' : ''}" title="${(quest.text || quest).slice(0,40)}">
                                 <div class="flex justify-between items-center mb-1">
                                     <div class="text-green-300 font-semibold">Completed</div>
                                     <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${qid}')">${pinned ? '★' : '☆'}</button>
                                 </div>
                                 <div class="text-white">${quest.text || quest}</div>
+                                <textarea class="journal-note w-full mt-1" onchange="saveJournalNote('${qid}', this.value)" placeholder="Add note">${gameData.player.journalNotes[qid] || ''}</textarea>
                             </div>
                             `;
                         }).join('') :
@@ -419,7 +468,10 @@ function renderJournal(activeTab = 'all') {
     }
     
     if (activeTab === 'all' || activeTab === 'lore') {
-        const loreEntries = Array.from(gameData.player.lore).filter(l => l.toLowerCase().includes(searchQuery));
+        const sortDir = document.getElementById('journal-sort')?.value || 'az';
+        const loreEntries = Array.from(gameData.player.lore)
+            .filter(l => l.toLowerCase().includes(searchQuery))
+            .sort((a,b) => sortDir === 'az' ? a.localeCompare(b) : b.localeCompare(a));
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
@@ -430,12 +482,13 @@ function renderJournal(activeTab = 'all') {
                         loreEntries.map(lore => {
                             const pinned = gameData.player.journalPins.has(lore);
                             return `
-                            <div class="journal-entry lore ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                            <div class="journal-entry lore ${pinned ? 'ring-2 ring-yellow-400' : ''}" title="${lore.slice(0,40)}">
                                 <div class="flex justify-between items-center mb-1">
                                     <div class="text-blue-300 font-semibold">Knowledge</div>
                                     <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${lore}')">${pinned ? '★' : '☆'}</button>
                                 </div>
                                 <div class="text-white">${processJournalText(lore)}</div>
+                                <textarea class="journal-note w-full mt-1" onchange="saveJournalNote('${lore}', this.value)" placeholder="Add note">${gameData.player.journalNotes[lore] || ''}</textarea>
                             </div>
                             `;
                         }).join('') :
@@ -447,7 +500,10 @@ function renderJournal(activeTab = 'all') {
     }
     
     if (activeTab === 'all' || activeTab === 'rumors') {
-        const rumorEntries = Array.from(gameData.player.rumors).filter(r => r.toLowerCase().includes(searchQuery));
+        const sortDir = document.getElementById('journal-sort')?.value || 'az';
+        const rumorEntries = Array.from(gameData.player.rumors)
+            .filter(r => r.toLowerCase().includes(searchQuery))
+            .sort((a,b) => sortDir === 'az' ? a.localeCompare(b) : b.localeCompare(a));
         content += `
             <div class="journal-section mb-6">
                 <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
@@ -458,12 +514,13 @@ function renderJournal(activeTab = 'all') {
                         rumorEntries.map(rumor => {
                             const pinned = gameData.player.journalPins.has(rumor);
                             return `
-                            <div class="journal-entry rumor ${pinned ? 'ring-2 ring-yellow-400' : ''}">
+                            <div class="journal-entry rumor ${pinned ? 'ring-2 ring-yellow-400' : ''}" title="${rumor.slice(0,40)}">
                                 <div class="flex justify-between items-center mb-1">
                                     <div class="text-purple-300 font-semibold">Rumor</div>
                                     <button class="pin-btn text-yellow-400 text-xs ${pinned ? 'active' : ''}" onclick="toggleJournalPin('${rumor}')">${pinned ? '★' : '☆'}</button>
                                 </div>
                                 <div class="text-white">${processJournalText(rumor)}</div>
+                                <textarea class="journal-note w-full mt-1" onchange="saveJournalNote('${rumor}', this.value)" placeholder="Add note">${gameData.player.journalNotes[rumor] || ''}</textarea>
                             </div>
                             `;
                         }).join('') :
@@ -933,6 +990,16 @@ function toggleJournalPin(id) {
         gameData.player.journalPins.add(id);
     }
     renderJournal();
+}
+
+// Add or update a player note for a journal entry
+function saveJournalNote(id, text) {
+    if (!id) return;
+    if (!text) {
+        delete gameData.player.journalNotes[id];
+    } else {
+        gameData.player.journalNotes[id] = text;
+    }
 }
 
 // Simulated quest tracking

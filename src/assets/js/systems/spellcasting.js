@@ -29,11 +29,13 @@ let spellData = null;
 async function initializeSpellSystem() {
     try {
         const response = await fetch('src/data/spells.json');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
         spellData = await response.json();
         console.log('Spell system initialized');
         updateSpellSlotsForLevel();
     } catch (error) {
         console.error('Failed to load spell data:', error);
+        spellData = { cantrips: {}, spells: {} };
     }
 }
 

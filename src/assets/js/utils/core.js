@@ -37,6 +37,8 @@ const gameData = {
         rumors: new Set(),
         journalPins: new Set(),
         journalNotes: {},
+        visitedLocations: new Set(),
+        loreDiscovery: 0,
         stats: {
             strength: 10,
             dexterity: 10,
@@ -246,6 +248,19 @@ function getAbilityScore(ability) {
 
 function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Add a lore entry and update progress meter
+export function addLoreEntry(text) {
+    if (!gameData.player.lore.has(text)) {
+        gameData.player.lore.add(text);
+        updateLoreDiscovery();
+    }
+}
+
+export function updateLoreDiscovery() {
+    const TOTAL_LORE = 100; // placeholder value until real count provided
+    gameData.player.loreDiscovery = Math.min(1, gameData.player.lore.size / TOTAL_LORE);
 }
 
 // Basic dice rolling function
@@ -677,10 +692,14 @@ function advanceTime() {
 }
 
 function checkMoonEvents() {
+    // Guard against missing moon data
+    const { edyria, kapra, enia } = gameData.moons || {};
+    if (!edyria || !kapra || !enia) return;
+
     // Check for moon convergence or special events
-    const edyriaPhase = (gameData.time.day + gameData.moons.edyria.phase) % gameData.moons.edyria.cycle;
-    const kapraPhase = (gameData.time.day + gameData.moons.kapra.phase) % gameData.moons.kapra.cycle;
-    const eniaPhase = (gameData.time.day + gameData.moons.enia.phase) % gameData.moons.enia.cycle;
+    const edyriaPhase = (gameData.time.day + edyria.phase) % edyria.cycle;
+    const kapraPhase = (gameData.time.day + kapra.phase) % kapra.cycle;
+    const eniaPhase = (gameData.time.day + enia.phase) % enia.cycle;
     
     // Check if all moons are in similar phases (convergence event)
     const phaseThreshold = 3;

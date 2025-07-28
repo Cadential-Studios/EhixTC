@@ -1,6 +1,7 @@
 // Main Game Initialization Module
 // Edoria: The Triune Convergence - Main Controller
 
+// AudioSystem is defined globally in audioSystem.js
 console.log('🎮 Main.js loaded successfully');
 
 // Helper function to map class skills to game skills
@@ -28,6 +29,7 @@ let startScreen, characterCreationScreen, gameScreen;
 let startGameButton, originChoices, navButtons, closePanelButtons, originBackBtn;
 let mainContentEl, dateEl, monthDescEl;
 let moonEdyriaEl, moonKapraEl, moonEniaEl;
+let audioSystem;
 let uiPanels, characterContentEl, journalContentEl, inventoryContentEl, settingsContent;
 
 function openPauseMenu() {
@@ -492,8 +494,10 @@ async function initializeGame() {
     
     // Enhance locations with skill checks
     enhanceLocationsWithSkillChecks();
-    
+
     updateDisplay();
+    audioSystem = new AudioSystem();
+    audioSystem.play();
     
     // Set up event listeners after everything is loaded
     setupEventListeners();
@@ -541,8 +545,21 @@ async function initializeGame() {
     if (typeof initializeExperienceSystem === 'function') {
         initializeExperienceSystem();
     }
+
+    showTutorial();
     
     console.log('Game initialization complete!');
+}
+
+function showTutorial() {
+    const overlay = document.getElementById('tutorial-overlay');
+    const closeBtn = document.getElementById('close-tutorial');
+    if (overlay && closeBtn) {
+        overlay.style.display = 'flex';
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+        }, { once: true });
+    }
 }
 
 // Start the game when DOM is loaded
