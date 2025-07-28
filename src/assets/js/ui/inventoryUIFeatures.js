@@ -249,6 +249,18 @@ class InventoryUIFeatures {
             `;
         }
 
+        if (itemData.properties && itemData.properties.includes('container')) {
+            const totalW = (itemData.container_contents || []).reduce((w,id)=> w + (itemsData[id]?.weight || 0),0);
+            const list = itemData.container_contents && itemData.container_contents.length > 0 ?
+                itemData.container_contents.map(id => itemsData[id]?.name || id).join(', ') : 'Empty';
+            content += `
+                <div style="margin-top:8px;">
+                    <strong>Contents:</strong> ${list}<br/>
+                    <span style="font-size:12px;color:#9ca3af;">Weight: ${totalW}/${itemData.capacity || 0} lb</span>
+                </div>
+            `;
+        }
+
         // Value and weight
         content += `
             <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #4a4a6a;">

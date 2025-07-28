@@ -9,10 +9,10 @@
 This section covers the addition of new features and improvements to the game, focusing on UI/UX enhancements and gameplay mechanics.
 
 ### Container Items
-- [ ] Add a check that detects when an item has the `"container"` property. If it does, the item should be openable in the inventory UI to reveal its contents. These contents will be defined in the item data as an array called `"container_contents"`.
-- [ ] Add functionality that displays a container's total weight in the inventory UI. If the container reaches its weight capacity, additional items should not be able to be added to it.
-- [ ] When hovering over a container item in the inventory UI, display a tooltip that shows the item’s name, description, and weight.
-- [ ] Add several example container items to the game:
+- [x] Add a check that detects when an item has the `"container"` property. If it does, the item should be openable in the inventory UI to reveal its contents. These contents will be defined in the item data as an array called `"container_contents"`.
+- [x] Add functionality that displays a container's total weight in the inventory UI. If the container reaches its weight capacity, additional items should not be able to be added to it.
+- [x] When hovering over a container item in the inventory UI, display a tooltip that shows the item’s name, description, and weight.
+- [x] Add several example container items to the game:
     - Backpack (a standard container for carrying items)
     - Quiver (used for holding arrows or bolts)
     - Chest (a large container not carried in the inventory, but used in the world)
@@ -22,11 +22,11 @@ This section covers the addition of new features and improvements to the game, f
     - Satchel (a medium-sized personal container)
 
 ### Clothing
-- [ ] Add a clothing equipment slot to the inventory UI that allows players to equip clothing items. These items must have the `"Clothing"` slot type in their data and may provide passive bonuses or unique effects.
+- [x] Add a clothing equipment slot to the inventory UI that allows players to equip clothing items. These items must have the `"Clothing"` slot type in their data and may provide passive bonuses or unique effects.
 
 ### Foraging
-- [ ] If a location has a `"foragable"` property set to true, a Forage button should appear in the location UI. This button should allow players to attempt to forage for items using a random roll system based on a loot table, which is referenced in the location data. The loot tables are stored in the `src/assets/js/data/loot_tables/` directory, and are defined in external JSON files (e.g., `"loot_table": "forest_loot"`).
-- [ ] When a player attempts to forage, they must make a Survival skill check. If the player possesses an herbalism kit, it should provide a bonus to the check.
+- [x] If a location has a `"foragable"` property set to true, a Forage button should appear in the location UI. This button should allow players to attempt to forage for items using a random roll system based on a loot table, which is referenced in the location data. The loot tables are stored in the `src/assets/js/data/loot_tables/` directory, and are defined in external JSON files (e.g., `"loot_table": "forest_loot"`).
+- [x] When a player attempts to forage, they must make a Survival skill check. If the player possesses an herbalism kit, it should provide a bonus to the check.
 - [ ] Expand the foraging system by creating new items that can be found through foraging, and by building a loot table for each major location type. All foraging loot tables should be stored in the `src/assets/js/data/loot_tables/` directory, and nature-based forageable items should be defined in `nature.json`.
 - [ ] Based on the herbs and plants added to the game data and loot tables, create new crafting recipes that incorporate these items in a way that feels thematically appropriate and mechanically useful.
 

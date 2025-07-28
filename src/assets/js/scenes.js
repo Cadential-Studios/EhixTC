@@ -49,9 +49,9 @@ function renderLocation(locationId) {
         <p class="text-gray-300 mb-6">${location.description}</p>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
             ${location.actions.map((action, index) => `
-                <button class="action-button p-4 rounded-lg" 
-                        data-type="${action.type}" 
-                        data-target="${action.target || ''}" 
+                <button class="action-button p-4 rounded-lg"
+                        data-type="${action.type}"
+                        data-target="${action.target || ''}"
                         data-info="${action.info || ''}"
                         data-skill="${action.skill || ''}"
                         data-dc="${action.dc || ''}"
@@ -61,6 +61,7 @@ function renderLocation(locationId) {
                     <span class="font-cinzel text-lg">${action.text}</span>
                 </button>
             `).join('')}
+            ${location.foragable ? `<button class="action-button p-4 rounded-lg" data-type="forage" data-location="${locationId}"><span class="font-cinzel text-lg">Forage</span></button>` : ''}
         </div>
     `;
     
@@ -131,7 +132,11 @@ function handleActionButton(e) {
                 showGameMessage('Combat system not fully implemented yet.', 'info');
             }
             break;
-            
+
+        case 'forage':
+            foragingSystem.forage(gameData.player.location);
+            break;
+
         default:
             showGameMessage(`Unknown action type: ${type}`, 'warning');
     }
