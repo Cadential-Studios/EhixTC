@@ -139,6 +139,7 @@ body {
 #inventory-content, #crafting-content {
     max-width: 1400px;
     margin: 0 auto;
+    max-height: 50%;
 }
 
 /* Drag and drop styles */

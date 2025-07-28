@@ -10,7 +10,7 @@ function renderScene(sceneId) {
         gameData.story.completedScenes.push(gameData.story.currentScene);
     }
 
-    if (scene.onEnter) {
+    if (typeof scene.onEnter === 'function') {
         scene.onEnter();
     }
 

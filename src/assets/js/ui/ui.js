@@ -573,39 +573,50 @@ function renderCraftingWorkshop() {
     const craftingContent = document.getElementById('crafting-content');
     if (!craftingContent) return;
 
-    craftingContent.innerHTML = `
-        <div class="crafting-workshop grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-            <!-- Recipe Categories -->
-            <div class="recipe-categories bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-list mr-2"></i>Recipe Categories
-                </h3>
-                <div id="category-list" class="space-y-2">
-                    <!-- Categories will be populated here -->
-                </div>
-            </div>
 
-            <!-- Recipe List -->
-            <div class="recipe-list bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-scroll mr-2"></i>Available Recipes
-                </h3>
-                <div id="recipe-list-content" class="space-y-3">
-                    <!-- Recipes will be populated here -->
-                </div>
-            </div>
+    // Clear previous content
+    craftingContent.innerHTML = '';
 
-            <!-- Crafting Details -->
-            <div class="crafting-details bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-hammer mr-2"></i>Crafting Details
-                </h3>
-                <div id="crafting-details-content">
-                    <p class="text-gray-400 text-center py-8">Select a recipe to view crafting details</p>
-                </div>
-            </div>
-        </div>
-    `;
+    // Create main grid container
+    const workshop = document.createElement('div');
+    workshop.className = 'crafting-workshop grid grid-cols-1 lg:grid-cols-3 gap-6';
+    workshop.style.height = '80%';
+    workshop.style.minHeight = '400px';
+    workshop.style.maxHeight = '80vh';
+
+    // Helper to create a panel
+    function createPanel(className, iconClass, title, contentId, placeholder) {
+        const panel = document.createElement('div');
+        panel.className = `${className} bg-gray-800 rounded-lg p-4 border border-gray-600`;
+        panel.style.height = '85vh';
+        panel.style.maxHeight = '85vh';
+        panel.style.overflowY = 'auto';
+
+        const h3 = document.createElement('h3');
+        h3.className = 'font-cinzel text-xl text-white mb-4 flex items-center';
+        h3.innerHTML = `<i class="ph-duotone ${iconClass} mr-2"></i>${title}`;
+        panel.appendChild(h3);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.id = contentId;
+        contentDiv.className = contentId === 'category-list' ? 'space-y-2' : 'space-y-3';
+        if (placeholder) {
+            contentDiv.innerHTML = placeholder;
+        }
+        panel.appendChild(contentDiv);
+
+        return panel;
+    }
+
+    // Create and append panels
+    workshop.appendChild(createPanel('recipe-categories', 'ph-list', 'Recipe Categories', 'category-list'));
+    workshop.appendChild(createPanel('recipe-list', 'ph-scroll', 'Available Recipes', 'recipe-list-content'));
+    workshop.appendChild(createPanel(
+        'crafting-details', 'ph-hammer', 'Crafting Details', 'crafting-details-content',
+        `<p class="text-gray-400 text-center py-8">Select a recipe to view crafting details</p>`
+    ));
+
+    craftingContent.appendChild(workshop);
 
     populateCraftingCategories();
     populateRecipeList();
