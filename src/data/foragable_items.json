@@ -1,0 +1,32 @@
+{
+  "foragable_items": [
+    "mushroom_red",
+    "mushroom_brown",
+    "stick",
+    "elfroot",
+    "iron_shard",
+    "goat_milk_bulb",
+    "herb_mountain_mint",
+    "reeds",
+    "glowcap_mushroom",
+    "fenleaf",
+    "leech_sap",
+    "wild_wheat",
+    "prairie_flower",
+    "buried_arrowhead",
+    "driftwood",
+    "sea_lettuce",
+    "salt_crystal",
+    "pearl_fragment",
+    "cactus_fruit",
+    "desert_sage",
+    "scorpion_shell",
+    "sunstone_shard",
+    "azure_moss",
+    "cave_truffle",
+    "herb_mandrake",
+    "herb_yarrow",
+    "herb_nightshade",
+    "herb_mint"
+  ]
+}

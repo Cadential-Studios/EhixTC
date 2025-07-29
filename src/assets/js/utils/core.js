@@ -297,12 +297,37 @@ function rollD20() {
     return Math.floor(Math.random() * 20) + 1;
 }
 
-function rollDice(sides, count = 1) {
+
+/**
+ * Unified dice rolling function.
+ * Usage:
+ *   rollDice('2d6+3') => { rolls: [n, n], total: n, modifier: 3, expression: '2d6+3', count: 2, sides: 6 }
+ *   rollDice(6, 2) => { rolls: [n, n], total: n, modifier: 0, expression: '2d6', count: 2, sides: 6 }
+ *   rollDice(20) => { rolls: [n], total: n, modifier: 0, expression: '1d20', count: 1, sides: 20 }
+ */
+function rollDice(arg1, arg2) {
+    let count, sides, modifier = 0, expression;
+    if (typeof arg1 === 'string') {
+        // Parse dice notation like "2d6+3"
+        const match = arg1.match(/(\d+)?d(\d+)([+-]\d+)?/i);
+        if (!match) return { rolls: [], total: 0, modifier: 0, expression: arg1, count: 0, sides: 0 };
+        count = parseInt(match[1]) || 1;
+        sides = parseInt(match[2]);
+        modifier = match[3] ? parseInt(match[3]) : 0;
+        expression = arg1;
+    } else if (typeof arg1 === 'number') {
+        sides = arg1;
+        count = typeof arg2 === 'number' ? arg2 : 1;
+        expression = `${count}d${sides}`;
+    } else {
+        return { rolls: [], total: 0, modifier: 0, expression: '', count: 0, sides: 0 };
+    }
     const rolls = [];
     for (let i = 0; i < count; i++) {
         rolls.push(Math.floor(Math.random() * sides) + 1);
     }
-    return rolls;
+    const total = rolls.reduce((sum, roll) => sum + roll, 0) + modifier;
+    return { rolls, total, modifier, expression, count, sides };
 }
 
 // Data Loading Functions
@@ -312,6 +337,8 @@ async function loadGameData() {
             await detectDataPath();
         }
         // Load all JSON data files
+
+
         const responses = await Promise.all([
             fetch(`${DATA_BASE_PATH}locations.json`),
             fetch(`${DATA_BASE_PATH}scenes.json`),
@@ -338,9 +365,21 @@ async function loadGameData() {
         if (recipesResponse.ok) recipesData = await recipesResponse.json();
         if (questsResponse.ok) questsData = await questsResponse.json();
         if (monstersResponse.ok) monstersData = await monstersResponse.json();
+        // Always assign to gameData.monsters for UI access
+        gameData.monsters = monstersData;
         if (calendarResponse.ok) calendarData = await calendarResponse.json();
         if (effectsResponse.ok) effectsData = await effectsResponse.json();
         if (foragingLootResponse.ok) lootTablesData = await foragingLootResponse.json();
+
+        // Load item data from multiple files
+        await loadItemData();
+
+        // Use all nature.json item IDs as foragable items
+        if (window.itemsData) {
+            gameData.foragableItems = Object.keys(window.itemsData).filter(id => window.itemsData[id].type === 'nature');
+        } else {
+            gameData.foragableItems = [];
+        }
 
         // Load item data from multiple files
         await loadItemData();
@@ -355,6 +394,7 @@ async function loadGameData() {
 async function loadItemData() {
     try {
         // Load all item category files
+
         const itemBase = `${DATA_BASE_PATH}item_data/`;
         const itemResponses = await Promise.all([
             fetch(`${itemBase}weapons.json`),
@@ -365,11 +405,12 @@ async function loadItemData() {
             fetch(`${itemBase}tools.json`),
             fetch(`${itemBase}materials.json`),
             fetch(`${itemBase}quest_items.json`),
-            fetch(`${itemBase}equipment.json`)
+            fetch(`${itemBase}equipment.json`),
+            fetch(`${itemBase}nature.json`)
         ]);
 
         const [weaponsResponse, armorResponse, accessoriesResponse, consumablesResponse, 
-               magicalResponse, toolsResponse, materialsResponse, questItemsResponse, equipmentResponse] = itemResponses;
+               magicalResponse, toolsResponse, materialsResponse, questItemsResponse, equipmentResponse, natureResponse] = itemResponses;
 
         // Initialize empty items data object
         itemsData = {};
@@ -411,6 +452,19 @@ async function loadItemData() {
             const equipment = await equipmentResponse.json();
             Object.assign(itemsData, equipment);
         }
+
+        // Add nature items (flatten nested structure)
+        if (natureResponse && natureResponse.ok) {
+            const natureItems = await natureResponse.json();
+            if (natureItems && typeof natureItems === 'object') {
+                Object.keys(natureItems).forEach(key => {
+                    itemsData[key] = natureItems[key];
+                });
+            }
+        }
+
+        // Make itemsData globally available
+        window.itemsData = itemsData;
 
         console.log('Item data loaded successfully:', Object.keys(itemsData).length, 'items');
     } catch (error) {
@@ -971,12 +1025,11 @@ function updateTimeControlDisplay() {
 
 // Dice Rolling System Enhancement
 function performSkillCheck(attribute, dc) {
-    const roll = rollDice('1d20');
+    const rollResult = rollDice('1d20');
+    const roll = rollResult.total;
     const modifier = Math.floor((gameData.player.stats[attribute] - 10) / 2);
     const total = roll + modifier;
-    
     showDiceRoll(roll, modifier, total, dc);
-    
     return total >= dc;
 }
 
@@ -998,22 +1051,7 @@ function showDiceRoll(roll, modifier, total, dc = null, label = '') {
     );
 }
 
-function rollDice(diceNotation) {
-    // Parse dice notation like "1d4", "2d6+3", etc.
-    const match = diceNotation.match(/(\d+)d(\d+)(?:\+(\d+))?/);
-    if (!match) return 0;
-    
-    const numDice = parseInt(match[1]);
-    const sides = parseInt(match[2]);
-    const modifier = parseInt(match[3]) || 0;
-    
-    let total = modifier;
-    for (let i = 0; i < numDice; i++) {
-        total += Math.floor(Math.random() * sides) + 1;
-    }
-    
-    return total;
-}
+
 
 function showInfoBox(message, type = 'info') {
     // Create and show info box

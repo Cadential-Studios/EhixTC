@@ -1,3 +1,10 @@
+// Foraging modal UI (progress bar, dice, result)
+// Dynamically load foragingModal.js if not already loaded
+if (!window.showForagingProgressWithDice) {
+  const script = document.createElement('script');
+  script.src = 'src/assets/js/ui/foragingModal.js';
+  document.head.appendChild(script);
+}
 // Main Game Initialization Module
 // Edoria: The Triune Convergence - Main Controller
 

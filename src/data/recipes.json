@@ -200,5 +200,151 @@
             "itemsDiscovered": ["cured_leather"],
             "locationsVisited": []
         }
+    },
+    "fenleaf_poultice": {
+        "id": "fenleaf_poultice",
+        "name": "Fenleaf Poultice",
+        "description": "A healing poultice made from fenleaf, used to treat wounds and poison.",
+        "category": "alchemy",
+        "craftingMethod": "herbalism",
+        "craftingTime": 8,
+        "difficulty": "easy",
+        "experienceGained": 12,
+        "requiredLevel": 1,
+        "requiredSkills": { "alchemy": 1 },
+        "requiredTools": ["herbalism_kit"],
+        "ingredients": [
+            { "itemId": "fenleaf", "quantity": 2, "consumed": true },
+            { "itemId": "pure_water", "quantity": 1, "consumed": true }
+        ],
+        "results": [
+            { "itemId": "fenleaf_poultice", "quantity": 1, "chance": 100 }
+        ],
+        "byproducts": [],
+        "failureResults": [
+            { "itemId": "herb_residue", "quantity": 1, "chance": 100 }
+        ],
+        "unlockConditions": {
+            "questsCompleted": [],
+            "itemsDiscovered": ["fenleaf"],
+            "locationsVisited": []
+        }
+    },
+    "azure_moss_tonic": {
+        "id": "azure_moss_tonic",
+        "name": "Azure Moss Tonic",
+        "description": "A glowing tonic brewed from azure moss, restores minor mana.",
+        "category": "alchemy",
+        "craftingMethod": "brewing",
+        "craftingTime": 10,
+        "difficulty": "medium",
+        "experienceGained": 18,
+        "requiredLevel": 2,
+        "requiredSkills": { "alchemy": 2 },
+        "requiredTools": ["alchemist_kit"],
+        "ingredients": [
+            { "itemId": "azure_moss", "quantity": 1, "consumed": true },
+            { "itemId": "pure_water", "quantity": 1, "consumed": true },
+            { "itemId": "glass_vial", "quantity": 1, "consumed": false }
+        ],
+        "results": [
+            { "itemId": "azure_moss_tonic", "quantity": 1, "chance": 100 }
+        ],
+        "byproducts": [],
+        "failureResults": [
+            { "itemId": "herb_residue", "quantity": 1, "chance": 100 }
+        ],
+        "unlockConditions": {
+            "questsCompleted": [],
+            "itemsDiscovered": ["azure_moss"],
+            "locationsVisited": []
+        }
+    },
+    "desert_sage_tea": {
+        "id": "desert_sage_tea",
+        "name": "Desert Sage Tea",
+        "description": "A calming tea brewed from desert sage, grants resistance to heat.",
+        "category": "cooking",
+        "craftingMethod": "brewing",
+        "craftingTime": 6,
+        "difficulty": "easy",
+        "experienceGained": 10,
+        "requiredLevel": 1,
+        "requiredSkills": { "cooking": 1 },
+        "requiredTools": ["cooking_pot"],
+        "ingredients": [
+            { "itemId": "desert_sage", "quantity": 1, "consumed": true },
+            { "itemId": "pure_water", "quantity": 1, "consumed": true }
+        ],
+        "results": [
+            { "itemId": "desert_sage_tea", "quantity": 1, "chance": 100 }
+        ],
+        "byproducts": [],
+        "failureResults": [
+            { "itemId": "bitter_mixture", "quantity": 1, "chance": 100 }
+        ],
+        "unlockConditions": {
+            "questsCompleted": [],
+            "itemsDiscovered": ["desert_sage"],
+            "locationsVisited": []
+        }
+    },
+    "sea_lettuce_salad": {
+        "id": "sea_lettuce_salad",
+        "name": "Sea Lettuce Salad",
+        "description": "A nutritious salad made from fresh sea lettuce.",
+        "category": "cooking",
+        "craftingMethod": "cooking",
+        "craftingTime": 4,
+        "difficulty": "easy",
+        "experienceGained": 8,
+        "requiredLevel": 1,
+        "requiredSkills": { "cooking": 1 },
+        "requiredTools": ["cooking_knife"],
+        "ingredients": [
+            { "itemId": "sea_lettuce", "quantity": 2, "consumed": true }
+        ],
+        "results": [
+            { "itemId": "sea_lettuce_salad", "quantity": 1, "chance": 100 }
+        ],
+        "byproducts": [],
+        "failureResults": [
+            { "itemId": "bitter_mixture", "quantity": 1, "chance": 100 }
+        ],
+        "unlockConditions": {
+            "questsCompleted": [],
+            "itemsDiscovered": ["sea_lettuce"],
+            "locationsVisited": []
+        }
+    },
+    "cave_truffle_omelette": {
+        "id": "cave_truffle_omelette",
+        "name": "Cave Truffle Omelette",
+        "description": "A gourmet omelette featuring rare cave truffles.",
+        "category": "cooking",
+        "craftingMethod": "cooking",
+        "craftingTime": 12,
+        "difficulty": "hard",
+        "experienceGained": 30,
+        "requiredLevel": 3,
+        "requiredSkills": { "cooking": 3 },
+        "requiredTools": ["cooking_pan"],
+        "ingredients": [
+            { "itemId": "cave_truffle", "quantity": 1, "consumed": true },
+            { "itemId": "egg", "quantity": 2, "consumed": true },
+            { "itemId": "wild_wheat", "quantity": 1, "consumed": true }
+        ],
+        "results": [
+            { "itemId": "cave_truffle_omelette", "quantity": 1, "chance": 100 }
+        ],
+        "byproducts": [],
+        "failureResults": [
+            { "itemId": "burnt_omelette", "quantity": 1, "chance": 100 }
+        ],
+        "unlockConditions": {
+            "questsCompleted": [],
+            "itemsDiscovered": ["cave_truffle"],
+            "locationsVisited": []
+        }
     }
 }

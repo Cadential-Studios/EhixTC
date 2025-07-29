@@ -27,26 +27,26 @@ This section covers the addition of new features and improvements to the game, f
 ### Foraging
 - [x] If a location has a `"foragable"` property set to true, a Forage button should appear in the location UI. This button should allow players to attempt to forage for items using a random roll system based on a loot table, which is referenced in the location data. The loot tables are stored in the `src/assets/js/data/loot_tables/` directory, and are defined in external JSON files (e.g., `"loot_table": "forest_loot"`).
 - [x] When a player attempts to forage, they must make a Survival skill check. If the player possesses an herbalism kit, it should provide a bonus to the check.
-- [ ] Expand the foraging system by creating new items that can be found through foraging, and by building a loot table for each major location type. All foraging loot tables should be stored in the `src/assets/js/data/loot_tables/` directory, and nature-based forageable items should be defined in `nature.json`.
-- [ ] Based on the herbs and plants added to the game data and loot tables, create new crafting recipes that incorporate these items in a way that feels thematically appropriate and mechanically useful.
+- [x] Expand the foraging system by creating new items that can be found through foraging, and by building a loot table for each major location type. All foraging loot tables should be stored in the `src/assets/js/data/loot_tables/` directory, and nature-based forageable items should be defined in `nature.json`.
+- [x] Based on the herbs and plants added to the game data and loot tables, create new crafting recipes that incorporate these items in a way that feels thematically appropriate and mechanically useful.
 
 ---
 
 ## Tweaks  
 This section includes quality-of-life changes, user interface enhancements, and data structuring updates.
 
-- [ ] When an item is equipped, temporarily remove it from the inventory UI and re-add it when unequipped. This helps avoid confusion from seeing duplicates or inconsistencies between inventory and equipped items.
-- [ ] In the crafting recipe UI, add a rounded badge next to each required skill. Each badge should include the skill name and the level required, and each skill should have a unique badge color that is consistent wherever the skill is referenced.
-- [ ] Decide whether the rounded badge UI should be used universally for skill mentions, or if skill names should sometimes appear as separate text elements. In cases where the skill name appears without the badge, it should still use the associated color for consistency. In either case, pressing the badge or the skill name should open that skill’s details in the Skills UI.
-- [ ] In the Character Sheet UI, create a dedicated Skills tab that displays all skills, their current levels, and any passive or active benefits. This should be accessible directly from the main Character Sheet.
-- [ ] Remove the "All Entries" tab from the Journal UI. It creates unnecessary clutter and does not serve a meaningful purpose in the current journal system.
-- [ ] Update journal hyperlinks to remove underlines and instead use bold styling to signify they are interactive. Each hyperlink type should use a distinct color scheme:
+- [x] When an item is equipped, temporarily remove it from the inventory UI and re-add it when unequipped. This helps avoid confusion from seeing duplicates or inconsistencies between inventory and equipped items.
+- [x] In the crafting recipe UI, add a rounded badge next to each required skill. Each badge should include the skill name and the level required, and each skill should have a unique badge color that is consistent wherever the skill is referenced.
+- [x] Decide whether the rounded badge UI should be used universally for skill mentions, or if skill names should sometimes appear as separate text elements. In cases where the skill name appears without the badge, it should still use the associated color for consistency. In either case, pressing the badge or the skill name should open that skill’s details in the Skills UI.
+- [x] In the Character Sheet UI, create a dedicated Skills tab that displays all skills, their current levels, and any passive or active benefits. This should be accessible directly from the main Character Sheet.
+- [x] Remove the "All Entries" tab from the Journal UI. It creates unnecessary clutter and does not serve a meaningful purpose in the current journal system.
+- [x] Update journal hyperlinks to remove underlines and instead use bold styling to signify they are interactive. Each hyperlink type should use a distinct color scheme:
     - **Quest Links**: Orange
     - **Lore Links**: Blue
     - **Location Links**: Green
     - **Item Links**: Orange
     - **NPC Links**: Purple
-- [ ] Add new tabs to the Journal UI to better organize and present information:
+- [x] Add new tabs to the Journal UI to better organize and present information:
     - **Locations** — Contains region entries and travel discoveries.
     - **Items** — Contains item descriptions and lore.
     - **NPCs** — Contains entries for NPCs, including relationship tracking, quest involvement, and notes on interactions.

@@ -10,7 +10,9 @@
       { "text": "Scout the perimeter", "type": "info", "info": "The area seems quiet... too quiet." },
       { "text": "Follow the trail toward the Griefwood", "type": "travel", "target": "griefwood_edge" },
       { "text": "Travel to Jorn", "type": "travel", "target": "jorn" }
-    ]
+    ],
+    "foragable": true,
+    "loot_table": "forest"
   },
   "griefwood_edge": {
     "name": "Edge of the Griefwood",

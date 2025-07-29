@@ -87,7 +87,14 @@ function performSavingThrow(ability, dc) {
     };
 }
 
+
 // Equipment System Functions
+
+// Export for Jest/CommonJS
+if (typeof exports !== 'undefined') {
+  exports.equipItem = equipItem;
+  exports.unequipItem = unequipItem;
+}
 function equipItem(itemId, slot = null) {
     const item = itemsData[itemId];
     if (!item) return false;
@@ -125,7 +132,18 @@ function equipItem(itemId, slot = null) {
         unequipItem(slot);
     }
     
-    // Equip new item (but keep it in inventory)
+    // Remove item from inventory and equip
+    let invIndex = gameData.player.inventory.findIndex(invItem => typeof invItem === 'string' ? invItem === itemId : invItem.id === itemId);
+    let equippedItem = null;
+    if (invIndex !== -1) {
+        if (typeof gameData.player.inventory[invIndex] === 'string') {
+            equippedItem = { id: itemId, quantity: 1 };
+        } else {
+            equippedItem = { ...gameData.player.inventory[invIndex] };
+        }
+        // Remove from inventory
+        gameData.player.inventory.splice(invIndex, 1);
+    }
     gameData.player.equipment[slot] = itemId;
     
     // Recalculate stats
@@ -167,8 +185,17 @@ function unequipItem(slot) {
     // Capture old stats for animation
     const oldStats = { ...gameData.player.stats };
     
-    // Remove from equipment (item stays in inventory)
+    // Remove from equipment and re-add to inventory
     gameData.player.equipment[slot] = null;
+    if (itemId) {
+        // Check if item already exists in inventory (stackable)
+        let invItem = gameData.player.inventory.find(inv => (typeof inv === 'string' ? inv === itemId : inv.id === itemId));
+        if (invItem && typeof invItem !== 'string') {
+            invItem.quantity = (invItem.quantity || 1) + 1;
+        } else {
+            gameData.player.inventory.push({ id: itemId, quantity: 1 });
+        }
+    }
     
     // Recalculate stats
     recalculateStats();

@@ -156,18 +156,15 @@ class InventoryManager {
     renderEquipmentPanel() {
         return `
             <div class="equipment-grid bg-gray-800 rounded-lg p-4">
-                <div class="grid grid-cols-3 gap-2 mb-4">
-                    <div></div>
+                <div class="grid grid-cols-4 gap-2 mb-4">
                     <div class="equipment-slot" data-slot="head">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
                             ${gameData.player.equipment.head ? this.renderEquippedItem('head') : '<i class="ph-duotone ph-crown text-gray-400"></i><br><span class="text-xs text-gray-400">Head</span>'}
                         </div>
                     </div>
-                    <div></div>
-                    
-                    <div class="equipment-slot" data-slot="mainhand">
+                    <div class="equipment-slot" data-slot="neck">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
+                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-necklace text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
                         </div>
                     </div>
                     <div class="equipment-slot" data-slot="chest">
@@ -180,20 +177,20 @@ class InventoryManager {
                             ${gameData.player.equipment.clothing ? this.renderEquippedItem('clothing') : '<i class="ph-duotone ph-scales text-gray-400"></i><br><span class="text-xs text-gray-400">Clothing</span>'}
                         </div>
                     </div>
+
+                    <div class="equipment-slot" data-slot="mainhand">
+                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
+                            ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
+                        </div>
+                    </div>
                     <div class="equipment-slot" data-slot="offhand">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
                             ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
                         </div>
                     </div>
-                    
                     <div class="equipment-slot" data-slot="finger1">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
                             ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
-                        </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="neck">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-necklace text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
                         </div>
                     </div>
                     <div class="equipment-slot" data-slot="finger2">
@@ -201,7 +198,7 @@ class InventoryManager {
                             ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
                         </div>
                     </div>
-                    
+
                     <div></div>
                     <div class="equipment-slot" data-slot="feet">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
@@ -209,8 +206,8 @@ class InventoryManager {
                         </div>
                     </div>
                     <div></div>
+                    <div></div>
                 </div>
-                
                 <!-- Character Stats Summary -->
                 <div class="stats-summary bg-gray-700 rounded-lg p-3 mt-4">
                     <div class="grid grid-cols-2 gap-2 text-sm">
