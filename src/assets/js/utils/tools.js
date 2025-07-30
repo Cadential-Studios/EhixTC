@@ -2,21 +2,27 @@ class DiceRoller {
     constructor() {
         this.currentModal = null;
         this.audioEnabled = true;
+        this.rollHistory = [];
+        this.focusTrapHandler = null;
     }
 
     // Main dice roll function
     roll(sides, modifier = 0, label = 'Dice Roll', dc = null) {
         const baseRoll = Math.floor(Math.random() * sides) + 1;
         const total = baseRoll + modifier;
-        
-        this.showDiceRollAnimation(baseRoll, sides, modifier, total, label, dc);
-        
-        return {
+        const result = {
             baseRoll,
             modifier,
             total,
+            label,
+            sides,
+            dc,
+            timestamp: Date.now(),
             success: dc !== null ? total >= dc : null
         };
+        this.rollHistory.push(result);
+        this.showDiceRollAnimation(baseRoll, sides, modifier, total, label, dc);
+        return result;
     }
 
     // Enhanced dice roll animation modal
@@ -28,6 +34,9 @@ class DiceRoller {
         const modal = document.createElement('div');
         modal.className = 'dice-modal fixed inset-0 bg-black bg-opacity-0 flex items-center justify-center z-[100]';
         modal.style.backdropFilter = 'blur(0px)';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-label', label + ' dice roll');
 
         // Add a subtle vignette and sparkles
         const vignette = document.createElement('div');
@@ -35,6 +44,19 @@ class DiceRoller {
         vignette.style.background = 'radial-gradient(ellipse at center, rgba(40,40,60,0.7) 60%, rgba(0,0,0,0.95) 100%)';
         vignette.style.transition = 'opacity 0.5s';
         modal.appendChild(vignette);
+
+        // Particle background (fantasy motes)
+        const particleLayer = document.createElement('div');
+        particleLayer.className = 'absolute inset-0 pointer-events-none z-5';
+        for (let i = 0; i < 24; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'absolute w-1.5 h-1.5 rounded-full bg-gradient-to-br from-blue-300 via-indigo-400 to-purple-500 opacity-0';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.filter = 'blur(2px)';
+            particleLayer.appendChild(particle);
+        }
+        modal.appendChild(particleLayer);
 
         // Sparkle layer
         const sparkleLayer = document.createElement('div');
@@ -56,7 +78,7 @@ class DiceRoller {
 
         // Build modal content
         modal.innerHTML += `
-            <div class="dice-modal-content bg-gray-900 border-4 border-blue-500 rounded-xl p-8 text-center shadow-2xl max-w-md mx-auto relative overflow-hidden opacity-0 animate-bounceIn" style="background: rgba(26, 26, 46, 0.95); transform: scale(0) translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
+            <div class="dice-modal-content bg-gray-900 border-4 border-blue-500 rounded-xl p-8 text-center shadow-2xl max-w-md mx-auto relative overflow-hidden opacity-0 animate-bounceIn" style="background: rgba(26, 26, 46, 0.95); transform: scale(0) translate(-50%, -50%); position: absolute; top: 50%; left: 50%; outline: none;" tabindex="0">
                 <div class="relative z-20">
                     <div class="dice-display mb-6">
                         <div id="dice-icon" class="mb-2 transition-transform duration-200 transform flex justify-center items-center">
@@ -89,6 +111,19 @@ class DiceRoller {
         }
         this.currentModal = modal;
 
+        // Animate particles (gentle floating motes)
+        setTimeout(() => {
+            particleLayer.childNodes.forEach((particle, i) => {
+                setTimeout(() => {
+                    particle.style.opacity = 0.25 + Math.random() * 0.25;
+                    particle.style.transition = 'opacity 1.2s, transform 2.5s cubic-bezier(.68,-0.55,.27,1.55)';
+                    const floatX = (Math.random() - 0.5) * 30;
+                    const floatY = (Math.random() - 0.5) * 30;
+                    particle.style.transform = `translate(${floatX}px, ${floatY}px) scale(${0.7 + Math.random() * 1.2})`;
+                }, 100 + i * 80);
+            });
+        }, 200);
+
         // Animate sparkles
         setTimeout(() => {
             sparkleLayer.childNodes.forEach((sparkle, i) => {
@@ -106,6 +141,18 @@ class DiceRoller {
         const mainRollSection = modal.querySelector('#main-roll-section');
         const continueBtn = modal.querySelector('#continue-btn');
         const modalContent = modal.querySelector('.dice-modal-content');
+
+        // Focus trap for accessibility
+        setTimeout(() => {
+            modalContent.focus();
+        }, 100);
+        this.focusTrapHandler = (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                continueBtn.focus();
+            }
+        };
+        modalContent.addEventListener('keydown', this.focusTrapHandler);
 
         // Animate modal entrance and staggered content
         requestAnimationFrame(() => {
@@ -142,13 +189,24 @@ class DiceRoller {
         };
         continueBtn.addEventListener('click', closeAndContinue);
 
-        const handleEscape = (e) => {
+        // Keyboard navigation: Enter/Space triggers continue
+        const handleKey = (e) => {
             if (e.key === 'Escape') {
                 this.closeModal();
-                document.removeEventListener('keydown', handleEscape);
+                document.removeEventListener('keydown', handleKey);
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                continueBtn.click();
             }
         };
-        document.addEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleKey);
+
+        // Trap focus inside modal
+        continueBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                modalContent.focus();
+            }
+        });
 
         modal.addEventListener('click', (e) => {
             if (e.target === modal) this.closeModal();
@@ -339,6 +397,12 @@ class DiceRoller {
     // Utility functions
     closeModal() {
         if (this.currentModal) {
+            // Remove focus trap
+            const modalContent = this.currentModal.querySelector('.dice-modal-content');
+            if (modalContent && this.focusTrapHandler) {
+                modalContent.removeEventListener('keydown', this.focusTrapHandler);
+                this.focusTrapHandler = null;
+            }
             this.currentModal.remove();
             this.currentModal = null;
         }
@@ -346,9 +410,50 @@ class DiceRoller {
 
     playDiceSound(type) {
         if (!this.audioEnabled) return;
-        
-        // Placeholder for audio implementation
-        console.log(`Playing ${type} sound`);
+        // Fantasy sound hooks (replace with real audio assets in production)
+        let soundUrl = '';
+        switch (type) {
+            case 'critical': soundUrl = 'src/assets/sfx/dice_crit.mp3'; break;
+            case 'failure': soundUrl = 'src/assets/sfx/dice_fail.mp3'; break;
+            case 'success': soundUrl = 'src/assets/sfx/dice_roll.mp3'; break;
+            default: soundUrl = 'src/assets/sfx/dice_roll.mp3'; break;
+        }
+        if (soundUrl) {
+            const audio = new Audio(soundUrl);
+            audio.volume = 0.7;
+            audio.play().catch(() => {});
+        }
+    }
+    // Show a simple dice roll history modal (for session context)
+    showHistory() {
+        if (this.currentModal) this.currentModal.remove();
+        const modal = document.createElement('div');
+        modal.className = 'dice-modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100]';
+        modal.style.backdropFilter = 'blur(10px)';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.innerHTML = `
+            <div class="bg-gray-900 border-4 border-blue-500 rounded-xl p-8 text-center shadow-2xl max-w-lg mx-auto relative overflow-y-auto max-h-[80vh]">
+                <h2 class="font-cinzel text-2xl text-white mb-4">Dice Roll History</h2>
+                <ul class="text-left text-white space-y-2 max-h-[60vh] overflow-y-auto">
+                    ${this.rollHistory.slice(-20).reverse().map(r => `
+                        <li class="border-b border-blue-800 pb-1">
+                            <span class="text-blue-300 font-cinzel">${r.label || 'Dice Roll'}</span>:
+                            <span class="text-yellow-200">d${r.sides}</span>
+                            <span class="text-white">${r.baseRoll}${r.modifier ? (r.modifier > 0 ? ' + ' + r.modifier : ' - ' + Math.abs(r.modifier)) : ''}</span>
+                            <span class="text-blue-400">= ${r.total}</span>
+                            ${typeof r.dc === 'number' ? `<span class="${r.success ? 'text-green-400' : 'text-red-400'} ml-2">${r.success ? 'Success' : 'Fail'} (DC ${r.dc})</span>` : ''}
+                            <span class="text-xs text-gray-400 ml-2">${new Date(r.timestamp).toLocaleTimeString()}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+                <button id="close-history-btn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-cinzel font-bold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">Close</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.currentModal = modal;
+        document.getElementById('close-history-btn').focus();
+        document.getElementById('close-history-btn').addEventListener('click', () => this.closeModal());
     }
 
     showFloatingText(text, color) {
