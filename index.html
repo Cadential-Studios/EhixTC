@@ -117,6 +117,11 @@
                         <i class="ph-duotone ph-backpack text-lg sm:text-xl"></i>
                         <span class="mobile-nav-text text-xs block mt-1">Inventory</span>
                     </button>
+                    <!-- Map Button -->
+                    <button class="nav-icon text-center p-2 rounded-lg" id="map-menu-btn" title="World Map">
+                        <i class="ph-duotone ph-map-trifold text-lg sm:text-xl"></i>
+                        <span class="mobile-nav-text text-xs block mt-1">Map</span>
+                    </button>
                     <button class="nav-icon text-center p-2 rounded-lg" data-panel="crafting-panel" title="Crafting">
                         <i class="ph-duotone ph-hammer text-lg sm:text-xl"></i>
                         <span class="mobile-nav-text text-xs block mt-1">Crafting</span>
@@ -322,6 +327,18 @@
 
     <!-- Game Scripts - Load in dependency order -->
     <!-- Core Utilities -->
+    <script type="module">
+        import { showMapModal } from './src/assets/js/ui/mapMenu.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            const mapBtn = document.getElementById('map-menu-btn');
+            if (mapBtn) {
+                mapBtn.addEventListener('click', e => {
+                    e.preventDefault();
+                    showMapModal();
+                });
+            }
+        });
+    </script>
     <script src="src/assets/js/utils/core.js"></script>
     <script src="src/assets/js/utils/tools.js"></script>
     <script src="src/assets/js/utils/save.js"></script>
