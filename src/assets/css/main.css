@@ -1,3 +1,10 @@
+/* Prevent text selection when holding mouse button */
+body, .game-container, .advanced-inventory-container, .inventory-header, .inventory-grid, .equipment-section, .equipment-grid, .item-detail-modal, .modal-content, .modal-header {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 /* === Custom Scrollbar Styles (Global) === */
 * {
   scrollbar-width: thin;
@@ -24,7 +31,8 @@
 
 /* === Custom Checkbox Styles (Global) === */
 input[type="checkbox"] {
-  -webkit-appearance: none;
+-webkit-appearance: none;
+appearance: none;
   appearance: none;
   width: 1.2em;
   height: 1.2em;

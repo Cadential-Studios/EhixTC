@@ -1,3 +1,20 @@
+// Prevent browser context menu on right-click in the game UI
+document.body.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+}, false);
+// Ensure unequipItem is available globally for UI actions
+if (typeof unequipItem === 'undefined' && typeof window !== 'undefined' && typeof window.unequipItem === 'undefined') {
+  if (typeof window !== 'undefined' && typeof window.gameData !== 'undefined' && typeof window.itemsData !== 'undefined') {
+    // Try to assign from character.js if loaded
+    if (typeof window.unequipItem === 'function') {
+      // already present
+    } else if (typeof unequipItem === 'function') {
+      window.unequipItem = unequipItem;
+    } else if (typeof character !== 'undefined' && typeof character.unequipItem === 'function') {
+      window.unequipItem = character.unequipItem;
+    }
+  }
+}
 // Advanced Inventory System
 // Edoria: The Triune Convergence - Enhanced Inventory Management
 // TASK 24: Advanced Inventory System Implementation
@@ -473,19 +490,13 @@ class InventoryManager {
      * Search input is debounced to minimize DOM thrashing during typing.
      */
     attachEventListeners() {
-        const {
-            searchInput,
-            filterToggle,
-            typeFilter,
-            rarityFilter,
-            sortField,
-            sortDirection
-        } = this.dom;
+        // Always reference controls from this.dom
+        const { filterToggle, typeFilter, rarityFilter, sortField, sortDirection } = this.dom;
 
-        // Search input
-        const searchInput = document.getElementById('inventory-search');
-        if (searchInput && typeof debounce === 'function') {
-            searchInput.addEventListener('input', debounce((e) => {
+        // Use direct DOM query for search input to avoid redeclaration
+        const searchInputEl = document.getElementById('inventory-search');
+        if (searchInputEl && typeof debounce === 'function') {
+            searchInputEl.addEventListener('input', debounce((e) => {
                 this.searchTerm = e.target.value;
                 this.updateInventoryDisplay();
             }, 200));
@@ -527,14 +538,28 @@ class InventoryManager {
             });
         }
 
-        // Equipment slot handlers
+        // Equipment slot handlers (attach to .slot-content for better click coverage)
         inventoryContentEl.querySelectorAll('.equipment-slot').forEach(slot => {
-            slot.addEventListener('click', () => {
-                const slotName = slot.dataset.slot;
-                if (gameData.player.equipment[slotName]) {
-                    this.unequipItem(slotName);
-                }
-            });
+            const slotName = slot.dataset.slot;
+            const slotContent = slot.querySelector('.slot-content');
+            if (slotContent) {
+                // Left click: show item details (tooltip)
+                slotContent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const equippedItemId = gameData.player.equipment[slotName];
+                    if (equippedItemId && itemsData[equippedItemId] && typeof inventoryUIFeatures?.showTooltip === 'function') {
+                        inventoryUIFeatures.showTooltip(e, itemsData[equippedItemId]);
+                    }
+                });
+                // Right click: unequip and prevent context menu
+                slotContent.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (gameData.player.equipment[slotName]) {
+                        this.unequipItem(slotName);
+                    }
+                });
+            }
         });
     }
 
@@ -585,6 +610,9 @@ class InventoryManager {
                 </div>
             `;
         }
+
+        // Always re-attach event listeners after DOM updates
+        this.attachEventListeners();
 
         // Update sort direction icon
         if (sortDirection) {
