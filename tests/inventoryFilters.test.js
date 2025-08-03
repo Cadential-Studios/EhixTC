@@ -58,4 +58,38 @@ describe('filterInventoryItems', () => {
     );
     expect(result.map((i) => i.id)).toEqual(['sword', 'shield', 'potion']);
   });
+
+  test('returns empty array for invalid inventory input', () => {
+    const result = filterInventoryItems(
+      null,
+      '',
+      { type: 'all', rarity: 'all', usability: 'all' },
+      { field: 'name', direction: 'asc' },
+      () => true
+    );
+    expect(result).toEqual([]);
+  });
+
+  test('filters by usability flag', () => {
+    const inventory = ['sword', 'potion'];
+    const canUse = (item) => item.type === 'weapon';
+
+    const usable = filterInventoryItems(
+      inventory,
+      '',
+      { type: 'all', rarity: 'all', usability: 'usable' },
+      { field: 'name', direction: 'asc' },
+      canUse
+    );
+    expect(usable.map((i) => i.id)).toEqual(['sword']);
+
+    const unusable = filterInventoryItems(
+      inventory,
+      '',
+      { type: 'all', rarity: 'all', usability: 'unusable' },
+      { field: 'name', direction: 'asc' },
+      canUse
+    );
+    expect(unusable.map((i) => i.id)).toEqual(['potion']);
+  });
 });
