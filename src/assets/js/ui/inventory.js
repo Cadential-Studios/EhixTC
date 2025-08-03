@@ -244,10 +244,6 @@ class InventoryManager {
             <div class="equipped-item-display" data-item-id="${itemId}">
                 <div class="text-xs ${rarityText} font-semibold mb-1">${item.name}</div>
                 <div class="text-xs text-gray-400">${item.type}</div>
-                <button onclick="event.stopPropagation(); equipmentSystem.unequipItem('${slot}')"
-                        class="mt-2 bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">
-                    Unequip
-                </button>
             </div>
         `;
     }
@@ -715,10 +711,10 @@ class InventoryManager {
                         <div>
                             <h2 class="text-2xl font-cinzel ${rarityTextColor} mb-2">${item.name}</h2>
                             <div class="flex gap-2 text-sm text-gray-400">
-                                <span>${capitalizeFirst(item.type)}</span>
-                                ${item.subtype ? `<span>- ${capitalizeFirst(item.subtype)}</span>` : ''}
-                                <span>- ${capitalizeFirst(item.rarity)}</span>
-                                ${quantity > 1 ? `<span>- Quantity: ${quantity}</span>` : ''}
+                                <span><i class="ph-duotone ph-tag mr-1"></i>${capitalizeFirst(item.type)}</span>
+                                ${item.subtype ? `<span><i class='ph-duotone ph-shapes mr-1'></i>${capitalizeFirst(item.subtype)}</span>` : ''}
+                                <span><i class="ph-duotone ph-star mr-1"></i>${capitalizeFirst(item.rarity)}</span>
+                                ${quantity > 1 ? `<span><i class="ph-duotone ph-stack mr-1"></i>Qty: ${quantity}</span>` : ''}
                             </div>
                         </div>
                         <button onclick="inventoryManager.closeItemModal()" 
@@ -741,12 +737,12 @@ class InventoryManager {
                         <div>
                             <h3 class="text-lg font-semibold text-white mb-3">Properties</h3>
                             <div class="space-y-2 text-sm">
-                                ${item.value ? `<div><span class="text-gray-400">Value:</span> <span class="text-green-400">${item.value} gold</span></div>` : ''}
-                                ${item.weight ? `<div><span class="text-gray-400">Weight:</span> <span class="text-yellow-400">${item.weight} lb</span></div>` : ''}
-                                ${item.slot ? `<div><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${formatSlotName(item.slot)}</span></div>` : ''}
-                                ${item.damage ? `<div><span class="text-gray-400">Damage:</span> <span class="text-red-400">${item.damage} ${item.damageType}</span></div>` : ''}
-                                ${item.armorClass ? `<div><span class="text-gray-400">Armor Class:</span> <span class="text-blue-400">${item.armorClass}</span></div>` : ''}
-                                ${item.range ? `<div><span class="text-gray-400">Range:</span> <span class="text-purple-400">${item.range}</span></div>` : ''}
+                                ${item.value ? `<div><i class='ph-duotone ph-coins text-yellow-400 mr-1'></i><span class="text-gray-400">Value:</span> <span class="text-green-400">${item.value} gold</span></div>` : ''}
+                                ${item.weight ? `<div><i class='ph-duotone ph-scale text-yellow-400 mr-1'></i><span class="text-gray-400">Weight:</span> <span class="text-yellow-400">${item.weight} lb</span></div>` : ''}
+                                ${item.slot ? `<div><i class='ph-duotone ph-archive-box text-blue-400 mr-1'></i><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${formatSlotName(item.slot)}</span></div>` : ''}
+                                ${item.damage ? `<div><i class='ph-duotone ph-sword text-red-400 mr-1'></i><span class="text-gray-400">Damage:</span> <span class="text-red-400">${item.damage} ${item.damageType}</span></div>` : ''}
+                                ${item.armorClass ? `<div><i class='ph-duotone ph-shield text-blue-400 mr-1'></i><span class="text-gray-400">Armor Class:</span> <span class="text-blue-400">${item.armorClass}</span></div>` : ''}
+                                ${item.range ? `<div><i class='ph-duotone ph-arrows-out-line-horizontal text-purple-400 mr-1'></i><span class="text-gray-400">Range:</span> <span class="text-purple-400">${item.range}</span></div>` : ''}
                             </div>
                         </div>
 
@@ -755,7 +751,7 @@ class InventoryManager {
                                 <h3 class="text-lg font-semibold text-white mb-3">Stat Bonuses</h3>
                                 <div class="space-y-2 text-sm">
                                     ${Object.entries(item.statBonus).map(([stat, bonus]) => 
-                                        `<div><span class="text-gray-400">${stat.charAt(0).toUpperCase() + stat.slice(1)}:</span> <span class="text-green-400">+${bonus}</span></div>`
+                                        `<div><i class='ph-duotone ph-plus-circle text-green-400 mr-1'></i><span class="text-gray-400">${stat.charAt(0).toUpperCase() + stat.slice(1)}:</span> <span class="text-green-400">+${bonus}</span></div>`
                                     ).join('')}
                                 </div>
                             </div>
@@ -767,7 +763,7 @@ class InventoryManager {
                             <h3 class="text-lg font-semibold text-white mb-3">Special Properties</h3>
                             <div class="flex flex-wrap gap-2">
                                 ${item.properties.map(prop =>
-                                    `<span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">${prop}</span>`
+                                    `<span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"><i class='ph-duotone ph-sparkle mr-1'></i>${prop}</span>`
                                 ).join('')}
                             </div>
                         </div>
@@ -779,7 +775,7 @@ class InventoryManager {
                             <div class="text-sm text-gray-300">
                                 ${item.container_contents && item.container_contents.length > 0 ?
                                     item.container_contents.map(id => itemsData[id]?.name || id).join(', ') : 'Empty'}
-                                <div class="mt-2 text-xs text-gray-400">Weight: ${item.container_contents ? item.container_contents.reduce((w, id) => w + (itemsData[id]?.weight || 0), 0) : 0}/${item.capacity || 0} lb</div>
+                                <div class="mt-2 text-xs text-gray-400"><i class='ph-duotone ph-scale text-yellow-400 mr-1'></i>Weight: ${item.container_contents ? item.container_contents.reduce((w, id) => w + (itemsData[id]?.weight || 0), 0) : 0}/${item.capacity || 0} lb</div>
                             </div>
                         </div>
                     ` : ''}
