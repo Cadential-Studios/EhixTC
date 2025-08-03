@@ -170,7 +170,7 @@ class InventoryManager {
                     </div>
                     <div class="equipment-slot" data-slot="neck">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-necklace text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
+                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-sketch-logo text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
                         </div>
                     </div>
                     <div class="equipment-slot" data-slot="chest">
@@ -196,12 +196,12 @@ class InventoryManager {
                     </div>
                     <div class="equipment-slot" data-slot="finger1">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
+                            ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-diamond text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
                         </div>
                     </div>
                     <div class="equipment-slot" data-slot="finger2">
                         <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
+                            ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-diamond text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
                         </div>
                     </div>
 
