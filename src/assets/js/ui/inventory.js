@@ -93,7 +93,13 @@ class InventoryManager {
                         <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 text-sm mb-4">
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Items:</span>
-                                <span class="text-white ml-2">${this.getFilteredItems().length}/${gameData.player.inventory.length}</span>
+                                <span class="text-white ml-2">${filterInventoryItems(
+                                    gameData.player.inventory,
+                                    this.searchTerm,
+                                    this.activeFilters,
+                                    this.sortCriteria,
+                                    itemData => this.canUseItem(itemData)
+                                ).length}/${gameData.player.inventory.length}</span>
                             </div>
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Weight:</span>
@@ -246,110 +252,15 @@ class InventoryManager {
         `;
     }
 
-    // Get filtered and sorted items
-    getFilteredItems() {
-        if (!gameData.player.inventory) return [];
-
-        // Group items by ID and count quantities
-        const groupedItems = {};
-        gameData.player.inventory.forEach(item => {
-            const itemId = typeof item === 'string' ? item : item.id;
-            const quantity = typeof item === 'string' ? 1 : (item.quantity || 1);
-            
-            if (groupedItems[itemId]) {
-                groupedItems[itemId].quantity += quantity;
-            } else {
-                const itemData = itemsData[itemId] || { 
-                    name: itemId, 
-                    type: 'misc', 
-                    rarity: 'common',
-                    description: 'Unknown item',
-                    value: 0,
-                    weight: 0
-                };
-                groupedItems[itemId] = { 
-                    id: itemId,
-                    quantity, 
-                    data: itemData 
-                };
-            }
-        });
-
-        let filteredItems = Object.values(groupedItems);
-
-        // Apply search filter
-        if (this.searchTerm) {
-            const searchLower = this.searchTerm.toLowerCase();
-            filteredItems = filteredItems.filter(item => 
-                item.data.name.toLowerCase().includes(searchLower) ||
-                item.data.description.toLowerCase().includes(searchLower) ||
-                item.data.type.toLowerCase().includes(searchLower)
-            );
-        }
-
-        // Apply type filter
-        if (this.activeFilters.type !== 'all') {
-            filteredItems = filteredItems.filter(item => item.data.type === this.activeFilters.type);
-        }
-
-        // Apply rarity filter
-        if (this.activeFilters.rarity !== 'all') {
-            filteredItems = filteredItems.filter(item => item.data.rarity === this.activeFilters.rarity);
-        }
-
-        // Apply usability filter
-        if (this.activeFilters.usability !== 'all') {
-            filteredItems = filteredItems.filter(item => {
-                if (this.activeFilters.usability === 'usable') {
-                    return this.canUseItem(item.data);
-                } else {
-                    return !this.canUseItem(item.data);
-                }
-            });
-        }
-
-        // Apply sorting
-        filteredItems.sort((a, b) => {
-            let valueA, valueB;
-            
-            switch (this.sortCriteria.field) {
-                case 'name':
-                    valueA = a.data.name.toLowerCase();
-                    valueB = b.data.name.toLowerCase();
-                    break;
-                case 'type':
-                    valueA = a.data.type;
-                    valueB = b.data.type;
-                    break;
-                case 'rarity':
-                    const rarityOrder = { common: 0, uncommon: 1, rare: 2, very_rare: 3, legendary: 4 };
-                    valueA = rarityOrder[a.data.rarity] || 0;
-                    valueB = rarityOrder[b.data.rarity] || 0;
-                    break;
-                case 'value':
-                    valueA = a.data.value || 0;
-                    valueB = b.data.value || 0;
-                    break;
-                case 'weight':
-                    valueA = a.data.weight || 0;
-                    valueB = b.data.weight || 0;
-                    break;
-                default:
-                    valueA = a.data.name.toLowerCase();
-                    valueB = b.data.name.toLowerCase();
-            }
-
-            if (valueA < valueB) return this.sortCriteria.direction === 'asc' ? -1 : 1;
-            if (valueA > valueB) return this.sortCriteria.direction === 'asc' ? 1 : -1;
-            return 0;
-        });
-
-        return filteredItems;
-    }
-
     // Render inventory grid with filtered items
     renderInventoryGrid() {
-        const filteredItems = this.getFilteredItems();
+        const filteredItems = filterInventoryItems(
+            gameData.player.inventory,
+            this.searchTerm,
+            this.activeFilters,
+            this.sortCriteria,
+            itemData => this.canUseItem(itemData)
+        );
         
         if (filteredItems.length === 0) {
             const hasFilters = this.searchTerm || 
@@ -514,15 +425,18 @@ class InventoryManager {
         return maxSlots - (gameData.player.inventory?.length || 0);
     }
 
-    // Event handlers
+    /**
+     * Binds inventory UI controls and updates the display when users interact.
+     * Search input is debounced to minimize DOM thrashing during typing.
+     */
     attachEventListeners() {
         // Search input
         const searchInput = document.getElementById('inventory-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
+        if (searchInput && typeof debounce === 'function') {
+            searchInput.addEventListener('input', debounce((e) => {
                 this.searchTerm = e.target.value;
                 this.updateInventoryDisplay();
-            });
+            }, 200));
         }
 
         // Filter toggle for mobile
@@ -599,7 +513,13 @@ class InventoryManager {
             inventoryStats.innerHTML = `
                 <div class="stat-item bg-gray-700 rounded px-3 py-2">
                     <span class="text-gray-400">Items:</span>
-                    <span class="text-white ml-2">${this.getFilteredItems().length}/${gameData.player.inventory.length}</span>
+                    <span class="text-white ml-2">${filterInventoryItems(
+                        gameData.player.inventory,
+                        this.searchTerm,
+                        this.activeFilters,
+                        this.sortCriteria,
+                        itemData => this.canUseItem(itemData)
+                    ).length}/${gameData.player.inventory.length}</span>
                 </div>
                 <div class="stat-item bg-gray-700 rounded px-3 py-2">
                     <span class="text-gray-400">Weight:</span>
