@@ -12,12 +12,12 @@
 ## 2. Code Cleanliness & Consistency
 - [ ] Remove unused variables, functions, and legacy code.
 - [ ] Standardize naming conventions across all files (camelCase for JS, snake_case for JSON, BEM for CSS).
-- [ ] Add or update JSDoc comments for all major functions and classes.
+- [x] Add or update JSDoc comments for all major functions and classes.
 
 ## 3. Performance & Efficiency
 - [x] Debounce or throttle expensive UI updates (e.g., search/filter in inventory).
-- [ ] Lazy-load non-critical modules (e.g., modals, analytics, tooltips).
-- [ ] Optimize DOM queries and minimize reflows/repaints in UI scripts.
+- [x] Lazy-load non-critical modules (e.g., modals, analytics, tooltips).
+- [x] Optimize DOM queries and minimize reflows/repaints in UI scripts.
 - [ ] Review and optimize data lookups (e.g., use maps/objects for frequent item lookups).
 
 ## 4. CSS & Styling
@@ -28,7 +28,7 @@
 ## 5. Testing & Validation
 - [ ] Increase test coverage for core systems (inventory, foraging, combat, etc.).
     - [x] Added unit tests for inventory filtering utility.
-- [ ] Add tests for edge cases and error handling.
+- [x] Add tests for edge cases and error handling.
 - [ ] Validate all JSON data against schemas before loading.
 
 ## 6. Documentation & Developer Experience
@@ -52,6 +52,11 @@
 - Added unit tests for the debounce utility to improve coverage.
 - Documented progress with the implementation log.
 - Extracted inventory filtering logic into a standalone module with accompanying tests.
+- Lazy-loaded inventory analytics module using a dynamic script loader.
+- Cached frequently used inventory DOM elements and refactored updates to use them.
+- Expanded JSDoc coverage for `InventoryManager` and core methods.
+- Added edge case unit tests for the inventory filter helper.
+
 
 **Implementation Details:**
 - Created `src/assets/js/utils/debounce.js` implementing a universal debounce helper.
@@ -60,23 +65,35 @@
 - Appended this implementation log to track progress.
 - Moved filtering and sorting into `src/assets/js/ui/inventoryFilters.js` and updated `index.html` and `inventory.js` accordingly.
 - Added `tests/inventoryFilters.test.js` to cover core filter scenarios.
+- Implemented `loadScript` utility and dynamic loading for `inventoryAnalytics.js`, updating `inventory.js` and `index.html`.
+- Added `cacheDomElements` to `inventory.js` to minimize repeated DOM queries.
+- Updated inventory UI methods to rely on cached elements and documented them with JSDoc.
+- Extended `tests/inventoryFilters.test.js` with usability and invalid-input cases.
 
 **Testing Performed:**
 - `npm test` covering all existing suites including the new debounce tests.
 - `npm test` including new inventory filter tests.
+- `npm test` after introducing lazy-loading for analytics module.
+- `npm test` verifying DOM-caching refactor and new edge-case tests.
 
 **Results:**
 - All tests pass, and inventory search updates are throttled, reducing DOM thrashing.
 - Inventory filtering logic is now modular, enabling reuse and easier maintenance.
+- Cached DOM lookups streamline inventory updates and avoid redundant queries.
+- Edge-case tests ensure filtering handles invalid inputs and usability flags.
 
 **Findings & Observations:**
 - Debouncing search input noticeably improves responsiveness on large inventories.
 - Additional modules may benefit from similar patterns for heavy UI operations.
 - Splitting filtering out of `inventory.js` reduces file size and clarifies responsibilities.
+- Caching DOM references simplified event wiring and could benefit other UI modules.
+
 
 **Next Steps / Recommendations:**
 - Expand modularization to other UI components and consider lazy-loading non-critical scripts.
 - Continue breaking down `inventory.js` and other large modules for better maintainability.
+- Evaluate other UI scripts for similar DOM caching opportunities.
+
 
 **Additional Notes:**
 - None.

@@ -2,6 +2,17 @@
 // Edoria: The Triune Convergence - Enhanced Inventory Management
 // TASK 24: Advanced Inventory System Implementation
 
+/**
+ * Loads the inventory analytics module on demand.
+ * @returns {Promise<void>} Resolves when the analytics script is available.
+ */
+async function loadInventoryAnalytics() {
+    await loadScript('src/assets/js/ui/inventoryAnalytics.js');
+}
+
+/**
+ * Manages rendering and interaction for the advanced inventory UI.
+ */
 class InventoryManager {
     constructor() {
         this.searchTerm = '';
@@ -17,9 +28,12 @@ class InventoryManager {
             direction: 'asc'
         };
         this.isDetailModalOpen = false;
+        this.dom = {};
     }
 
-    // Main inventory rendering function
+    /**
+     * Render the full inventory interface and bind DOM references.
+     */
     renderAdvancedInventory() {
         if (!inventoryContentEl) return;
 
@@ -154,8 +168,28 @@ class InventoryManager {
             </div>
         `;
 
+        this.cacheDomElements();
         this.attachEventListeners();
         this.updateFilterValues();
+    }
+
+    /**
+     * Cache frequently accessed DOM elements to reduce query overhead.
+     */
+    cacheDomElements() {
+        this.dom = {
+            searchInput: document.getElementById('inventory-search'),
+            filterToggle: document.getElementById('filter-toggle'),
+            typeFilter: document.getElementById('type-filter'),
+            rarityFilter: document.getElementById('rarity-filter'),
+            sortField: document.getElementById('sort-field'),
+            sortDirection: document.getElementById('sort-direction'),
+            inventoryGrid: inventoryContentEl.querySelector('.inventory-grid'),
+            inventoryStats: inventoryContentEl.querySelector('.inventory-stats'),
+            filterControls: inventoryContentEl.querySelector('.filter-controls'),
+            statsPanel: document.getElementById('stats-panel'),
+            analyticsContent: document.getElementById('analytics-content')
+        };
     }
 
     // Render equipment panel
@@ -400,14 +434,23 @@ class InventoryManager {
     }
 
     // Utility functions
+    /**
+     * Determine if the player can use a given item.
+     * @param {Object} item - Item data to evaluate.
+     * @returns {boolean} Whether the item can currently be used.
+     */
     canUseItem(item) {
         // Add logic for checking if player can use item based on class, level, etc.
         return true; // For now, assume all items can be used
     }
 
+    /**
+     * Calculate total gold value of items in the player's inventory.
+     * @returns {number} Total value of all items.
+     */
     getTotalValue() {
         if (!gameData.player.inventory) return 0;
-        
+
         return gameData.player.inventory.reduce((total, item) => {
             const itemId = typeof item === 'string' ? item : item.id;
             const quantity = typeof item === 'string' ? 1 : (item.quantity || 1);
@@ -416,6 +459,10 @@ class InventoryManager {
         }, 0);
     }
 
+    /**
+     * Determine remaining free inventory slots.
+     * @returns {number} Available slot count.
+     */
     getFreeSlots() {
         const maxSlots = 50; // Default max inventory slots
         return maxSlots - (gameData.player.inventory?.length || 0);
@@ -426,6 +473,15 @@ class InventoryManager {
      * Search input is debounced to minimize DOM thrashing during typing.
      */
     attachEventListeners() {
+        const {
+            searchInput,
+            filterToggle,
+            typeFilter,
+            rarityFilter,
+            sortField,
+            sortDirection
+        } = this.dom;
+
         // Search input
         const searchInput = document.getElementById('inventory-search');
         if (searchInput && typeof debounce === 'function') {
@@ -436,7 +492,6 @@ class InventoryManager {
         }
 
         // Filter toggle for mobile
-        const filterToggle = document.getElementById('filter-toggle');
         if (filterToggle) {
             filterToggle.addEventListener('click', () => {
                 this.toggleFilters();
@@ -444,7 +499,6 @@ class InventoryManager {
         }
 
         // Filter dropdowns
-        const typeFilter = document.getElementById('type-filter');
         if (typeFilter) {
             typeFilter.addEventListener('change', (e) => {
                 this.activeFilters.type = e.target.value;
@@ -452,7 +506,6 @@ class InventoryManager {
             });
         }
 
-        const rarityFilter = document.getElementById('rarity-filter');
         if (rarityFilter) {
             rarityFilter.addEventListener('change', (e) => {
                 this.activeFilters.rarity = e.target.value;
@@ -460,7 +513,6 @@ class InventoryManager {
             });
         }
 
-        const sortField = document.getElementById('sort-field');
         if (sortField) {
             sortField.addEventListener('change', (e) => {
                 this.sortCriteria.field = e.target.value;
@@ -468,7 +520,6 @@ class InventoryManager {
             });
         }
 
-        const sortDirection = document.getElementById('sort-direction');
         if (sortDirection) {
             sortDirection.addEventListener('click', () => {
                 this.sortCriteria.direction = this.sortCriteria.direction === 'asc' ? 'desc' : 'asc';
@@ -487,24 +538,27 @@ class InventoryManager {
         });
     }
 
+    /**
+     * Sync filter dropdowns with current state.
+     */
     updateFilterValues() {
-        const typeFilter = document.getElementById('type-filter');
-        const rarityFilter = document.getElementById('rarity-filter');
-        const sortField = document.getElementById('sort-field');
-        
+        const { typeFilter, rarityFilter, sortField } = this.dom;
+
         if (typeFilter) typeFilter.value = this.activeFilters.type;
         if (rarityFilter) rarityFilter.value = this.activeFilters.rarity;
         if (sortField) sortField.value = this.sortCriteria.field;
     }
 
+    /**
+     * Re-render inventory grid and stats using cached DOM elements.
+     */
     updateInventoryDisplay() {
-        const inventoryGrid = document.querySelector('.inventory-grid');
-        const inventoryStats = document.querySelector('.inventory-stats');
-        
+        const { inventoryGrid, inventoryStats, sortDirection } = this.dom;
+
         if (inventoryGrid) {
             inventoryGrid.innerHTML = this.renderInventoryGrid();
         }
-        
+
         if (inventoryStats) {
             inventoryStats.innerHTML = `
                 <div class="stat-item bg-gray-700 rounded px-3 py-2">
@@ -533,15 +587,17 @@ class InventoryManager {
         }
 
         // Update sort direction icon
-        const sortDirectionBtn = document.getElementById('sort-direction');
-        if (sortDirectionBtn) {
-            const icon = sortDirectionBtn.querySelector('i');
+        if (sortDirection) {
+            const icon = sortDirection.querySelector('i');
             if (icon) {
                 icon.className = `ph-duotone ${this.sortCriteria.direction === 'asc' ? 'ph-sort-ascending' : 'ph-sort-descending'}`;
             }
         }
     }
 
+    /**
+     * Reset search and filter controls to defaults and refresh display.
+     */
     clearFilters() {
         this.searchTerm = '';
         this.activeFilters = {
@@ -551,9 +607,9 @@ class InventoryManager {
             slot: 'all'
         };
         
-        const searchInput = document.getElementById('inventory-search');
+        const { searchInput } = this.dom;
         if (searchInput) searchInput.value = '';
-        
+
         this.updateFilterValues();
         this.updateInventoryDisplay();
     }
@@ -874,33 +930,47 @@ class InventoryManager {
     }
 
     // Toggle analytics panel
-    toggleStatsPanel() {
-        const panel = document.getElementById('stats-panel');
-        const content = document.getElementById('analytics-content');
-        
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-            this.renderAnalytics(content);
+    /**
+     * Toggle the visibility of the analytics panel, loading the module lazily.
+     */
+    /**
+     * Toggle the visibility of the analytics panel, loading content as needed.
+     */
+    async toggleStatsPanel() {
+        const { statsPanel, analyticsContent } = this.dom;
+        if (!statsPanel) return;
+
+        if (statsPanel.style.display === 'none') {
+            statsPanel.style.display = 'block';
+            await this.renderAnalytics(analyticsContent);
         } else {
-            panel.style.display = 'none';
+            statsPanel.style.display = 'none';
         }
     }
 
     // Toggle filter controls visibility (mobile)
+    /**
+     * Toggle filter control visibility for mobile layouts.
+     */
     toggleFilters() {
         this.filtersCollapsed = !this.filtersCollapsed;
-        const controls = document.querySelector('.filter-controls');
-        if (controls) {
-            controls.classList.toggle('collapsed', this.filtersCollapsed);
+        const { filterControls } = this.dom;
+        if (filterControls) {
+            filterControls.classList.toggle('collapsed', this.filtersCollapsed);
         }
     }
 
     // Render analytics dashboard
-    renderAnalytics(container) {
+    /**
+     * Render the analytics dashboard. Loads the analytics module if needed.
+     * @param {HTMLElement} container - Target element for analytics content.
+     */
+    async renderAnalytics(container) {
+        await loadInventoryAnalytics();
         if (!inventoryAnalytics) return;
-        
+
         const stats = inventoryAnalytics.getInventoryStats();
-        
+
         container.innerHTML = `
             <div class="analytics-dashboard">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -1033,17 +1103,28 @@ class InventoryManager {
 
                 <!-- Action Buttons -->
                 <div class="analytics-actions flex gap-4 justify-center">
-                    <button onclick="inventoryAnalytics.exportInventoryData()" 
+                    <button onclick="inventoryAnalytics.exportInventoryData()"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">
                         <i class="ph-duotone ph-download mr-2"></i>Export Data
                     </button>
-                    <button onclick="inventoryAnalytics.invalidateCache(); inventoryManager.renderAnalytics(document.getElementById('analytics-content'))" 
+                    <button onclick="inventoryManager.refreshAnalytics()"
                             class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors">
                         <i class="ph-duotone ph-arrow-clockwise mr-2"></i>Refresh
                     </button>
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Refresh analytics data, ensuring the module is loaded first.
+     */
+    async refreshAnalytics() {
+        await loadInventoryAnalytics();
+        if (inventoryAnalytics) {
+            inventoryAnalytics.invalidateCache();
+            this.renderAnalytics(document.getElementById('analytics-content'));
+        }
     }
 }
 
