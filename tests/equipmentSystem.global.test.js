@@ -6,6 +6,7 @@ describe('equipmentSystem global bridge', () => {
     global.window = {};
     global.gameData = { player: { equipment: {}, inventory: [] } };
     global.itemsData = {};
+    global.window.equipUtils = equipUtils;
     jest.resetModules();
     require('../src/assets/js/systems/equipmentSystem.global');
   });

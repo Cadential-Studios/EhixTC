@@ -8,8 +8,8 @@ describe('Crafting Recipe Skill Badges', () => {
 
   it('renders correct badge HTML for known skills', () => {
     expect(renderSkillBadge('alchemy', 2)).toContain('bg-purple-800');
-    expect(renderSkillBadge('cooking', 1)).toContain('bg-yellow-700');
-    expect(renderSkillBadge('herbalism', 3)).toContain('bg-green-800');
+    expect(renderSkillBadge('cooking', 1)).toContain('bg-amber-700');
+    expect(renderSkillBadge('herbalism', 3)).toContain('bg-green-700');
   });
 
   it('renders default badge for unknown skills', () => {
