@@ -134,7 +134,11 @@ function handleActionButton(e) {
             break;
 
         case 'forage':
-            foragingSystem.forage(gameData.player.location);
+            if (window.foragingSystem) {
+                window.foragingSystem.forage(gameData.player.location);
+            } else {
+                showGameMessage('Foraging system not loaded.', 'error');
+            }
             break;
 
         default:

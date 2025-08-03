@@ -43,113 +43,24 @@ class InventoryUIFeatures {
         document.body.appendChild(this.tooltipElement);
     }
 
-    // Drag and Drop System
-    makeDraggable(element, itemData, sourceType) {
-        element.draggable = true;
-        element.addEventListener('dragstart', (e) => {
-            this.draggedItem = itemData;
-            this.draggedSource = sourceType;
-            element.style.opacity = '0.5';
-            e.dataTransfer.effectAllowed = 'move';
-            
-            // Create drag image
-            const dragImage = this.createDragImage(itemData);
-            e.dataTransfer.setDragImage(dragImage, 25, 25);
-        });
-
-        element.addEventListener('dragend', (e) => {
-            element.style.opacity = '1';
-            this.draggedItem = null;
-            this.draggedSource = null;
-        });
-    }
-
-    createDragImage(itemData) {
-        const dragImage = document.createElement('div');
-        dragImage.style.cssText = `
-            position: absolute;
-            top: -1000px;
-            left: -1000px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border: 2px solid #fbbf24;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        `;
-        document.body.appendChild(dragImage);
-        
-        setTimeout(() => document.body.removeChild(dragImage), 100);
-        return dragImage;
-    }
-
-    makeDropZone(element, targetType, slotId = null) {
-        element.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (this.canDrop(this.draggedItem, targetType, slotId)) {
-                element.classList.add('drop-valid');
-                e.dataTransfer.dropEffect = 'move';
-            } else {
-                element.classList.add('drop-invalid');
-                e.dataTransfer.dropEffect = 'none';
-            }
-        });
-
-        element.addEventListener('dragleave', (e) => {
-            element.classList.remove('drop-valid', 'drop-invalid');
-        });
-
-        element.addEventListener('drop', (e) => {
-            e.preventDefault();
-            element.classList.remove('drop-valid', 'drop-invalid');
-            
-            if (this.canDrop(this.draggedItem, targetType, slotId)) {
-                this.handleDrop(this.draggedItem, this.draggedSource, targetType, slotId);
-            }
-        });
-    }
-
-    canDrop(item, targetType, slotId) {
-        if (!item) return false;
-
-        switch (targetType) {
-            case 'equipment':
-                return item.type === 'equipment' && 
-                       (slotId === item.slot || this.isCompatibleSlot(item, slotId));
-            case 'inventory':
-                return true;
-            case 'consumable':
-                return item.type === 'consumable';
-            default:
-                return false;
-        }
-    }
-
-    isCompatibleSlot(item, slotId) {
-        const compatibilityMap = {
-            'mainHand': ['weapon', 'shield'],
-            'offHand': ['weapon', 'shield'],
-            'ring1': ['ring'],
-            'ring2': ['ring']
-        };
-        return compatibilityMap[slotId]?.includes(item.subtype);
-    }
 
     handleDrop(item, sourceType, targetType, slotId) {
         if (sourceType === 'inventory' && targetType === 'equipment') {
-            equipmentSystem.equipItem(item.id);
+            // Always pass slotId and ensure it's valid
+            if (typeof equipmentSystem.equipItem === 'function' && slotId) {
+                equipmentSystem.equipItem(item.id, slotId);
+            } else if (typeof equipmentSystem.equipItem === 'function') {
+                equipmentSystem.equipItem(item.id);
+            }
         } else if (sourceType === 'equipment' && targetType === 'inventory') {
-            equipmentSystem.unequipItem(slotId);
+            if (typeof equipmentSystem.unequipItem === 'function' && slotId) {
+                equipmentSystem.unequipItem(slotId);
+            }
         } else if (sourceType === 'inventory' && targetType === 'inventory') {
             // Reorder inventory items (future enhancement)
             this.showMessage('Item reordering coming soon!');
         }
-        
-        gameData.saveGame();
+        // Do not save game on drag and drop
         inventoryManager.updateDisplay();
         this.showDropSuccess(item.name);
     }
@@ -625,7 +536,7 @@ style.textContent = `
     
     .dragging {
         opacity: 0.5 !important;
-        transform: rotate(5deg) !important;
+        /* No tilt/rotation */
     }
 `;
 document.head.appendChild(style);

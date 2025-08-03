@@ -138,3 +138,6 @@ class ForagingSystem {
 // Ensure the animation function is loaded before using the foraging system
 await ensureShowForageResultAnimation();
 const foragingSystem = new ForagingSystem();
+if (typeof window !== 'undefined') {
+  window.foragingSystem = foragingSystem;
+}
