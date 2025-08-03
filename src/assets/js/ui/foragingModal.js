@@ -6,7 +6,7 @@
  * - Configurable durations
  * - Auto-close modal if no onComplete or after result
  */
-window.showForagingProgressWithDice = async function({ duration = 8000, fillDuration, buffer = 100, onComplete, getSkillModAndDC } = {}) {
+window.showForagingProgressWithDice = async function({ duration = 4000, fillDuration, buffer = 100, onComplete, getSkillModAndDC } = {}) {
   // Determine fill duration or default
   fillDuration = fillDuration || (duration - buffer);
 

@@ -1,3 +1,62 @@
+/* === Custom Scrollbar Styles (Global) === */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a6a #23233a;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  background: #23233a;
+}
+*::-webkit-scrollbar-track {
+  background: #23233a;
+  border-radius: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #4a4a6a 60%, #6a8dff 100%);
+  border-radius: 6px;
+  border: 2px solid #23233a;
+  min-height: 40px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #6a8dff 60%, #8a8ac2 100%);
+}
+
+/* === Custom Checkbox Styles (Global) === */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid #4a4a6a;
+  border-radius: 0.25em;
+  background: #23233a;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  box-shadow: 0 0 0 1px #23233a;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+}
+input[type="checkbox"]:checked {
+  border-color: #6a8dff;
+  background: linear-gradient(135deg, #23233a 60%, #6a8dff 100%);
+}
+input[type="checkbox"]:focus {
+  outline: 2px solid #8a8ac2;
+  outline-offset: 1px;
+}
+input[type="checkbox"]:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0.32em;
+  top: 0.08em;
+  width: 0.35em;
+  height: 0.7em;
+  border: solid #8a8ac2;
+  border-width: 0 0.18em 0.18em 0;
+  transform: rotate(45deg);
+}
 /* Edoria: The Triune Convergence - Main Stylesheet */
 
 body {
@@ -1788,28 +1847,7 @@ body {
     height: 100%;
 }
 
-.inventory-grid {
-    scrollbar-width: thin;
-    scrollbar-color: #4a5568 #2d3748;
-}
-
-.inventory-grid::-webkit-scrollbar {
-    width: 8px;
-}
-
-.inventory-grid::-webkit-scrollbar-track {
-    background: #2d3748;
-    border-radius: 4px;
-}
-
-.inventory-grid::-webkit-scrollbar-thumb {
-    background: #4a5568;
-    border-radius: 4px;
-}
-
-.inventory-grid::-webkit-scrollbar-thumb:hover {
-    background: #5a6578;
-}
+/* (Removed inventory-grid specific scrollbar styles in favor of global above) */
 
 .inventory-item {
     transition: all 0.2s ease;

@@ -1,14 +1,16 @@
 
 // Ensure showForageResultAnimation is available globally before class definition
-if (typeof window.showForageResultAnimation !== 'function') {
-    try {
-        // Try to import if not already loaded
-        import('../ui/foragingModal.js').then(mod => {
+async function ensureShowForageResultAnimation() {
+    if (typeof window.showForageResultAnimation !== 'function') {
+        try {
+            const mod = await import('../ui/foragingModal.js');
             if (mod && typeof mod.showForageResultAnimation === 'function') {
                 window.showForageResultAnimation = mod.showForageResultAnimation;
             }
-        });
-    } catch (e) {}
+        } catch (e) {
+            console.error('Error importing foragingModal.js:', e);
+        }
+    }
 }
 
 class ForagingSystem {
@@ -133,4 +135,6 @@ class ForagingSystem {
     }
 }
 
+// Ensure the animation function is loaded before using the foraging system
+await ensureShowForageResultAnimation();
 const foragingSystem = new ForagingSystem();
