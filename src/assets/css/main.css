@@ -1887,15 +1887,30 @@ body {
 }
 
 .equipment-slot .slot-content {
-    min-height: 4rem;
+    min-width: 6.5rem;
+    max-width: 6.5rem;
+    min-height: 6.5rem;
+    max-height: 6.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .equipped-item-display {
     text-align: center;
+    width: 100%;
+    overflow: hidden;
+}
+.equipped-item-display .text-xs {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .item-detail-modal {

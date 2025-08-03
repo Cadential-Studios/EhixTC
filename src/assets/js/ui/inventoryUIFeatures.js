@@ -81,7 +81,6 @@ class InventoryUIFeatures {
             font-size: 20px;
             color: white;
         `;
-        dragImage.textContent = this.getItemIcon(itemData);
         document.body.appendChild(dragImage);
         
         setTimeout(() => document.body.removeChild(dragImage), 100);
@@ -223,9 +222,6 @@ class InventoryUIFeatures {
                     <span style="font-family: 'Cinzel', serif; font-weight: bold; color: ${rarityColors[itemData.rarity] || '#e0e0e0'};">
                         ${itemData.name}
                     </span>
-                    <span style="color: #fbbf24; font-size: 18px;">
-                        ${this.getItemIcon(itemData)}
-                    </span>
                 </div>
                 <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">
                     ${itemData.type} ${itemData.subtype ? `• ${itemData.subtype}` : ''}
@@ -350,16 +346,7 @@ class InventoryUIFeatures {
         return statNames[stat] || stat;
     }
 
-    getItemIcon(itemData) {
-        const iconMap = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'accessory': '💍',
-            'consumable': '🧪',
-            'misc': '📦'
-        };
-        return iconMap[itemData.type] || iconMap[itemData.subtype] || '📦';
-    }
+
 
     // Item Comparison System
     toggleComparisonMode() {
@@ -452,24 +439,23 @@ class InventoryUIFeatures {
 
         return `
             <div style="background: #374151; border: 2px solid ${rarityColors[item.rarity] || '#4b5563'}; 
-                        border-radius: 8px; padding: 16px;">
-                <div style="text-align: center; margin-bottom: 12px;">
-                    <div style="font-size: 24px; margin-bottom: 8px;">${this.getItemIcon(item)}</div>
-                    <div style="color: ${rarityColors[item.rarity] || '#f3f4f6'}; font-weight: bold;">
-                        ${item.name}
-                    </div>
-                    <div style="color: #9ca3af; font-size: 12px;">
-                        ${item.type} ${item.subtype ? `• ${item.subtype}` : ''}
-                    </div>
+                border-radius: 8px; padding: 16px;">
+            <div style="text-align: center; margin-bottom: 12px;">
+                <div style="color: ${rarityColors[item.rarity] || '#f3f4f6'}; font-weight: bold;">
+                ${item.name}
                 </div>
-                
-                ${item.type === 'equipment' ? this.generateComparisonStats(item) : this.generateConsumableStats(item)}
-                
-                <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #4b5563; 
-                           display: flex; justify-content: space-between; font-size: 12px;">
-                    <span style="color: #fbbf24;">${item.value || 0} gp</span>
-                    <span style="color: #94a3b8;">${item.weight || 0} lbs</span>
+                <div style="color: #9ca3af; font-size: 12px;">
+                ${item.type} ${item.subtype ? `• ${item.subtype}` : ''}
                 </div>
+            </div>
+            
+            ${item.type === 'equipment' ? this.generateComparisonStats(item) : this.generateConsumableStats(item)}
+            
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #4b5563; 
+                   display: flex; justify-content: space-between; font-size: 12px;">
+                <span style="color: #fbbf24;">${item.value || 0} gp</span>
+                <span style="color: #94a3b8;">${item.weight || 0} lbs</span>
+            </div>
             </div>
         `;
     }
