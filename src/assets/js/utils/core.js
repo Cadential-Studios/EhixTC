@@ -156,7 +156,8 @@ const gameData = {
         showDiceAnimations: true,
         combatAnimationSpeed: 1,
         autoScrollCombatLog: true,
-        showStatAnimations: true
+        showStatAnimations: true,
+        enableMods: true
     }
 };
 
@@ -391,81 +392,63 @@ async function loadGameData() {
     }
 }
 
+// --- Item Data Loading ---
 async function loadItemData() {
     try {
-        // Load all item category files
-
-        const itemBase = `${DATA_BASE_PATH}item_data/`;
-        const itemResponses = await Promise.all([
-            fetch(`${itemBase}weapons.json`),
-            fetch(`${itemBase}armor.json`),
-            fetch(`${itemBase}accessories.json`),
-            fetch(`${itemBase}consumables.json`),
-            fetch(`${itemBase}magical.json`),
-            fetch(`${itemBase}tools.json`),
-            fetch(`${itemBase}materials.json`),
-            fetch(`${itemBase}quest_items.json`),
-            fetch(`${itemBase}equipment.json`),
-            fetch(`${itemBase}nature.json`)
-        ]);
-
-        const [weaponsResponse, armorResponse, accessoriesResponse, consumablesResponse, 
-               magicalResponse, toolsResponse, materialsResponse, questItemsResponse, equipmentResponse, natureResponse] = itemResponses;
-
-        // Initialize empty items data object
-        itemsData = {};
-
-        // Merge all item categories into the main itemsData object
-        if (weaponsResponse.ok) {
-            const weapons = await weaponsResponse.json();
-            Object.assign(itemsData, weapons);
-        }
-        if (armorResponse.ok) {
-            const armor = await armorResponse.json();
-            Object.assign(itemsData, armor);
-        }
-        if (accessoriesResponse.ok) {
-            const accessories = await accessoriesResponse.json();
-            Object.assign(itemsData, accessories);
-        }
-        if (consumablesResponse.ok) {
-            const consumables = await consumablesResponse.json();
-            Object.assign(itemsData, consumables);
-        }
-        if (magicalResponse.ok) {
-            const magical = await magicalResponse.json();
-            Object.assign(itemsData, magical);
-        }
-        if (toolsResponse.ok) {
-            const tools = await toolsResponse.json();
-            Object.assign(itemsData, tools);
-        }
-        if (materialsResponse.ok) {
-            const materials = await materialsResponse.json();
-            Object.assign(itemsData, materials);
-        }
-        if (questItemsResponse.ok) {
-            const questItems = await questItemsResponse.json();
-            Object.assign(itemsData, questItems);
-        }
-        if (equipmentResponse.ok) {
-            const equipment = await equipmentResponse.json();
-            Object.assign(itemsData, equipment);
-        }
-
-        // Add nature items (flatten nested structure)
-        if (natureResponse && natureResponse.ok) {
-            const natureItems = await natureResponse.json();
-            if (natureItems && typeof natureItems === 'object') {
-                Object.keys(natureItems).forEach(key => {
-                    itemsData[key] = natureItems[key];
-                });
+        const itemBase = `${DATA_BASE_PATH}items/`;
+        const modBase = `${DATA_BASE_PATH}mods/items/`;
+        const itemFiles = [
+            'weapons.json',
+            'armor.json',
+            'accessories.json',
+            'consumables.json',
+            'magical.json',
+            'tools.json',
+            'materials.json',
+            'quest_items.json',
+            'equipment.json',
+            'nature.json'
+        ];
+        let itemsData = {};
+        // Load base item files
+        for (const file of itemFiles) {
+            try {
+                const response = await fetch(`${itemBase}${file}`);
+                if (response.ok) {
+                    try {
+                        const data = await response.json();
+                        Object.assign(itemsData, data);
+                    } catch (jsonErr) {
+                        console.error(`Error parsing JSON for ${file}:`, jsonErr);
+                    }
+                } else {
+                    console.warn(`Item data file not found or failed to load: ${file}`);
+                }
+            } catch (err) {
+                console.error(`Error loading item data file ${file}:`, err);
             }
         }
-
-        // Make itemsData globally available
+        // Load modded item files if enabled
+        if (gameData.settings.enableMods) {
+            for (const file of itemFiles) {
+                try {
+                    const response = await fetch(`${modBase}${file}`);
+                    if (response.ok) {
+                        try {
+                            const data = await response.json();
+                            Object.assign(itemsData, data);
+                        } catch (jsonErr) {
+                            console.error(`Error parsing JSON for mod file ${file}:`, jsonErr);
+                        }
+                    } else {
+                        console.warn(`Mod item data file not found or failed to load: ${file}`);
+                    }
+                } catch (err) {
+                    console.error(`Error loading mod item data file ${file}:`, err);
+                }
+            }
+        }
         window.itemsData = itemsData;
-
         console.log('Item data loaded successfully:', Object.keys(itemsData).length, 'items');
     } catch (error) {
         console.error('Error loading item data:', error);
@@ -473,7 +456,8 @@ async function loadItemData() {
         try {
             const fallbackResponse = await fetch(`${DATA_BASE_PATH}items.json`);
             if (fallbackResponse.ok) {
-                itemsData = await fallbackResponse.json();
+                const itemsData = await fallbackResponse.json();
+                window.itemsData = itemsData;
                 console.log('Loaded fallback items.json');
             }
         } catch (fallbackError) {
@@ -482,169 +466,21 @@ async function loadItemData() {
     }
 }
 
+//! Below is a placeholder. Will be removed once the game can pull item data correctly.
+
 function loadFallbackData() {
     // Fallback data in case JSON files can't be loaded
     console.log('Loading fallback data...');
     
     // Basic fallback items
+
+    /*
     if (Object.keys(itemsData).length === 0) {
-        itemsData = {
-            'iron_sword': {
-                name: 'Iron Sword',
-                type: 'weapon',
-                subtype: 'sword',
-                slot: 'mainhand',
-                damage: '1d8',
-                damageType: 'slashing',
-                weight: 3,
-                value: 10,
-                rarity: 'common',
-                description: 'A sturdy iron sword with a sharp edge.',
-                statBonus: { strength: 1 }
-            },
-            'steel_dagger': {
-                name: 'Steel Dagger',
-                type: 'weapon',
-                subtype: 'sword',
-                slot: 'mainhand',
-                damage: '1d4',
-                damageType: 'piercing',
-                weight: 1,
-                value: 5,
-                rarity: 'common',
-                description: 'A light and quick steel dagger.',
-                statBonus: { dexterity: 1 }
-            },
-            'magic_staff': {
-                name: 'Arcane Staff',
-                type: 'weapon',
-                subtype: 'staff',
-                slot: 'mainhand',
-                damage: '1d6',
-                damageType: 'magical',
-                weight: 4,
-                value: 25,
-                rarity: 'uncommon',
-                description: 'A staff crackling with arcane energy.',
-                statBonus: { intelligence: 2 }
-            },
-            'leather_armor': {
-                name: 'Leather Armor',
-                type: 'armor',
-                subtype: 'light',
-                slot: 'chest',
-                armorClass: 11,
-                maxDexMod: null,
-                weight: 10,
-                value: 10,
-                rarity: 'common',
-                description: 'Flexible leather armor that doesn\'t restrict movement.'
-            },
-            'chain_mail': {
-                name: 'Chain Mail',
-                type: 'armor',
-                subtype: 'medium',
-                slot: 'chest',
-                armorClass: 13,
-                maxDexMod: 2,
-                weight: 20,
-                value: 50,
-                rarity: 'uncommon',
-                description: 'Interlocking metal rings provide solid protection.'
-            },
-            'wooden_shield': {
-                name: 'Wooden Shield',
-                type: 'armor',
-                subtype: 'shield',
-                slot: 'offhand',
-                armorClass: 2,
-                weight: 6,
-                value: 5,
-                rarity: 'common',
-                description: 'A simple wooden shield reinforced with iron bands.'
-            },
-            'health_potion': {
-                name: 'Health Potion',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'heal:2d4+2',
-                weight: 0.5,
-                value: 5,
-                uses: 1,
-                rarity: 'common',
-                description: 'A red potion that restores health when consumed.'
-            },
-            'mana_potion': {
-                name: 'Mana Potion',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'restore_mana:1d4+1',
-                weight: 0.5,
-                value: 8,
-                uses: 1,
-                rarity: 'common',
-                description: 'A blue potion that restores magical energy.'
-            },
-            'bread': {
-                name: 'Bread',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'sustenance',
-                weight: 0.5,
-                value: 1,
-                uses: 1,
-                rarity: 'common',
-                description: 'Fresh baked bread that satisfies hunger.'
-            },
-            'silver_ring': {
-                name: 'Silver Ring',
-                type: 'accessory',
-                slot: 'finger',
-                weight: 0.1,
-                value: 25,
-                rarity: 'uncommon',
-                description: 'A finely crafted silver ring.',
-                statBonus: { charisma: 1 }
-            },
-            'amulet_protection': {
-                name: 'Amulet of Protection',
-                type: 'accessory',
-                slot: 'neck',
-                weight: 0.2,
-                value: 100,
-                rarity: 'rare',
-                description: 'An amulet that wards off evil.',
-                statBonus: { constitution: 2 }
-            },
-            'ancient_tome': {
-                name: 'Ancient Tome',
-                type: 'quest',
-                slot: 'none',
-                weight: 2,
-                value: 0,
-                rarity: 'legendary',
-                description: 'A mysterious book filled with arcane knowledge.'
-            },
-            'iron_ore': {
-                name: 'Iron Ore',
-                type: 'material',
-                slot: 'none',
-                weight: 1,
-                value: 2,
-                rarity: 'common',
-                description: 'Raw iron ore suitable for forging.'
-            },
-            'magic_crystal': {
-                name: 'Magic Crystal',
-                type: 'material',
-                slot: 'none',
-                weight: 0.5,
-                value: 15,
-                rarity: 'rare',
-                description: 'A crystal that glows with inner light.'
-            }
-        };
+        // We don't want fallback items, we want to ensure the game can pull the data.
     }
+    */
+
+
     
     // Basic fallback classes/origins
     if (Object.keys(presetCharactersData).length === 0) {
