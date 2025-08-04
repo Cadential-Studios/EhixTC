@@ -135,7 +135,7 @@ class InventoryUIFeatures {
                     </span>
                 </div>
                 <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">
-                    ${itemData.type} ${itemData.subtype ? `• ${itemData.subtype}` : ''}
+                    ${capitalizeFirst(itemData.type)} ${itemData.subtype ? `• ${capitalizeFirst(itemData.subtype)}` : ''}
                 </div>
             </div>
         `;
@@ -356,7 +356,7 @@ class InventoryUIFeatures {
                 ${item.name}
                 </div>
                 <div style="color: #9ca3af; font-size: 12px;">
-                ${item.type} ${item.subtype ? `• ${item.subtype}` : ''}
+                ${capitalizeFirst(item.type)} ${item.subtype ? `• ${capitalizeFirst(item.subtype)}` : ''}
                 </div>
             </div>
             

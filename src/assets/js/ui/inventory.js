@@ -46,6 +46,11 @@ class InventoryManager {
         };
         this.isDetailModalOpen = false;
         this.dom = {};
+        // Resizable layout properties
+        this.isResizing = false;
+        this.equipmentPanelWidth = 350; // Default width in pixels
+        this.minPanelWidth = 355;
+        this.maxEquipmentWidth = 500;
     }
 
     /**
@@ -167,7 +172,7 @@ class InventoryManager {
                             </div>
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Equipment:</span>
-                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/11</span>
+                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/12</span>
                             </div>
                             <button onclick="inventoryManager.toggleStatsPanel()" 
                                     class="stat-item bg-blue-700 hover:bg-blue-600 rounded px-3 py-2 text-center transition-colors">
@@ -183,22 +188,29 @@ class InventoryManager {
                     </div>
                 </div>
 
-                <!-- Main Content Area -->
-                <div class="inventory-main grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <!-- Main Content Area with Resizable Layout -->
+                <div class="inventory-main resizable-layout" style="display: flex !important; flex-direction: row !important; gap: 0; align-items: stretch; width: 100%; min-height: 500px; flex: 1;">
                     <!-- Equipment Panel -->
-                    <div class="equipment-section">
+                    <div class="equipment-section resizable-panel" id="equipment-panel" style="flex: 0 0 350px; min-width: 300px; display: flex; flex-direction: column; height: 100%;">
                         <h3 class="font-cinzel text-xl text-yellow-400 mb-4 border-b border-yellow-600 pb-2">
                             <i class="ph-duotone ph-sword"></i> Equipment
                         </h3>
-                        ${this.renderEquipmentPanel()}
+                        <div style="flex: 1; overflow-y: auto;">
+                            ${this.renderEquipmentPanel()}
+                        </div>
+                                        <!-- Resizable Separator -->
+                    <div class="resize-separator" id="inventory-separator" title="Drag to resize panels" style="width: 1px; flex-shrink: 0; cursor: col-resize; display: flex; align-items: center; justify-content: center; margin: 0 1px;">
+                        <div class="separator-handle">
+                            <i class="ph-duotone ph-dots-six-vertical text-gray-400"></i>
+                        </div>
                     </div>
                     
                     <!-- Inventory Grid -->
-                    <div class="inventory-section xl:col-span-2">
+                    <div class="inventory-section resizable-panel" id="inventory-panel" style="flex: 1; min-width: 400px; display: flex; flex-direction: column; height: 100%;">
                         <h3 class="font-cinzel text-xl text-green-400 mb-4 border-b border-green-600 pb-2">
                             <i class="ph-duotone ph-backpack"></i> Inventory
                         </h3>
-                        <div class="inventory-grid bg-gray-800 rounded-lg p-4 max-h-96 overflow-y-auto">
+                        <div class="inventory-grid bg-gray-800 rounded-lg p-4 flex-1 overflow-y-auto" style="flex: 1; overflow-y: auto;">
                             ${this.renderInventoryGrid()}
                         </div>
                     </div>
@@ -234,60 +246,87 @@ class InventoryManager {
     renderEquipmentPanel() {
         return `
             <div class="equipment-grid bg-gray-800 rounded-lg p-4">
-                <div class="grid grid-cols-4 gap-2 mb-4">
-                    <div class="equipment-slot" data-slot="head">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.head ? this.renderEquippedItem('head') : '<i class="ph-duotone ph-crown text-gray-400"></i><br><span class="text-xs text-gray-400">Head</span>'}
+                <!-- Character Equipment Layout -->
+                <div class="character-equipment-layout grid gap-2">
+                    <!-- Row 1: Head -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div></div>
+                        <div class="equipment-slot" data-slot="head">
+                            <div class="slot-content ${this.getSlotStyling('head')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.head ? this.renderEquippedItem('head') : '<i class="ph-duotone ph-crown text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Head</span>'}
+                            </div>
                         </div>
+                        <div></div>
                     </div>
-                    <div class="equipment-slot" data-slot="neck">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-sketch-logo text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
+                    
+                    <!-- Row 2: Neck and Shoulders -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div></div>
+                        <div class="equipment-slot" data-slot="neck">
+                            <div class="slot-content ${this.getSlotStyling('neck')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-sketch-logo text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Neck</span>'}
+                            </div>
                         </div>
+                        <div></div>
                     </div>
-                    <div class="equipment-slot" data-slot="chest">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.chest ? this.renderEquippedItem('chest') : '<i class="ph-duotone ph-t-shirt text-gray-400"></i><br><span class="text-xs text-gray-400">Chest</span>'}
+
+                    <!-- Row 3: Weapons and Armor -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="mainhand">
+                            <div class="slot-content ${this.getSlotStyling('mainhand')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
+                            </div>
                         </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="clothing">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.clothing ? this.renderEquippedItem('clothing') : '<i class="ph-duotone ph-scales text-gray-400"></i><br><span class="text-xs text-gray-400">Clothing</span>'}
+                        <div class="equipment-slot" data-slot="chest">
+                            <div class="slot-content ${this.getSlotStyling('chest')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.chest ? this.renderEquippedItem('chest') : '<i class="ph-duotone ph-t-shirt text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Chest</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="offhand">
+                            <div class="slot-content ${this.getSlotStyling('offhand')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="equipment-slot" data-slot="mainhand">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
+                    <!-- Row 4: Hands and Waist -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="finger1">
+                            <div class="slot-content ${this.getSlotStyling('finger1')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-diamond text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
+                            </div>
                         </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="offhand">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
+                        <div class="equipment-slot" data-slot="waist">
+                            <div class="slot-content ${this.getSlotStyling('waist')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.waist ? this.renderEquippedItem('waist') : '<i class="ph-duotone ph-link text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Waist</span>'}
+                            </div>
                         </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="finger1">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-diamond text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
-                        </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="finger2">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-diamond text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
+                        <div class="equipment-slot" data-slot="finger2">
+                            <div class="slot-content ${this.getSlotStyling('finger2')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-diamond text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
+                            </div>
                         </div>
                     </div>
 
-                    <div></div>
-                    <div class="equipment-slot" data-slot="feet">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.feet ? this.renderEquippedItem('feet') : '<i class="ph-duotone ph-sneaker text-gray-400"></i><br><span class="text-xs text-gray-400">Feet</span>'}
+                    <!-- Row 5: Legs and Feet -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="clothing">
+                            <div class="slot-content ${this.getSlotStyling('clothing')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.clothing ? this.renderEquippedItem('clothing') : '<i class="ph-duotone ph-scales text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Clothing</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="feet">
+                            <div class="slot-content ${this.getSlotStyling('feet')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.feet ? this.renderEquippedItem('feet') : '<i class="ph-duotone ph-sneaker text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Feet</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="back">
+                            <div class="slot-content ${this.getSlotStyling('back')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.back ? this.renderEquippedItem('back') : '<i class="ph-duotone ph-backpack text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Back</span>'}
+                          </div>
                         </div>
                     </div>
-                    <div class="equipment-slot" data-slot="waist">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.waist ? this.renderEquippedItem('waist') : '<i class="ph-duotone ph-link text-gray-400"></i><br><span class="text-xs text-gray-400">Waist</span>'}
-                        </div>
-                    </div>
+                </div>
                     <div></div>
                 </div>
                 <!-- Character Stats Summary -->
@@ -319,9 +358,36 @@ class InventoryManager {
         return `
             <div class="equipped-item-display" data-item-id="${itemId}">
                 <div class="text-xs ${rarityText} font-semibold mb-1">${item.name}</div>
-                <div class="text-xs text-gray-400">${item.type}</div>
+                <div class="text-xs text-gray-400">${capitalizeFirst(item.type)}</div>
             </div>
         `;
+    }
+
+    // Get dynamic styling for equipment slots based on equipped items
+    getSlotStyling(slot) {
+        const itemId = gameData.player.equipment[slot];
+        if (!itemId) {
+            // Empty slot - default styling
+            return 'bg-gray-700 border-2 border-gray-600';
+        }
+        
+        const item = itemsData[itemId];
+        if (!item) {
+            // Unknown item - error styling
+            return 'bg-red-900 border-2 border-red-500';
+        }
+        
+        // Equipped slot - use rarity-based styling with glow effect
+        const rarityStyles = {
+            'common': 'bg-gray-600 border-2 border-gray-400 shadow-sm shadow-gray-400/20',
+            'uncommon': 'bg-green-900/30 border-2 border-green-400 shadow-md shadow-green-400/30',
+            'rare': 'bg-blue-900/30 border-2 border-blue-400 shadow-md shadow-blue-400/30',
+            'epic': 'bg-purple-900/30 border-2 border-purple-400 shadow-lg shadow-purple-400/40',
+            'legendary': 'bg-orange-900/30 border-2 border-orange-400 shadow-lg shadow-orange-400/40',
+            'artifact': 'bg-red-900/30 border-2 border-red-400 shadow-xl shadow-red-400/50'
+        };
+        
+        return rarityStyles[item.rarity] || rarityStyles['common'];
     }
 
     // Render inventory grid with filtered items
@@ -370,8 +436,8 @@ class InventoryManager {
         const canUse = this.canUseItem(item.data);
         const isEquippable = item.data.slot && item.data.slot !== 'none' && item.data.type !== 'consumable';
         const itemTag = item.data.type === 'consumable'
-            ? '<span class="item-tag tag-consumable">Consumable</span>'
-            : (isEquippable ? '<span class="item-tag tag-equippable">Equipment</span>' : '');
+            ? `<span class="item-tag tag-consumable">${capitalizeFirst(item.data.type)}</span>`
+            : (isEquippable ? `<span class="item-tag tag-equippable">${capitalizeFirst('equipment')}</span>` : '');
         const isActivatable = item.data.properties && item.data.properties.includes('activatable');
         const isComparisonMode = inventoryUIFeatures && inventoryUIFeatures.comparisonMode;
         const isSelected = inventoryUIFeatures && inventoryUIFeatures.selectedItems.has(item.id);
@@ -400,7 +466,7 @@ class InventoryManager {
                             ${item.quantity > 1 ? `<span class="quantity-badge bg-blue-600 text-white px-2 py-1 rounded text-xs">${item.quantity}</span>` : ''}
                             ${isComparisonMode ? `<i class="ph-duotone ph-check-circle text-blue-400"></i>` : ''}
                         </div>
-                        <div class="text-gray-400 text-xs">${item.data.type.charAt(0).toUpperCase() + item.data.type.slice(1)} ${item.data.subtype ? '• ' + item.data.subtype : ''}</div>
+                        <div class="text-gray-400 text-xs">${capitalizeFirst(item.data.type)} ${item.data.subtype ? '• ' + capitalizeFirst(item.data.subtype) : ''}</div>
                     </div>
                     <div class="flex flex-col items-end text-xs text-gray-400">
                         ${item.data.value ? `<span class="text-yellow-400">${item.data.value}g</span>` : ''}
@@ -586,6 +652,104 @@ class InventoryManager {
                 });
             }
         });
+
+        // Resizable separator functionality
+        this.attachResizeListeners();
+    }
+
+    /**
+     * Attach resize functionality for the panel separator
+     */
+    attachResizeListeners() {
+        const separator = document.getElementById('inventory-separator');
+        const equipmentPanel = document.getElementById('equipment-panel');
+        const inventoryPanel = document.getElementById('inventory-panel');
+        
+        if (!separator || !equipmentPanel || !inventoryPanel) return;
+
+        const startResize = (startX, startWidth) => {
+            this.isResizing = true;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            separator.style.background = 'linear-gradient(90deg, transparent 0%, #6a8dff 25%, #6a8dff 75%, transparent 100%)';
+        };
+
+        const handleResize = (currentX, startX, startWidth) => {
+            if (!this.isResizing) return;
+            
+            const deltaX = currentX - startX;
+            const newWidth = Math.max(this.minPanelWidth, Math.min(this.maxEquipmentWidth, startWidth + deltaX));
+            
+            equipmentPanel.style.flex = `0 0 ${newWidth}px`;
+            this.equipmentPanelWidth = newWidth;
+        };
+
+        const endResize = () => {
+            if (!this.isResizing) return;
+            
+            this.isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            separator.style.background = '';
+            
+            // Save to localStorage for persistence
+            localStorage.setItem('edoria-equipment-panel-width', this.equipmentPanelWidth.toString());
+        };
+
+        // Mouse events
+        separator.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startWidth = parseInt(equipmentPanel.style.flex.split(' ')[2].replace('px', ''));
+            
+            startResize(startX, startWidth);
+            
+            const handleMouseMove = (e) => handleResize(e.clientX, startX, startWidth);
+            const handleMouseUp = () => {
+                endResize();
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            };
+            
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        });
+
+        // Touch events for mobile
+        separator.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const startX = touch.clientX;
+            const startWidth = parseInt(equipmentPanel.style.flex.split(' ')[2].replace('px', ''));
+            
+            startResize(startX, startWidth);
+            
+            const handleTouchMove = (e) => {
+                e.preventDefault();
+                if (e.touches.length === 1) {
+                    handleResize(e.touches[0].clientX, startX, startWidth);
+                }
+            };
+            
+            const handleTouchEnd = () => {
+                endResize();
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
+            };
+            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+        }, { passive: false });
+
+        // Load saved width on startup
+        const savedWidth = localStorage.getItem('edoria-equipment-panel-width');
+        if (savedWidth) {
+            const width = parseInt(savedWidth);
+            if (width >= this.minPanelWidth && width <= this.maxEquipmentWidth) {
+                equipmentPanel.style.flex = `0 0 ${width}px`;
+                this.equipmentPanelWidth = width;
+            }
+        }
     }
 
     /**

@@ -32,7 +32,8 @@ const gameData = {
             finger1: null,
             finger2: null,
             feet: null,
-            waist: null
+            waist: null,
+            back: null
         },
         quests: { active: [], completed: [] },
         lore: new Set(),

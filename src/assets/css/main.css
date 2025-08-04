@@ -268,6 +268,151 @@ body {
     margin: 0 auto;
 }
 
+/* Character Equipment Layout Styles */
+.character-equipment-layout {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.character-equipment-layout .slot-content {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-equipment-layout .slot-content i {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.character-equipment-layout .equipment-slot {
+    position: relative;
+}
+
+/* Advanced Inventory Container - ensure flex layout */
+.advanced-inventory-container {
+    max-height: 100%;
+    overflow: hidden;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Resizable Inventory Layout */
+.resizable-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0;
+    min-height: 500px;
+    width: 100%;
+    align-items: stretch;
+    flex: 1;
+}
+
+/* Super specific selector to override any Tailwind classes */
+.advanced-inventory-container .inventory-main.resizable-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    min-height: 500px !important;
+}
+
+.resizable-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.resize-separator {
+    width: 1px;
+    background: rgba(74, 85, 104, 0.3); /* Very subtle line */
+    cursor: col-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s ease;
+    touch-action: none; /* Prevent scrolling on touch */
+    min-height: 100%;
+    flex-shrink: 0;
+    margin: 0 1px; /* Smaller margin */
+}
+
+.resize-separator:hover {
+    background: rgba(106, 141, 255, 0.6); /* Subtle blue on hover */
+    width: 2px; /* Just slightly wider on hover */
+    box-shadow: 0 0 4px rgba(106, 141, 255, 0.3); /* Subtle glow */
+}
+
+.resize-separator:active {
+    background: rgba(255, 107, 107, 0.8); /* Red when dragging */
+    width: 3px; /* Slightly more visible when dragging */
+    box-shadow: 0 0 6px rgba(255, 107, 107, 0.4); /* Red glow */
+}
+
+.separator-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    opacity: 0; /* Hide by default for minimal look */
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    position: relative;
+    background: transparent;
+}
+
+.resize-separator:hover .separator-handle {
+    opacity: 0.3; /* Very subtle when hovering */
+    background: transparent;
+}
+
+.resize-separator:active .separator-handle {
+    opacity: 0.5; /* Slightly more visible when dragging */
+    background: transparent;
+}
+
+.separator-handle i {
+    font-size: 0.8rem; /* Smaller icon */
+    color: #cbd5e0;
+    transition: all 0.2s ease;
+    text-shadow: none;
+}
+
+.resize-separator:hover .separator-handle i {
+    color: #6a8dff;
+    transform: scale(0.9);
+}
+
+/* Add visual feedback when resizing */
+.resize-separator:active .separator-handle i {
+    color: #ff6b6b;
+    transform: scale(1.0);
+}
+
+/* Mobile responsive adjustments - only for small screens */
+@media (max-width: 768px) {
+    .resizable-layout {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .resize-separator {
+        display: none;
+    }
+    
+    .resizable-panel {
+        min-width: unset;
+        flex: none !important;
+    }
+}
+
 /* Quick tooltip styling */
 #quick-tooltip {
     pointer-events: none;
@@ -1832,8 +1977,8 @@ body {
 .advanced-inventory-container {
     max-height: 100%;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .inventory-header {
@@ -1845,6 +1990,39 @@ body {
     flex: 1;
     min-height: 0;
     align-items: stretch;
+    /* Override any grid settings for resizable layout */
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+/* Ensure panels are side by side */
+.inventory-main.resizable-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0 !important;
+    width: 100% !important;
+    align-items: stretch !important;
+}
+
+/* Make sure all direct children align horizontally */
+.inventory-main.resizable-layout > * {
+    flex-shrink: 0;
+}
+
+.inventory-main.resizable-layout > .equipment-section {
+    flex: 0 0 350px;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.inventory-main.resizable-layout > .resize-separator {
+    flex: 0 0 8px;
+    width: 8px;
+}
+
+.inventory-main.resizable-layout > .inventory-section {
+    flex: 1;
+    min-width: 400px;
 }
 
 .inventory-section {
@@ -2012,18 +2190,25 @@ body {
     box-shadow: 0 0 0 1px #f59e0b, 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
-/* Responsive adjustments for inventory */
-@media (max-width: 1280px) {
+/* Responsive adjustments for inventory - only for mobile screens */
+@media (max-width: 768px) {
     .inventory-main {
-        grid-template-columns: 1fr;
+        flex-direction: column !important;
+        gap: 16px;
     }
     
     .equipment-section {
-        order: 2;
+        order: 1;
+        flex: none !important;
     }
     
     .inventory-section {
-        order: 1;
+        order: 2;
+        flex: none !important;
+    }
+    
+    .resize-separator {
+        display: none;
     }
 }
 

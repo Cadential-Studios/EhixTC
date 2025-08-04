@@ -66,7 +66,7 @@ describe('Equipment System Integration Tests', () => {
 
   beforeAll(() => {
     // Load all item data
-    const itemsDir = path.resolve(__dirname, '../src/data/items/');
+    const itemsDir = path.resolve(__dirname, '../../src/data/items/');
     itemFiles.forEach(file => {
       const filePath = path.join(itemsDir, file);
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -98,7 +98,8 @@ describe('Equipment System Integration Tests', () => {
       finger1: null,
       finger2: null,
       feet: null,
-      waist: null
+      waist: null,
+      back: null
     };
     gameData.player.inventory = [];
     jest.clearAllMocks();
