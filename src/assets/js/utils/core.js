@@ -35,7 +35,7 @@ const gameData = {
             waist: null,
             back: null
         },
-        quests: { active: [], completed: {} },
+        quests: { active: [], completed: [] },
         lore: new Set(),
         rumors: new Set(),
         journalPins: new Set(),

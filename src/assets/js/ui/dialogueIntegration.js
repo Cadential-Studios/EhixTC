@@ -9,6 +9,8 @@ class DialogueIntegration {
         this.dialogueModal = null;
         this.currentDialogueData = null;
         this.isDialogueActive = false;
+        this.dialogueData = {}; // Store loaded dialogue data from YAML files
+        this.dialogueLoaded = false; // Track if dialogue files have been loaded
         
         this.initializeDialogueUI();
     }
@@ -52,32 +54,149 @@ class DialogueIntegration {
      * Load dialogue files
      */
     async loadDialogueFiles() {
-        try {
-            // Load the village dialogues
-            const response = await fetch('src/data/dialogue/village_dialogues.yaml');
-            const yamlContent = await response.text();
-            
-            // Convert YAML to JSON (in production, use a proper YAML parser)
-            // For now, we'll need to manually convert or use js-yaml library
-            const dialogueData = await this.convertYAMLToJSON(yamlContent);
-            
-            await this.dialogueSystem.loadDialogueFromYAML(dialogueData);
-            console.log('Dialogue files loaded successfully');
-            
-        } catch (error) {
-            console.error('Error loading dialogue files:', error);
+        // Define all dialogue files to load
+        const dialogueFiles = [
+            'characters/village_elder.yaml',
+            'characters/general_merchant.yaml',
+            'characters/town_guard.yaml',
+            'locations/tavern.yaml'
+        ];
+
+        let totalLoaded = 0;
+        let totalErrors = 0;
+
+        for (const file of dialogueFiles) {
+            try {
+                console.log(`Loading dialogue file: ${file}`);
+                const response = await fetch(`src/data/dialogue/${file}`);
+                
+                if (!response.ok) {
+                    console.warn(`Dialogue file not found: ${file} (${response.status})`);
+                    continue;
+                }
+                
+                const yamlContent = await response.text();
+                
+                // Convert YAML to JSON (in production, use a proper YAML parser)
+                const dialogueData = await this.convertYAMLToJSON(yamlContent, file);
+                
+                if (dialogueData && dialogueData.dialogue_trees) {
+                    // Store the dialogue data with a key based on filename
+                    const fileKey = file.split('/').pop().replace('.yaml', '');
+                    this.dialogueData[fileKey] = dialogueData;
+                    
+                    await this.dialogueSystem.loadDialogueFromYAML(dialogueData);
+                    totalLoaded++;
+                    console.log(`✓ Loaded ${dialogueData.dialogue_trees.length} dialogue tree(s) from ${file}`);
+                } else {
+                    console.warn(`No dialogue trees found in ${file}`);
+                }
+                
+            } catch (error) {
+                console.error(`Error loading dialogue file ${file}:`, error);
+                totalErrors++;
+            }
+        }
+
+        // Mark dialogue as loaded
+        this.dialogueLoaded = true;
+
+        console.log(`Dialogue loading complete: ${totalLoaded} files loaded, ${totalErrors} errors`);
+        console.log('Available dialogue data:', Object.keys(this.dialogueData));
+        
+        if (totalLoaded === 0) {
+            console.warn('No dialogue files were loaded successfully. Using fallback dialogue.');
+            await this.loadFallbackDialogue();
         }
     }
 
     /**
-     * Convert YAML to JSON (placeholder - use js-yaml in production)
+     * Convert YAML to JSON using js-yaml parser
      */
-    async convertYAMLToJSON(yamlContent) {
-        // This is a placeholder. In production, use:
-        // const yaml = require('js-yaml');
-        // return yaml.load(yamlContent);
+    async convertYAMLToJSON(yamlContent, filename = 'unknown') {
+        try {
+            // Use js-yaml to parse the YAML content
+            if (typeof jsyaml !== 'undefined') {
+                const parsedData = jsyaml.load(yamlContent);
+                console.log(`Successfully parsed YAML for ${filename}`);
+                return parsedData;
+            } else {
+                console.warn('js-yaml library not available, attempting JSON fallback');
+                // Fallback to JSON parsing if js-yaml isn't available
+                return JSON.parse(yamlContent);
+            }
+        } catch (error) {
+            console.error(`Error parsing YAML content for ${filename}:`, error);
+            // Return empty dialogue structure if parsing fails
+            return { dialogue_trees: [] };
+        }
+    }
+
+    /**
+     * Load fallback dialogue when files aren't available
+     */
+    async loadFallbackDialogue() {
+        const fallbackData = {
+            dialogue_trees: [
+                {
+                    id: "fallback_greeting",
+                    character: "Unknown NPC",
+                    location: "unknown",
+                    priority: 1,
+                    repeatable: true,
+                    root: "greeting",
+                    nodes: {
+                        greeting: {
+                            text: [{ default: "Hello there, traveler." }],
+                            responses: [
+                                { text: "Hello.", next: "end" }
+                            ]
+                        },
+                        end: {
+                            text: [{ default: "Safe travels." }],
+                            responses: []
+                        }
+                    }
+                }
+            ]
+        };
         
-        // For now, return the parsed village dialogues
+        await this.dialogueSystem.loadDialogueFromYAML(fallbackData);
+        console.log('Fallback dialogue loaded');
+    }
+
+    /**
+     * Get dialogue data for a specific NPC/character
+     * @param {string} characterName - The name of the character
+     * @returns {Object|null} - The dialogue data or null if not found
+     */
+    getDialogueForCharacter(characterName) {
+        if (!this.dialogueLoaded) {
+            console.warn('Dialogue not loaded yet. Call loadDialogueFiles() first.');
+            return null;
+        }
+
+        // Create mapping from character names to file keys
+        const characterMapping = {
+            'Village Elder': 'village_elder',
+            'General Merchant': 'general_merchant', 
+            'Town Guard': 'town_guard',
+            'Innkeeper': 'tavern'
+        };
+
+        const fileKey = characterMapping[characterName];
+        if (fileKey && this.dialogueData[fileKey]) {
+            return this.dialogueData[fileKey];
+        }
+
+        console.warn(`No dialogue data found for character: ${characterName}`);
+        return null;
+    }
+
+    /**
+     * Get Village Elder dialogue data
+     */
+    getVillageElderDialogue() {
         return {
             dialogue_trees: [
                 {
@@ -276,8 +395,29 @@ class DialogueIntegration {
     }
 }
 
-// Initialize dialogue system when game loads
+// Initialize the dialogue system when the script loads
 let dialogueIntegration;
+
+// Function to ensure js-yaml is loaded before initializing dialogue
+async function ensureYAMLLoaded() {
+    if (typeof jsyaml === 'undefined') {
+        console.log('Loading js-yaml library...');
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js';
+            script.onload = () => {
+                console.log('js-yaml library loaded successfully');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('Failed to load js-yaml library');
+                reject(new Error('Failed to load js-yaml'));
+            };
+            document.head.appendChild(script);
+        });
+    }
+    return Promise.resolve();
+}
 
 // Initialize after game data is loaded
 window.addEventListener('DOMContentLoaded', async () => {
@@ -297,23 +437,93 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     await waitForGameData();
     
+    // Ensure js-yaml is loaded
+    await ensureYAMLLoaded();
+    
     dialogueIntegration = new DialogueIntegration();
     await dialogueIntegration.loadDialogueFiles();
     
-    console.log('Dialogue system initialized');
+    console.log('Dialogue system initialized and ready');
 });
 
 // Export for global access
 window.DialogueIntegration = DialogueIntegration;
 window.startDialogue = (characterName) => {
-    if (dialogueIntegration) {
+    if (dialogueIntegration && dialogueIntegration.dialogueLoaded) {
         const gameState = {
-            quests: gameData.quests || {},
-            flags: gameData.flags || {},
-            relationships: gameData.relationships || {},
-            time: gameData.time || { hour: 12 }
+            quests: gameData?.quests || {},
+            flags: gameData?.flags || {},
+            relationships: gameData?.relationships || {},
+            time: gameData?.time || { hour: 12 }
         };
-        return dialogueIntegration.startDialogue(characterName, gameData.player, gameState);
+        return dialogueIntegration.startDialogue(characterName, gameData?.player || {}, gameState);
+    } else {
+        console.warn('Dialogue system not loaded yet. Please wait for initialization.');
+        return false;
     }
-    return false;
 };
+
+// Function to ensure js-yaml is loaded before initializing dialogue
+async function ensureYAMLLoaded() {
+    if (typeof jsyaml === 'undefined') {
+        console.log('Loading js-yaml library...');
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js';
+            script.onload = () => {
+                console.log('js-yaml library loaded successfully');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('Failed to load js-yaml library');
+                reject(new Error('Failed to load js-yaml'));
+            };
+            document.head.appendChild(script);
+        });
+    }
+    return Promise.resolve();
+}
+
+// Function to initialize the dialogue system with proper dependencies
+async function initializeDialogueSystem() {
+    try {
+        // Ensure js-yaml is loaded
+        await ensureYAMLLoaded();
+        
+        // Load all dialogue files
+        await dialogueIntegration.loadDialogueFiles();
+        
+        console.log('Dialogue system fully initialized and ready');
+        return true;
+    } catch (error) {
+        console.error('Failed to initialize dialogue system:', error);
+        return false;
+    }
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDialogueSystem);
+} else {
+    initializeDialogueSystem();
+}
+
+// Export for global access
+window.DialogueIntegration = DialogueIntegration;
+window.dialogueIntegration = dialogueIntegration;
+window.initializeDialogueSystem = initializeDialogueSystem;
+window.startDialogue = (characterName) => {
+    if (dialogueIntegration && dialogueIntegration.dialogueLoaded) {
+        const gameState = {
+            quests: gameData?.quests || {},
+            flags: gameData?.flags || {},
+            relationships: gameData?.relationships || {},
+            time: gameData?.time || { hour: 12 }
+        };
+        return dialogueIntegration.startDialogue(characterName, gameData?.player || {}, gameState);
+    } else {
+        console.warn('Dialogue system not loaded yet. Call initializeDialogueSystem() first.');
+        return false;
+    }
+};
+

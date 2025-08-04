@@ -21,5 +21,17 @@
     "rarity": "uncommon",
     "value": 0,
     "weight": 2
+  },
+  "letter_1": {
+    "id": "letter_1",
+    "name": "Crumpled Letter",
+    "type": "quest",
+    "slot": "none",
+    "description": "A letter containing important information about a past event.",
+    "properties": ["quest_item", "readable"],
+    "contents": "letter_1.md",
+    "rarity": "common",
+    "value": 0,
+    "weight": 0.05
   }
 }

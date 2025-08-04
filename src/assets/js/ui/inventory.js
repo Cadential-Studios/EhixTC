@@ -489,6 +489,17 @@ class InventoryManager {
                                 <i class="ph-duotone ph-eye mr-1"></i>Details
                             </button>
                         </div>
+                    ` : item.data.properties && item.data.properties.includes('readable') ? `
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="event.stopPropagation(); readItem('${item.id}')" 
+                                    class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-xs transition-colors">
+                                <i class="ph-duotone ph-book-open mr-1"></i>Read
+                            </button>
+                            <button onclick="event.stopPropagation(); inventoryManager.openItemModal('${item.id}')" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors">
+                                <i class="ph-duotone ph-eye mr-1"></i>Details
+                            </button>
+                        </div>
                     ` : item.data.type === 'consumable' ? `
                         <div class="flex gap-2 mt-2">
                             <button onclick="event.stopPropagation(); inventoryManager.useItem('${item.id}')" 
@@ -1276,6 +1287,12 @@ class InventoryManager {
                             <button onclick="inventoryManager.equipItem('${item.id}'); inventoryManager.closeItemModal();" 
                                     class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold transition-colors">
                                 <i class="ph-duotone ph-sword mr-2"></i>Equip
+                            </button>
+                        ` : ''}
+                        ${item.properties && item.properties.includes('readable') ? `
+                            <button onclick="readItem('${item.id}'); inventoryManager.closeItemModal();" 
+                                    class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded font-semibold transition-colors">
+                                <i class="ph-duotone ph-book-open mr-2"></i>Read
                             </button>
                         ` : ''}
                         ${isConsumable ? `

@@ -3003,3 +3003,127 @@ input[type=range]::-webkit-slider-thumb:hover {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+/* === Readable Items Modal Styles === */
+#readable-item-modal .prose {
+    color: #e2e8f0;
+    max-width: none;
+    line-height: 1.7;
+}
+
+#readable-item-modal .prose h1,
+#readable-item-modal .prose h2,
+#readable-item-modal .prose h3,
+#readable-item-modal .prose h4,
+#readable-item-modal .prose h5,
+#readable-item-modal .prose h6 {
+    color: #fbbf24;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+#readable-item-modal .prose h1 {
+    font-size: 1.875rem;
+    color: #f9fafb;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 0.5rem;
+}
+
+#readable-item-modal .prose h2 {
+    font-size: 1.5rem;
+    color: #fde68a;
+}
+
+#readable-item-modal .prose h3 {
+    font-size: 1.25rem;
+    color: #fbbf24;
+}
+
+#readable-item-modal .prose p {
+    margin-bottom: 1rem;
+    color: #d1d5db;
+    text-align: justify;
+}
+
+#readable-item-modal .prose strong {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+#readable-item-modal .prose em {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+#readable-item-modal .prose ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin: 1rem 0;
+    padding-left: 1rem;
+}
+
+#readable-item-modal .prose li {
+    margin-bottom: 0.5rem;
+    color: #d1d5db;
+}
+
+#readable-item-modal .prose hr {
+    border: none;
+    border-top: 1px solid #4b5563;
+    margin: 2rem 0;
+}
+
+#readable-item-modal .prose code {
+    background-color: #374151;
+    color: #10b981;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: 'Courier New', monospace;
+}
+
+#readable-item-modal .prose a {
+    color: #3b82f6;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+#readable-item-modal .prose a:hover {
+    color: #60a5fa;
+}
+
+/* Readable content text selection enabled */
+#readable-item-modal .prose,
+#readable-item-modal .prose * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Smooth modal animations */
+#readable-item-modal {
+    animation: fadeIn 0.2s ease-out;
+}
+
+#readable-item-modal .bg-gray-800 {
+    animation: slideIn 0.3s ease-out;
+    transform-origin: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}

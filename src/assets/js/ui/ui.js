@@ -535,6 +535,14 @@ function renderJournal(activeTab = 'all') {
     
     // Content based on active tab
     if (activeTab === 'all' || activeTab === 'quests') {
+        // Ensure quests arrays exist and are arrays (handle corrupted save data)
+        if (!gameData.player.quests.active || !Array.isArray(gameData.player.quests.active)) {
+            gameData.player.quests.active = [];
+        }
+        if (!gameData.player.quests.completed || !Array.isArray(gameData.player.quests.completed)) {
+            gameData.player.quests.completed = [];
+        }
+        
         const activeQuests = gameData.player.quests.active.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         const completedQuests = gameData.player.quests.completed.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         content += `

@@ -251,6 +251,11 @@ class DeveloperMenu {
                 usage: 'item.add <itemId> [quantity]',
                 execute: (args) => this.addItemById(args[0], parseInt(args[1]) || 1)
             },
+            'add_item': {
+                description: 'Add item to inventory (alias for item.add)',
+                usage: 'add_item <itemId> [quantity]',
+                execute: (args) => this.addItemById(args[0], parseInt(args[1]) || 1)
+            },
             'item.remove': {
                 description: 'Remove item from inventory',
                 usage: 'item.remove <itemId> [quantity]',
@@ -1253,12 +1258,17 @@ class DeveloperMenu {
         // Create a simple item if we don't have item data loaded
         let foundItem = null;
         
-        // Try to find item in loaded data first
-        if (window.itemsData) {
-            const categories = ['weapons', 'armor', 'consumables', 'tools', 'misc'];
+        // Try to find item in loaded data first - check flat structure
+        if (window.itemsData && window.itemsData[itemId]) {
+            foundItem = window.itemsData[itemId];
+            this.log(`Found item in itemsData: ${JSON.stringify(foundItem)}`);
+        } else if (window.itemsData) {
+            // Try to find item in category structure (fallback)
+            const categories = ['weapons', 'armor', 'consumables', 'tools', 'misc', 'quest_items'];
             for (const category of categories) {
                 if (window.itemsData[category] && window.itemsData[category][itemId]) {
                     foundItem = window.itemsData[category][itemId];
+                    this.log(`Found item in category ${category}: ${JSON.stringify(foundItem)}`);
                     break;
                 }
             }
@@ -1274,6 +1284,7 @@ class DeveloperMenu {
                 rarity: 'common',
                 weight: 1
             };
+            this.log(`Created basic item: ${JSON.stringify(foundItem)}`);
         }
 
         // Add to inventory

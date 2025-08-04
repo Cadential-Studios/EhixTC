@@ -1,0 +1,167 @@
+# Tavern Dialogue - Silver Swan Inn
+# Character: Innkeeper (Martha)
+# Location: tavern_interior
+# Description: Friendly innkeeper offering rooms and meals
+
+dialogue_trees:
+  - id: "innkeeper_greeting"
+    character: "Innkeeper"
+    location: "tavern_interior"
+    priority: 1
+    repeatable: true
+    root: "greeting"
+    variables:
+      rooms_discussed: false
+      food_ordered: false
+      regular_customer: false
+      visits: 0
+    nodes:
+      greeting:
+        text:
+          - condition:
+              type: "variable"
+              variable: "regular_customer"
+              value: true
+            text: "Welcome back to the Silver Swan! Your usual room is available."
+          - condition:
+              type: "variable"
+              variable: "visits"
+              min_value: 3
+            text: "Well, well! Look who's back! Welcome to the Silver Swan, friend."
+          - default: "Welcome to the Silver Swan Inn! How can I help you tonight?"
+        on_enter:
+          - type: "increment_variable"
+            variable: "visits"
+            amount: 1
+        responses:
+          - text: "I'd like to rent a room for the night."
+            next: "room_inquiry"
+            cost:
+              gold: 5
+          - text: "What do you have to eat?"
+            next: "food_menu"
+          - text: "Tell me about the local area."
+            next: "local_info"
+          - text: "Any interesting rumors or news?"
+            next: "tavern_gossip"
+          - text: "Just looking around, thanks."
+            next: "end"
+
+      room_inquiry:
+        text:
+          - condition:
+              type: "variable"
+              variable: "regular_customer"
+              value: true
+            text: "For you? 4 gold - friends get a discount! Includes hot meal and fresh linens."
+          - default: "Our rooms are 5 gold per night, includes a hot meal and fresh linens. Best deal in town!"
+        on_enter:
+          - type: "set_variable"
+            variable: "rooms_discussed"
+            value: true
+        responses:
+          - text: "That sounds perfect. I'll take a room."
+            next: "room_purchased"
+            actions:
+              - type: "remove_gold"
+                amount: 5
+              - type: "add_item"
+                item_id: "inn_room_key"
+                quantity: 1
+              - type: "restore_health"
+                amount: 20
+              - type: "restore_energy"
+                amount: 100
+          - text: "Maybe later."
+            next: "greeting"
+
+      room_purchased:
+        text:
+          - default: "Excellent! Room 3 upstairs. The bed's comfortable and the door locks tight. Sleep well!"
+        on_enter:
+          - type: "set_variable"
+            variable: "regular_customer"
+            value: true
+          - type: "add_relationship"
+            character: "Innkeeper"
+            amount: 2
+        responses:
+          - text: "Thank you, this looks perfect."
+            next: "end"
+
+      food_menu:
+        text:
+          - default: "We've got hearty beef stew, fresh bread, grilled fish, and the finest ale in the region! Everything's made with love."
+        responses:
+          - text: "I'll have the stew and ale. (2 gold)"
+            next: "food_ordered"
+            cost:
+              gold: 2
+            actions:
+              - type: "remove_gold"
+                amount: 2
+              - type: "restore_health"
+                amount: 10
+              - type: "add_buff"
+                buff_id: "well_fed"
+                duration: 3600
+          - text: "The fish sounds good. (3 gold)"
+            next: "food_ordered"
+            cost:
+              gold: 3
+            actions:
+              - type: "remove_gold"
+                amount: 3
+              - type: "restore_health"
+                amount: 15
+          - text: "Not hungry right now."
+            next: "greeting"
+
+      food_ordered:
+        text:
+          - default: "Coming right up! Take a seat anywhere you'd like."
+        on_enter:
+          - type: "set_variable"
+            variable: "food_ordered"
+            value: true
+          - type: "add_relationship"
+            character: "Innkeeper"
+            amount: 1
+        responses:
+          - text: "Delicious! Thank you."
+            next: "end"
+
+      local_info:
+        text:
+          - default: "This is a peaceful village, mostly. We've got good folks here - farmers, crafters, a few merchants. The Elder keeps everyone in line, and our guards keep us safe."
+        responses:
+          - text: "Anyone I should meet?"
+            next: "local_people"
+          - text: "Sounds like a nice place."
+            next: "end"
+
+      local_people:
+        text:
+          - default: "Well, there's Aldric the Elder - wise old fellow. Borin runs the general store, good prices. And if you're looking for work, talk to the guards or check the notice board."
+        responses:
+          - text: "Thanks for the advice."
+            next: "end"
+
+      tavern_gossip:
+        text:
+          - default: "Strange things happening lately. Wolves acting odd, some say they saw strange lights in the forest. Probably nothing, but... keeps the guards busy."
+        responses:
+          - text: "Interesting. I'll keep my eyes open."
+            next: "end"
+          - text: "Just traveler's tales, I'm sure."
+            next: "end"
+
+      end:
+        text:
+          - condition:
+              type: "variable"
+              variable: "regular_customer"
+              value: true
+            text: "Come back anytime, friend! The Silver Swan is always open to you."
+          - default: "Come back anytime, traveler!"
+        responses: []
