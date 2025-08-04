@@ -944,3 +944,44 @@ function showInfoBox(message, type = 'info') {
 
     }, 3000);
 }
+
+/**
+ * Complete a quest and trigger auto-save
+ * @param {string} questId - The ID of the quest to complete
+ * @param {string} questText - The display text for the quest
+ * @param {Object} additionalData - Any additional quest data
+ */
+window.completeQuest = function(questId, questText, additionalData = {}) {
+    if (!gameData.player.quests.completed) {
+        gameData.player.quests.completed = [];
+    }
+    
+    // Remove from active quests if present
+    if (gameData.player.quests.active) {
+        gameData.player.quests.active = gameData.player.quests.active.filter(quest => 
+            (quest.id || quest) !== questId
+        );
+    }
+    
+    // Add to completed quests
+    const completedQuest = {
+        id: questId,
+        text: questText,
+        completedAt: Date.now(),
+        ...additionalData
+    };
+    
+    gameData.player.quests.completed.push(completedQuest);
+    
+    // Show notification
+    showInfo(`Quest completed: ${questText}`);
+    
+    // Auto-save on quest completion
+    if (typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
+        window.saveManager.autoSave('quest_complete', `Completed quest: ${questText}`);
+    }
+    
+    console.log(`✅ Quest completed: ${questText}`);
+    
+    return completedQuest;
+};

@@ -40,8 +40,14 @@ function renderLocation(locationId) {
     const location = locationsData[locationId];
     if (!location) return;
 
+    const previousLocation = gameData.player.location;
     gameData.player.location = locationId;
     gameData.story.currentScene = null;
+    
+    // Auto-save on location change (except for initial game load)
+    if (previousLocation && previousLocation !== locationId && typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
+        window.saveManager.autoSave('location_change', `Moved to ${location.name}`);
+    }
     
     mainContentEl.innerHTML = `
         <div class="mb-4 rounded-lg overflow-hidden"><img src="${location.image}" alt="${location.name}" class="w-full h-full object-cover"></div>

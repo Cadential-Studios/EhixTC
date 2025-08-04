@@ -315,9 +315,27 @@ function renderSettings() {
             
             <div class="setting-group">
                 <h4 class="font-cinzel text-xl text-white mb-3">Save System</h4>
-                <div class="space-y-2">
-                    <button class="action-button w-full py-2 px-4 rounded" onclick="saveGame()">Save Game</button>
-                    <div id="save-slots" class="space-y-2"></div>
+                <div class="space-y-3">
+                    <div class="flex gap-2">
+                        <button class="action-button flex-1 py-2 px-4 rounded bg-blue-600 hover:bg-blue-700 transition-colors" onclick="saveGame()">
+                            <i class="ph-duotone ph-floppy-disk mr-2"></i>Save Game
+                        </button>
+                        <button class="action-button py-2 px-4 rounded bg-green-600 hover:bg-green-700 transition-colors" onclick="saveManager.autoSave()" title="Manual Auto Save">
+                            <i class="ph-duotone ph-clock"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <label class="action-button flex-1 py-2 px-4 rounded bg-purple-600 hover:bg-purple-700 transition-colors cursor-pointer text-center">
+                            <i class="ph-duotone ph-upload mr-2"></i>Import Save
+                            <input type="file" id="import-save-input" accept=".json" style="display: none;" onchange="handleSaveImport(this)">
+                        </label>
+                        <button class="action-button py-2 px-4 rounded bg-gray-600 hover:bg-gray-700 transition-colors" onclick="clearAllSaves()" title="Clear All Saves">
+                            <i class="ph-duotone ph-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="save-slots" class="space-y-2 max-h-96 overflow-y-auto"></div>
                     <div id="save-message" class="text-green-300 text-sm text-center" style="display: none;"></div>
                 </div>
             </div>
@@ -379,6 +397,27 @@ function renderSettings() {
     
     // Populate save slots
     populateSaveSlots();
+}
+
+// Save system helper functions
+function handleSaveImport(input) {
+    const file = input.files[0];
+    if (file) {
+        saveManager.importSave(file);
+        input.value = ''; // Reset input
+    }
+}
+
+function clearAllSaves() {
+    saveManager.showConfirmationModal('Delete ALL save files? This action cannot be undone!', (confirmed) => {
+        if (confirmed) {
+            localStorage.removeItem(saveManager.saveKey);
+            localStorage.removeItem(saveManager.autoSaveKey);
+            localStorage.removeItem(saveManager.backupKey);
+            saveManager.populateSaveSlots();
+            saveManager.displaySaveMessage('All saves cleared.', 'info');
+        }
+    });
 }
 
 // Journal Panel Rendering
@@ -1095,6 +1134,18 @@ function updateDisplay() {
     
     // Update time controls
     updateTimeControlDisplay();
+    
+    // Trigger auto-save occasionally (every 10 minutes of play time)
+    if (typeof saveManager !== 'undefined') {
+        const now = Date.now();
+        if (!window.lastAutoSave) window.lastAutoSave = now;
+        
+        // Auto-save every 10 minutes (600,000 ms)
+        if (now - window.lastAutoSave > 600000) {
+            saveManager.autoSave();
+            window.lastAutoSave = now;
+        }
+    }
 }
 
 // Activate item function for magical items
