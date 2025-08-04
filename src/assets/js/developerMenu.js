@@ -8,7 +8,10 @@ class DeveloperMenu {
         this.menuElement = null;
         this.categories = {};
         this.commandHistory = [];
+        this.historyIndex = -1;
         this.shortcuts = {};
+        this.currentTab = 'console'; // 'console' or 'cheats'
+        this.consoleCommands = {};
         
         // Auto-detect developer mode
         this.detectDeveloperMode();
@@ -16,8 +19,9 @@ class DeveloperMenu {
         // Set up keyboard listener
         this.setupKeyboardListeners();
         
-        // Initialize menu categories
+        // Initialize menu categories and console commands
         this.initializeCategories();
+        this.initializeConsoleCommands();
         
         console.log(`Developer Menu ${this.isEnabled ? 'ENABLED' : 'DISABLED'}`);
     }
@@ -75,33 +79,289 @@ class DeveloperMenu {
                 e.preventDefault();
                 this.hide();
             }
-            
-            // Other shortcuts when menu is open
-            if (this.isVisible) {
-                this.handleMenuKeyboard(e);
-            }
         });
     }
 
     /**
-     * Handle keyboard shortcuts within the menu
+     * Initialize console commands for the developer console
      */
-    handleMenuKeyboard(e) {
-        const shortcuts = {
-            '1': () => this.switchCategory('player'),
-            '2': () => this.switchCategory('experience'),
-            '3': () => this.switchCategory('inventory'),
-            '4': () => this.switchCategory('world'),
-            '5': () => this.switchCategory('combat'),
-            '6': () => this.switchCategory('system'),
-            'c': () => this.clearConsole(),
-            'r': () => this.reloadGame(),
-            'h': () => this.showHelp()
+    initializeConsoleCommands() {
+        this.consoleCommands = {
+            // Help and information
+            'help': {
+                description: 'Show available commands',
+                usage: 'help [command]',
+                execute: (args) => this.showHelp(args[0])
+            },
+            'commands': {
+                description: 'List all available commands',
+                usage: 'commands',
+                execute: () => this.listCommands()
+            },
+            'clear': {
+                description: 'Clear the console',
+                usage: 'clear',
+                execute: () => this.clearConsole()
+            },
+
+            // Player commands
+            'player': {
+                description: 'Show player information',
+                usage: 'player',
+                execute: () => this.getPlayerInfo()
+            },
+            'player.level': {
+                description: 'Set or get player level',
+                usage: 'player.level [level]',
+                execute: (args) => args.length ? this.setLevel(parseInt(args[0])) : this.getPlayerInfo()
+            },
+            'level': {
+                description: 'Set player level',
+                usage: 'level <number>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: level <number>', 'error');
+                        return;
+                    }
+                    this.setLevel(parseInt(args[0]));
+                }
+            },
+            'player.hp': {
+                description: 'Set or heal player HP',
+                usage: 'player.hp [amount|max]',
+                execute: (args) => {
+                    if (!args.length) return this.getPlayerInfo();
+                    if (args[0] === 'max') return this.setHPToMax();
+                    this.setHP(parseInt(args[0]));
+                }
+            },
+            'hp': {
+                description: 'Set player HP',
+                usage: 'hp <amount|max>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: hp <amount|max>', 'error');
+                        return;
+                    }
+                    if (args[0] === 'max') return this.setHPToMax();
+                    this.setHP(parseInt(args[0]));
+                }
+            },
+            'player.mp': {
+                description: 'Set or restore player MP',
+                usage: 'player.mp [amount|max]',
+                execute: (args) => {
+                    if (!args.length) return this.getPlayerInfo();
+                    if (args[0] === 'max') return this.setMPToMax();
+                    this.setMP(parseInt(args[0]));
+                }
+            },
+            'mp': {
+                description: 'Set player MP',
+                usage: 'mp <amount|max>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: mp <amount|max>', 'error');
+                        return;
+                    }
+                    if (args[0] === 'max') return this.setMPToMax();
+                    this.setMP(parseInt(args[0]));
+                }
+            },
+            'player.gold': {
+                description: 'Add or set player gold',
+                usage: 'player.gold [amount]',
+                execute: (args) => args.length ? this.addGold(parseInt(args[0])) : this.getPlayerInfo()
+            },
+            'gold': {
+                description: 'Add gold to player',
+                usage: 'gold <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: gold <amount>', 'error');
+                        return;
+                    }
+                    this.addGold(parseInt(args[0]));
+                }
+            },
+            'player.heal': {
+                description: 'Fully heal the player',
+                usage: 'player.heal',
+                execute: () => this.healFully()
+            },
+            'heal': {
+                description: 'Fully heal the player',
+                usage: 'heal',
+                execute: () => this.healFully()
+            },
+            'player.godmode': {
+                description: 'Toggle god mode',
+                usage: 'player.godmode [on|off]',
+                execute: (args) => this.toggleGodMode(args[0])
+            },
+            'godmode': {
+                description: 'Toggle god mode',
+                usage: 'godmode [on|off]',
+                execute: (args) => this.toggleGodMode(args[0])
+            },
+
+            // Experience commands
+            'xp.add': {
+                description: 'Add experience points',
+                usage: 'xp.add <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp.add <amount>', 'error');
+                        return;
+                    }
+                    this.addXP(parseInt(args[0]));
+                }
+            },
+            'xp': {
+                description: 'Add experience points',
+                usage: 'xp <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp <amount>', 'error');
+                        return;
+                    }
+                    this.addXP(parseInt(args[0]));
+                }
+            },
+            'xp.set': {
+                description: 'Set total experience',
+                usage: 'xp.set <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp.set <amount>', 'error');
+                        return;
+                    }
+                    this.setXP(parseInt(args[0]));
+                }
+            },
+            'levelup': {
+                description: 'Level up the player',
+                usage: 'levelup',
+                execute: () => this.levelUp()
+            },
+
+            // Inventory commands
+            'item.add': {
+                description: 'Add item to inventory',
+                usage: 'item.add <itemId> [quantity]',
+                execute: (args) => this.addItemById(args[0], parseInt(args[1]) || 1)
+            },
+            'item.remove': {
+                description: 'Remove item from inventory',
+                usage: 'item.remove <itemId> [quantity]',
+                execute: (args) => this.removeItemById(args[0], parseInt(args[1]) || 1)
+            },
+            'item.list': {
+                description: 'List available items',
+                usage: 'item.list [type]',
+                execute: (args) => this.listItems(args[0])
+            },
+            'inventory.clear': {
+                description: 'Clear player inventory',
+                usage: 'inventory.clear',
+                execute: () => this.clearInventory()
+            },
+
+            // Time and world commands
+            'time.skip': {
+                description: 'Skip time forward',
+                usage: 'time.skip <hours>',
+                execute: (args) => this.skipTime(parseInt(args[0]))
+            },
+            'time.set': {
+                description: 'Set current time',
+                usage: 'time.set <hour> [day]',
+                execute: (args) => this.setTime(parseInt(args[0]), parseInt(args[1]))
+            },
+            'location.set': {
+                description: 'Set player location',
+                usage: 'location.set <locationId>',
+                execute: (args) => this.setLocation(args[0])
+            },
+
+            // System commands
+            'save': {
+                description: 'Save the game',
+                usage: 'save',
+                execute: () => this.saveGame()
+            },
+            'load': {
+                description: 'Load the game',
+                usage: 'load',
+                execute: () => this.loadGame()
+            },
+            'reload': {
+                description: 'Reload the page (use "reload confirm" to force)',
+                usage: 'reload [confirm]',
+                execute: (args) => args[0] === 'confirm' ? this.forceReload() : this.reloadGame()
+            },
+            'gamestate': {
+                description: 'Show current game state',
+                usage: 'gamestate',
+                execute: () => this.showGameState()
+            }
         };
-        
-        if (shortcuts[e.key.toLowerCase()]) {
-            e.preventDefault();
-            shortcuts[e.key.toLowerCase()]();
+    }
+
+    /**
+     * Show help for commands
+     */
+    showHelp(command) {
+        if (command && this.consoleCommands[command]) {
+            const cmd = this.consoleCommands[command];
+            this.log(`${command}: ${cmd.description}`);
+            this.log(`Usage: ${cmd.usage}`);
+        } else {
+            this.log('Available commands:');
+            this.log('Type "commands" to see all commands');
+            this.log('Type "help <command>" for specific help');
+            this.log('Use TAB for command completion');
+            this.log('Use UP/DOWN arrows for command history');
+        }
+    }
+
+    /**
+     * List all available commands
+     */
+    listCommands() {
+        this.log('Available Console Commands:');
+        Object.entries(this.consoleCommands).forEach(([cmd, info]) => {
+            this.log(`  ${cmd.padEnd(20)} - ${info.description}`);
+        });
+    }
+
+    /**
+     * Execute a console command
+     */
+    executeConsoleCommand(input) {
+        const trimmed = input.trim();
+        if (!trimmed) return;
+
+        // Add to history
+        this.commandHistory.push(trimmed);
+        this.historyIndex = this.commandHistory.length;
+
+        // Parse command and arguments
+        const parts = trimmed.split(/\s+/);
+        const command = parts[0].toLowerCase();
+        const args = parts.slice(1);
+
+        this.log(`> ${trimmed}`, 'command');
+
+        // Find and execute command
+        if (this.consoleCommands[command]) {
+            try {
+                this.consoleCommands[command].execute(args);
+            } catch (error) {
+                this.log(`Error: ${error.message}`, 'error');
+            }
+        } else {
+            this.log(`Unknown command: ${command}. Type "help" for available commands.`, 'error');
         }
     }
 
@@ -261,23 +521,76 @@ class DeveloperMenu {
     createMenu() {
         this.menuElement = document.createElement('div');
         this.menuElement.id = 'developer-menu';
-        this.menuElement.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 font-mono';
+        this.menuElement.className = 'fixed z-50 font-mono';
+        
+        // Set initial position and size
+        this.menuElement.style.left = '100px';
+        this.menuElement.style.top = '100px';
+        this.menuElement.style.width = '800px';
+        this.menuElement.style.height = '600px';
         
         const menuContent = document.createElement('div');
-        menuContent.className = 'bg-gray-900 border border-green-500 rounded-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-2xl';
+        menuContent.className = 'bg-gray-900 border border-purple-500 rounded-lg w-full h-full shadow-2xl flex flex-col overflow-hidden';
         
-        // Header
+        // Header with tabs - make it draggable
         const header = document.createElement('div');
-        header.className = 'flex justify-between items-center mb-6 border-b border-green-500 pb-4';
+        header.className = 'border-b border-purple-500 cursor-move select-none';
+        header.id = 'dev-menu-header';
         header.innerHTML = `
-            <div>
-                <h2 class="text-2xl font-bold text-green-400">🛠️ DEVELOPER MENU</h2>
-                <p class="text-green-300 text-sm">Press \` to toggle • ESC to close • Number keys for categories</p>
+            <div class="flex justify-between items-center p-2 pb-0">
+                <div>
+                    <h2 class="text-lg font-bold text-purple-400">🛠️ DEVELOPER MENU</h2>
+                    <p class="text-purple-300 text-xs">Drag to move • Resize from corners</p>
+                </div>
+                <button onclick="devMenu.hide()" class="text-purple-400 hover:text-white text-xl">&times;</button>
             </div>
-            <button onclick="devMenu.hide()" class="text-green-400 hover:text-white text-2xl">&times;</button>
+            <div class="flex border-t border-gray-700 mt-2">
+                <button id="console-tab" class="px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${this.currentTab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('console')">
+                    🖥️ Console
+                </button>
+                <button id="cheats-tab" class="px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${this.currentTab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('cheats')">
+                    ⚡ Quick Cheats
+                </button>
+            </div>
         `;
+
+        // Content area
+        const contentArea = document.createElement('div');
+        contentArea.className = 'flex-1 overflow-hidden';
+        contentArea.id = 'dev-menu-content';
+
+        // Console tab content
+        const consoleContent = document.createElement('div');
+        consoleContent.id = 'console-content';
+        consoleContent.className = `h-full ${this.currentTab === 'console' ? 'block' : 'hidden'}`;
+        consoleContent.innerHTML = `
+            <div class="flex flex-col h-full">
+                <div class="p-4 border-b border-gray-700 bg-gray-850">
+                    <div class="text-purple-300 text-sm mb-2">Developer Console - Type "help" for commands</div>
+                    <div class="flex text-xs text-gray-400">
+                        <span class="mr-4">TAB: Auto-complete</span>
+                        <span class="mr-4">↑↓: Command history</span>
+                        <span>Ctrl+L: Clear</span>
+                    </div>
+                </div>
+                <div id="console-output" class="flex-1 bg-black p-4 overflow-y-auto text-purple-300 text-sm font-mono min-h-0 border-t border-b border-gray-800" style="min-height: 120px; box-sizing: border-box; scrollbar-width: thin; overflow-x: hidden;">
+                    <div class="text-purple-400">Developer Console v2.0</div>
+                    <div class="text-gray-400">Type "help" to get started</div>
+                </div>
+                <div class="p-4 border-t border-gray-700 bg-gray-850">
+                    <div class="flex items-center">
+                        <span class="text-purple-400 mr-2">></span>
+                        <input type="text" id="console-input" class="flex-1 bg-white text-black border border-gray-400 rounded outline-none font-mono px-2 py-1" placeholder="Enter command..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Quick cheats tab content
+        const cheatsContent = document.createElement('div');
+        cheatsContent.id = 'cheats-content';
+        cheatsContent.className = `h-full p-6 overflow-y-auto ${this.currentTab === 'cheats' ? 'block' : 'hidden'}`;
         
-        // Categories
         const categoriesContainer = document.createElement('div');
         categoriesContainer.className = 'grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6';
         
@@ -286,24 +599,289 @@ class DeveloperMenu {
             categoriesContainer.appendChild(categoryElement);
         });
         
-        // Console output
-        const consoleContainer = document.createElement('div');
-        consoleContainer.className = 'mt-6 border-t border-green-500 pt-4';
-        consoleContainer.innerHTML = `
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-green-400 font-bold">Console Output</h3>
-                <button onclick="devMenu.clearConsole()" class="text-green-300 hover:text-white text-sm">Clear</button>
-            </div>
-            <div id="dev-console" class="bg-black border border-gray-700 rounded p-4 h-32 overflow-y-auto text-green-300 text-sm font-mono"></div>
-        `;
+        cheatsContent.appendChild(categoriesContainer);
+
+        // Assemble the menu
+        contentArea.appendChild(consoleContent);
+        contentArea.appendChild(cheatsContent);
         
         menuContent.appendChild(header);
-        menuContent.appendChild(categoriesContainer);
-        menuContent.appendChild(consoleContainer);
+        menuContent.appendChild(contentArea);
+        
+        // Add resize handles
+        this.addResizeHandles(menuContent);
+        
         this.menuElement.appendChild(menuContent);
+        
+        // Set up dragging and resizing with delay to ensure DOM is ready
+        setTimeout(() => this.setupDragAndResize(), 100);
+        
+        // Set up console input handlers with delay to ensure DOM is ready
+        setTimeout(() => this.setupConsoleInput(), 100);
         
         // Load console history
         this.updateConsole();
+    }
+
+    /**
+     * Add resize handles to the modal
+     */
+    addResizeHandles(menuContent) {
+        // Create resize handles for all corners and edges
+        const handles = [
+            { class: 'nw-resize', style: 'top: 0; left: 0; width: 10px; height: 10px; cursor: nw-resize;' },
+            { class: 'ne-resize', style: 'top: 0; right: 0; width: 10px; height: 10px; cursor: ne-resize;' },
+            { class: 'sw-resize', style: 'bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize;' },
+            { class: 'se-resize', style: 'bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize;' },
+            { class: 'n-resize', style: 'top: 0; left: 10px; right: 10px; height: 5px; cursor: n-resize;' },
+            { class: 's-resize', style: 'bottom: 0; left: 10px; right: 10px; height: 5px; cursor: s-resize;' },
+            { class: 'w-resize', style: 'left: 0; top: 10px; bottom: 10px; width: 5px; cursor: w-resize;' },
+            { class: 'e-resize', style: 'right: 0; top: 10px; bottom: 10px; width: 5px; cursor: e-resize;' }
+        ];
+
+        handles.forEach(handle => {
+            const resizeHandle = document.createElement('div');
+            resizeHandle.className = `resize-handle ${handle.class} absolute bg-purple-500 opacity-0 hover:opacity-50 transition-opacity`;
+            resizeHandle.style.cssText = handle.style;
+            menuContent.appendChild(resizeHandle);
+        });
+    }
+
+    /**
+     * Set up drag and resize functionality
+     */
+    setupDragAndResize() {
+        const header = document.getElementById('dev-menu-header');
+        const modal = this.menuElement;
+
+        if (!header || !modal) {
+            console.warn('Developer menu elements not found, retrying...');
+            setTimeout(() => this.setupDragAndResize(), 100);
+            return;
+        }
+
+        let isDragging = false;
+        let isResizing = false;
+        let currentResizeHandle = null;
+        let startX, startY, startWidth, startHeight, startLeft, startTop;
+
+        // Dragging functionality
+        header.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON') return; // Don't drag when clicking buttons
+            
+            isDragging = true;
+            startX = e.clientX - modal.offsetLeft;
+            startY = e.clientY - modal.offsetTop;
+            
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', stopDrag);
+            e.preventDefault();
+        });
+
+        function handleDrag(e) {
+            if (!isDragging) return;
+            
+            const newLeft = e.clientX - startX;
+            const newTop = e.clientY - startY;
+            
+            // Keep modal within viewport bounds
+            const maxLeft = window.innerWidth - modal.offsetWidth;
+            const maxTop = window.innerHeight - modal.offsetHeight;
+            
+            modal.style.left = Math.max(0, Math.min(newLeft, maxLeft)) + 'px';
+            modal.style.top = Math.max(0, Math.min(newTop, maxTop)) + 'px';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // Resizing functionality
+        modal.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('resize-handle')) {
+                isResizing = true;
+                currentResizeHandle = e.target;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = parseInt(modal.style.width);
+                startHeight = parseInt(modal.style.height);
+                startLeft = parseInt(modal.style.left);
+                startTop = parseInt(modal.style.top);
+                
+                document.addEventListener('mousemove', handleResize);
+                document.addEventListener('mouseup', stopResize);
+                e.preventDefault();
+            }
+        });
+
+        function handleResize(e) {
+            if (!isResizing) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            const minWidth = 400;
+            const minHeight = 300;
+            const maxWidth = window.innerWidth - 50;
+            const maxHeight = window.innerHeight - 50;
+            
+            if (currentResizeHandle.classList.contains('se-resize')) {
+                // Bottom-right corner
+                const newWidth = Math.max(minWidth, Math.min(startWidth + deltaX, maxWidth));
+                const newHeight = Math.max(minHeight, Math.min(startHeight + deltaY, maxHeight));
+                modal.style.width = newWidth + 'px';
+                modal.style.height = newHeight + 'px';
+            } else if (currentResizeHandle.classList.contains('sw-resize')) {
+                // Bottom-left corner
+                const newWidth = Math.max(minWidth, Math.min(startWidth - deltaX, maxWidth));
+                const newHeight = Math.max(minHeight, Math.min(startHeight + deltaY, maxHeight));
+                if (newWidth > minWidth) modal.style.left = startLeft + deltaX + 'px';
+                modal.style.width = newWidth + 'px';
+                modal.style.height = newHeight + 'px';
+            } else if (currentResizeHandle.classList.contains('ne-resize')) {
+                // Top-right corner
+                const newWidth = Math.max(minWidth, Math.min(startWidth + deltaX, maxWidth));
+                const newHeight = Math.max(minHeight, Math.min(startHeight - deltaY, maxHeight));
+                if (newHeight > minHeight) modal.style.top = startTop + deltaY + 'px';
+                modal.style.width = newWidth + 'px';
+                modal.style.height = newHeight + 'px';
+            } else if (currentResizeHandle.classList.contains('nw-resize')) {
+                // Top-left corner
+                const newWidth = Math.max(minWidth, Math.min(startWidth - deltaX, maxWidth));
+                const newHeight = Math.max(minHeight, Math.min(startHeight - deltaY, maxHeight));
+                if (newWidth > minWidth) modal.style.left = startLeft + deltaX + 'px';
+                if (newHeight > minHeight) modal.style.top = startTop + deltaY + 'px';
+                modal.style.width = newWidth + 'px';
+                modal.style.height = newHeight + 'px';
+            } else if (currentResizeHandle.classList.contains('e-resize')) {
+                // Right edge
+                const newWidth = Math.max(minWidth, Math.min(startWidth + deltaX, maxWidth));
+                modal.style.width = newWidth + 'px';
+            } else if (currentResizeHandle.classList.contains('w-resize')) {
+                // Left edge
+                const newWidth = Math.max(minWidth, Math.min(startWidth - deltaX, maxWidth));
+                if (newWidth > minWidth) modal.style.left = startLeft + deltaX + 'px';
+                modal.style.width = newWidth + 'px';
+            } else if (currentResizeHandle.classList.contains('s-resize')) {
+                // Bottom edge
+                const newHeight = Math.max(minHeight, Math.min(startHeight + deltaY, maxHeight));
+                modal.style.height = newHeight + 'px';
+            } else if (currentResizeHandle.classList.contains('n-resize')) {
+                // Top edge
+                const newHeight = Math.max(minHeight, Math.min(startHeight - deltaY, maxHeight));
+                if (newHeight > minHeight) modal.style.top = startTop + deltaY + 'px';
+                modal.style.height = newHeight + 'px';
+            }
+        }
+
+        function stopResize() {
+            isResizing = false;
+            currentResizeHandle = null;
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+    }
+
+    /**
+     * Switch between tabs
+     */
+    switchTab(tab) {
+        this.currentTab = tab;
+        
+        // Update tab appearance
+        document.getElementById('console-tab').className = `px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${tab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
+        document.getElementById('cheats-tab').className = `px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${tab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
+        
+        // Show/hide content
+        document.getElementById('console-content').className = `h-full ${tab === 'console' ? 'block' : 'hidden'}`;
+        document.getElementById('cheats-content').className = `h-full p-6 overflow-y-auto ${tab === 'cheats' ? 'block' : 'hidden'}`;
+        
+        // Focus console input if switching to console tab
+        if (tab === 'console') {
+            setTimeout(() => {
+                const input = document.getElementById('console-input');
+                if (input) {
+                    input.focus();
+                    // Re-setup handlers in case they weren't attached initially
+                    this.setupConsoleInput();
+                }
+            }, 100);
+        }
+    }
+
+    /**
+     * Set up console input handlers
+     */
+    setupConsoleInput() {
+        const input = document.getElementById('console-input');
+        if (!input) {
+            console.warn('Console input element not found, retrying...');
+            setTimeout(() => this.setupConsoleInput(), 100);
+            return;
+        }
+
+        input.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'Enter':
+                    e.preventDefault();
+                    const command = input.value;
+                    input.value = '';
+                    this.executeConsoleCommand(command);
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (this.historyIndex > 0) {
+                        this.historyIndex--;
+                        input.value = this.commandHistory[this.historyIndex] || '';
+                    }
+                    break;
+                    
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (this.historyIndex < this.commandHistory.length - 1) {
+                        this.historyIndex++;
+                        input.value = this.commandHistory[this.historyIndex] || '';
+                    } else {
+                        this.historyIndex = this.commandHistory.length;
+                        input.value = '';
+                    }
+                    break;
+                    
+                case 'Tab':
+                    e.preventDefault();
+                    this.autocompleteCommand(input);
+                    break;
+                    
+                case 'l':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        this.clearConsole();
+                    }
+                    break;
+            }
+        });
+
+        // Focus input when console is shown
+        if (this.currentTab === 'console') {
+            setTimeout(() => input.focus(), 50);
+        }
+    }
+
+    /**
+     * Autocomplete command input
+     */
+    autocompleteCommand(input) {
+        const value = input.value.toLowerCase();
+        const matches = Object.keys(this.consoleCommands).filter(cmd => cmd.startsWith(value));
+        
+        if (matches.length === 1) {
+            input.value = matches[0] + ' ';
+        } else if (matches.length > 1) {
+            this.log(`Possible commands: ${matches.join(', ')}`);
+        }
     }
 
     /**
@@ -314,15 +892,15 @@ class DeveloperMenu {
         element.className = 'bg-gray-800 border border-gray-600 rounded-lg p-4';
         
         const header = document.createElement('h3');
-        header.className = 'text-green-400 font-bold mb-3 flex items-center';
-        header.innerHTML = `<span class="bg-green-600 text-black rounded px-2 py-1 text-xs mr-2">${number}</span>${category.name}`;
+        header.className = 'text-purple-400 font-bold mb-3 flex items-center';
+        header.innerHTML = `<span class="bg-purple-600 text-white rounded px-2 py-1 text-xs mr-2">${number}</span>${category.name}`;
         
         const commandsList = document.createElement('div');
         commandsList.className = 'space-y-2';
         
         category.commands.forEach(command => {
             const button = document.createElement('button');
-            button.className = 'w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 text-green-300 hover:text-white rounded text-sm transition-colors duration-200';
+            button.className = 'w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 text-purple-300 hover:text-white rounded text-sm transition-colors duration-200';
             button.textContent = command.name;
             button.onclick = () => {
                 this.executeCommand(command.name, command.action);
@@ -382,11 +960,18 @@ class DeveloperMenu {
      * Update console display
      */
     updateConsole() {
-        const consoleElement = document.getElementById('dev-console');
+        // Try new console output element first, fallback to old one
+        const consoleElement = document.getElementById('console-output') || document.getElementById('dev-console');
         if (!consoleElement || !this.consoleLog) return;
         
-        const html = this.consoleLog.slice(-20).map(entry => {
-            const colorClass = entry.type === 'error' ? 'text-red-400' : 'text-green-300';
+        const html = this.consoleLog.slice(-100).map(entry => {
+            let colorClass = 'text-purple-300';
+            if (entry.type === 'error') colorClass = 'text-red-400';
+            else if (entry.type === 'command') colorClass = 'text-blue-400';
+            else if (entry.type === 'success') colorClass = 'text-purple-400';
+            else if (entry.type === 'warning') colorClass = 'text-yellow-400';
+            else if (entry.type === 'info') colorClass = 'text-blue-300';
+            
             return `<div class="${colorClass}">${entry.message}</div>`;
         }).join('');
         
@@ -399,26 +984,8 @@ class DeveloperMenu {
     // =================
 
     promptSetLevel() {
-        const level = prompt('Enter level (1-20):');
-        if (level && !isNaN(level)) {
-            const levelNum = parseInt(level);
-            if (levelNum >= 1 && levelNum <= 20) {
-                if (typeof debugSetLevel === 'function') {
-                    debugSetLevel(levelNum);
-                    this.log(`Set level to ${levelNum}`);
-                } else if (typeof experienceManager !== 'undefined') {
-                    const xpForLevel = experienceManager.getExperienceForLevel(levelNum);
-                    experienceManager.setExperience(xpForLevel);
-                    this.log(`Set level to ${levelNum} with ${xpForLevel} XP`);
-                } else {
-                    gameData.player.level = levelNum;
-                    this.log(`Set level to ${levelNum} (manual)`);
-                }
-                this.refreshUI();
-            } else {
-                this.log('Invalid level range (1-20)', 'error');
-            }
-        }
+        this.log('Use the console command instead: level <number>', 'warning');
+        this.log('Example: level 5', 'info');
     }
 
     addXP(amount) {
@@ -436,10 +1003,8 @@ class DeveloperMenu {
     }
 
     promptAddXP() {
-        const amount = prompt('Enter XP amount:');
-        if (amount && !isNaN(amount)) {
-            this.addXP(parseInt(amount));
-        }
+        this.log('Use the console command instead: xp <amount>', 'warning');
+        this.log('Example: xp 100', 'info');
     }
 
     levelUp() {
@@ -482,14 +1047,26 @@ class DeveloperMenu {
     }
 
     setHPToMax() {
-        gameData.player.derivedStats.health = gameData.player.derivedStats.maxHealth;
-        this.log(`HP set to maximum (${gameData.player.derivedStats.maxHealth})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const derivedStats = gameData.player.derivedStats || {};
+        derivedStats.health = derivedStats.maxHealth || 100;
+        this.log(`HP set to maximum (${derivedStats.maxHealth})`);
         this.refreshUI();
     }
 
     setMPToMax() {
-        gameData.player.derivedStats.mana = gameData.player.derivedStats.maxMana;
-        this.log(`MP set to maximum (${gameData.player.derivedStats.maxMana})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const derivedStats = gameData.player.derivedStats || {};
+        derivedStats.mana = derivedStats.maxMana || 100;
+        this.log(`MP set to maximum (${derivedStats.maxMana})`);
         this.refreshUI();
     }
 
@@ -500,9 +1077,20 @@ class DeveloperMenu {
     }
 
     addGold(amount) {
-        if (!gameData.player.gold) gameData.player.gold = 0;
-        gameData.player.gold += amount;
-        this.log(`Added ${amount} gold (Total: ${gameData.player.gold.toLocaleString()})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        if (isNaN(amount)) {
+            this.log('Gold amount must be a number', 'error');
+            return;
+        }
+        
+        const player = gameData.player;
+        if (!player.gold) player.gold = 0;
+        player.gold += amount;
+        this.log(`Added ${amount} gold (Total: ${player.gold.toLocaleString()})`);
         this.refreshUI();
     }
 
@@ -516,45 +1104,287 @@ class DeveloperMenu {
     clearConsole() {
         if (this.consoleLog) this.consoleLog = [];
         this.updateConsole();
-        console.clear();
-        this.log('Console cleared');
+        this.log('Console cleared', 'success');
     }
 
     reloadGame() {
-        if (confirm('Reload the game? Unsaved progress will be lost.')) {
-            window.location.reload();
+        this.log('⚠️  WARNING: This will reload the game and lose unsaved progress!', 'warning');
+        this.log('Use the console command: reload confirm', 'info');
+        this.log('Or press the Reload button again to confirm', 'info');
+    }
+
+    /**
+     * Force reload without confirmation (for console command)
+     */
+    forceReload() {
+        this.log('Reloading game...', 'warning');
+        setTimeout(() => window.location.reload(), 1000);
+    }
+
+    /**
+     * Get and display player information
+     */
+    getPlayerInfo() {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
+        const info = [
+            `Name: ${player.name || 'Unknown'}`,
+            `Level: ${player.level || 1}`,
+            `XP: ${player.experience || 0}`,
+            `HP: ${derivedStats.health || 0}/${derivedStats.maxHealth || 0}`,
+            `MP: ${derivedStats.mana || 0}/${derivedStats.maxMana || 0}`,
+            `Gold: ${player.gold || 0}`,
+            `Location: ${player.location || 'Unknown'}`
+        ];
+
+        this.log('Player Information:', 'success');
+        info.forEach(line => this.log(`  ${line}`));
+    }
+
+    /**
+     * Set player HP
+     */
+    setHP(value) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
+        const newHP = Math.max(0, Math.min(value, derivedStats.maxHealth || 100));
+        derivedStats.health = newHP;
+        
+        this.log(`HP set to ${newHP}/${derivedStats.maxHealth}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Set player MP
+     */
+    setMP(value) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
+        const newMP = Math.max(0, Math.min(value, derivedStats.maxMana || 100));
+        derivedStats.mana = newMP;
+        
+        this.log(`MP set to ${newMP}/${derivedStats.maxMana}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Set player level
+     */
+    setLevel(level) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        if (isNaN(level) || level < 1 || level > 20) {
+            this.log('Level must be a number between 1 and 20', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const oldLevel = player.level;
+        player.level = level;
+        
+        // Recalculate stats if character system is available
+        if (typeof calculateDerivedStats === 'function') {
+            calculateDerivedStats();
+        }
+        
+        this.log(`Level changed from ${oldLevel} to ${level}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Set player experience
+     */
+    setXP(amount) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        if (isNaN(amount) || amount < 0) {
+            this.log('Experience must be a positive number', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const oldXP = player.experience || 0;
+        player.experience = amount;
+        
+        // Update level based on experience if system is available
+        if (typeof experienceManager !== 'undefined' && experienceManager.updateLevelFromExperience) {
+            experienceManager.updateLevelFromExperience();
+        }
+        
+        this.log(`Experience changed from ${oldXP} to ${amount}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Add item by ID to inventory
+     */
+    addItemById(itemId, quantity = 1) {
+        if (!itemId) {
+            this.log('Item ID required', 'error');
+            return;
+        }
+
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        // Create a simple item if we don't have item data loaded
+        let foundItem = null;
+        
+        // Try to find item in loaded data first
+        if (window.itemsData) {
+            const categories = ['weapons', 'armor', 'consumables', 'tools', 'misc'];
+            for (const category of categories) {
+                if (window.itemsData[category] && window.itemsData[category][itemId]) {
+                    foundItem = window.itemsData[category][itemId];
+                    break;
+                }
+            }
+        }
+
+        // If not found, create a basic item
+        if (!foundItem) {
+            foundItem = {
+                id: itemId,
+                name: itemId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                type: 'misc',
+                description: `Item created via developer console`,
+                rarity: 'common',
+                weight: 1
+            };
+        }
+
+        // Add to inventory
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
+        for (let i = 0; i < quantity; i++) {
+            player.inventory.push({ ...foundItem });
+        }
+        
+        this.log(`Added ${quantity}x ${foundItem.name}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Remove item by ID from inventory
+     */
+    removeItemById(itemId, quantity = 1) {
+        if (!itemId) {
+            this.log('Item ID required', 'error');
+            return;
+        }
+
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        if (!player.inventory || player.inventory.length === 0) {
+            this.log('Inventory is empty', 'warning');
+            return;
+        }
+
+        let removedCount = 0;
+        for (let i = player.inventory.length - 1; i >= 0 && removedCount < quantity; i--) {
+            if (player.inventory[i].id === itemId) {
+                player.inventory.splice(i, 1);
+                removedCount++;
+            }
+        }
+
+        if (removedCount > 0) {
+            this.log(`Removed ${removedCount}x ${itemId}`, 'success');
+            this.refreshUI();
+        } else {
+            this.log(`Item '${itemId}' not found in inventory`, 'warning');
         }
     }
 
-    showHelp() {
-        const helpText = `
-DEVELOPER MENU HELP
-===================
-Keyboard Shortcuts:
-• \` (backtick) - Toggle menu
-• ESC - Close menu
-• 1-6 - Switch categories
-• C - Clear console
-• R - Reload game
-• H - Show this help
+    /**
+     * List available items or show inventory
+     */
+    listItems(type) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
 
-Categories:
-1. Player - Character stats and status
-2. Experience - XP and leveling
-3. Inventory - Items and equipment
-4. World - Time, weather, location
-5. Combat - Battle testing
-6. System - Save/load and utilities
+        const player = gameData.player;
+        if (!player.inventory || player.inventory.length === 0) {
+            this.log('Inventory is empty', 'info');
+            return;
+        }
 
-Functions available in console:
-• enableDevMode() - Force enable dev mode
-• disableDevMode() - Disable dev mode
-• devMenu.show() - Show menu
-• devMenu.hide() - Hide menu
-        `;
+        this.log('Current Inventory:', 'success');
+        let filteredItems = player.inventory;
         
-        this.log(helpText);
-        alert(helpText);
+        if (type) {
+            filteredItems = player.inventory.filter(item => item.type === type);
+            this.log(`Filtering by type: ${type}`, 'info');
+        }
+
+        if (filteredItems.length === 0) {
+            this.log(`No items found${type ? ` of type '${type}'` : ''}`, 'warning');
+            return;
+        }
+
+        filteredItems.forEach((item, index) => {
+            this.log(`  ${index + 1}. ${item.name} (${item.type}) - ${item.description || 'No description'}`);
+        });
+        
+        this.log(`Total: ${filteredItems.length} items`, 'info');
+    }
+
+    showHelp() {
+        this.log('DEVELOPER CONSOLE HELP', 'success');
+        this.log('=====================');
+        this.log('');
+        this.log('Navigation:', 'success');
+        this.log('• ` (backtick) - Toggle developer menu');
+        this.log('• ESC - Close menu');
+        this.log('• TAB - Auto-complete commands');
+        this.log('• ↑/↓ - Command history');
+        this.log('• Ctrl+L - Clear console');
+        this.log('');
+        this.log('Console Commands:', 'success');
+        this.log('• help - Show this help');
+        this.log('• commands - List all commands');
+        this.log('• clear - Clear console output');
+        this.log('• player - Show player information');
+        this.log('• level [n] - Set player level');
+        this.log('• hp [n|max] - Set or show HP');
+        this.log('• mp [n|max] - Set or show MP');
+        this.log('• gold [n] - Add gold');
+        this.log('• item [id] [qty] - Add item to inventory');
+        this.log('• time [n] - Advance time by n hours');
+        this.log('• reload - Reload the game');
+        this.log('');
+        this.log('Use "help [command]" for detailed command info.', 'info');
+        this.log('Use the Quick Cheats tab for button-based shortcuts.', 'info');
     }
 
     refreshUI() {
@@ -596,16 +1426,30 @@ Functions available in console:
     }
 
     showGameState() {
+        if (!gameData) {
+            this.log('Game data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player || {};
+        const derivedStats = player.derivedStats || {};
+        
         const state = {
             player: {
-                name: gameData.player.name,
-                level: gameData.player.level,
-                experience: gameData.player.experience,
-                location: gameData.player.location,
-                stats: gameData.player.stats,
-                derivedStats: gameData.player.derivedStats,
-                inventory: gameData.player.inventory.length + ' items',
-                gold: gameData.player.gold || 0
+                name: player.name || 'Unknown',
+                level: player.level || 1,
+                experience: player.experience || 0,
+                location: player.location || 'Unknown',
+                stats: player.stats || {},
+                derivedStats: {
+                    health: derivedStats.health || 0,
+                    maxHealth: derivedStats.maxHealth || 0,
+                    mana: derivedStats.mana || 0,
+                    maxMana: derivedStats.maxMana || 0
+                },
+                inventory: (player.inventory ? player.inventory.length : 0) + ' items',
+                gold: player.gold || 0,
+                godMode: player.godMode || false
             },
             world: {
                 time: gameData.time || 'Not available',
@@ -620,14 +1464,32 @@ Functions available in console:
         };
         
         console.log('Game State:', state);
-        this.log('Game state logged to console');
+        this.log('Game state logged to browser console', 'success');
+        
+        // Also display key info in the developer console
+        this.log('=== GAME STATE SUMMARY ===', 'success');
+        this.log(`Player: ${state.player.name} (Level ${state.player.level})`);
+        this.log(`HP: ${state.player.derivedStats.health}/${state.player.derivedStats.maxHealth}`);
+        this.log(`MP: ${state.player.derivedStats.mana}/${state.player.derivedStats.maxMana}`);
+        this.log(`XP: ${state.player.experience}, Gold: ${state.player.gold}`);
+        this.log(`Location: ${state.player.location}`);
+        this.log(`Inventory: ${state.player.inventory}`);
+        if (state.player.godMode) this.log('God Mode: ACTIVE', 'warning');
     }
 
     // ==================
     // INVENTORY COMMANDS
     // ==================
     
-    addTestItems() { 
+    addTestItems() {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
         const testItems = [
             { 
                 id: 'dev_iron_sword', 
@@ -676,25 +1538,31 @@ Functions available in console:
         ];
         
         testItems.forEach(item => {
-            gameData.player.inventory.push(item);
+            player.inventory.push(item);
         });
         
-        this.log(`Added ${testItems.length} test items to inventory`);
+        this.log(`Added ${testItems.length} test items to inventory`, 'success');
         this.refreshUI();
     }
     
-    clearInventory() { 
-        const itemCount = gameData.player.inventory.length;
-        if (itemCount === 0) {
-            this.log('Inventory is already empty');
+    clearInventory() {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
             return;
         }
         
-        if (confirm(`Clear inventory? This will remove ${itemCount} items.`)) {
-            gameData.player.inventory = [];
-            this.log(`Cleared inventory (${itemCount} items removed)`);
-            this.refreshUI();
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
+        const itemCount = player.inventory.length;
+        if (itemCount === 0) {
+            this.log('Inventory is already empty', 'info');
+            return;
         }
+        
+        player.inventory = [];
+        this.log(`Cleared inventory (${itemCount} items removed)`, 'success');
+        this.refreshUI();
     }
     
     promptAddItem(type) { 

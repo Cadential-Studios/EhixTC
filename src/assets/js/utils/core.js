@@ -35,11 +35,14 @@ const gameData = {
             waist: null,
             back: null
         },
-        quests: { active: [], completed: [] },
+        quests: { active: [], completed: {} },
         lore: new Set(),
         rumors: new Set(),
         journalPins: new Set(),
         journalNotes: {},
+        journal: [], // For dialogue-added journal entries
+        relationships: {}, // NPC relationships for dialogue system
+        flags: {}, // Global flags for dialogue conditions
         stats: {
             strength: 10,
             dexterity: 10,
@@ -105,6 +108,7 @@ const gameData = {
         },
         cantripsKnown: [],
         spellsKnown: [],
+        featuresGained: [], // Array to track features gained through leveling
         classFeatures: {
             actionSurge: { available: false, used: false },
             rage: { available: false, used: false },
@@ -127,6 +131,12 @@ const gameData = {
 
         //todo: add relationships, reputation, renown, etc.
     },
+    // Global quest tracking for dialogue system
+    quests: {},
+    // Global flags for dialogue system
+    flags: {},
+    // NPC relationships for dialogue system  
+    relationships: {},
     effects: {
         active: [],
         timers: {}

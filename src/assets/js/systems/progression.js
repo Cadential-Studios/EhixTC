@@ -373,8 +373,14 @@ function applyLevelUpChanges() {
     updateSpellSlotsForLevel();
     
     // Apply class features (stored for display, implementation depends on specific features)
-    player.classFeatures = player.classFeatures || [];
-    player.classFeatures.push(...levelUpChoices.classFeatures);
+    if (!Array.isArray(player.featuresGained)) {
+        player.featuresGained = [];
+    }
+    
+    // Ensure levelUpChoices.classFeatures is an array before spreading
+    if (Array.isArray(levelUpChoices.classFeatures) && levelUpChoices.classFeatures.length > 0) {
+        player.featuresGained.push(...levelUpChoices.classFeatures);
+    }
 }
 
 /**
