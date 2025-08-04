@@ -6,6 +6,17 @@ function equipItem(gameData, itemsData, itemId, slot = null) {
     const hasItem = gameData.player.inventory.some(invItem => typeof invItem === 'string' ? invItem === itemId : invItem.id === itemId);
     if (!hasItem) return false;
     if (!slot) slot = item.slot;
+    
+    // Convert slot names to match equipment object
+    const slotConversions = {
+        'mainHand': 'mainhand',
+        'offHand': 'offhand'
+    };
+    
+    if (slotConversions[slot]) {
+        slot = slotConversions[slot];
+    }
+    
     if (slot === 'finger') slot = gameData.player.equipment.finger1 ? 'finger2' : 'finger1';
     if (!gameData.player.equipment.hasOwnProperty(slot) || slot === 'none') return false;
     if (gameData.player.equipment[slot]) unequipItem(gameData, itemsData, slot);

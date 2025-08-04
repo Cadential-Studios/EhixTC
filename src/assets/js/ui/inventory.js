@@ -53,6 +53,27 @@ class InventoryManager {
      */
     renderAdvancedInventory() {
         if (!inventoryContentEl) return;
+        // Wait for itemsData to be loaded
+        if (typeof itemsData === 'undefined' || !itemsData || Object.keys(itemsData).length === 0) {
+            inventoryContentEl.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12">
+                    <i class="ph-duotone ph-hourglass text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-300 text-lg mb-2">Loading item data...</p>
+                    <p class="text-gray-500 text-sm">If this message persists, there may be a data loading issue.</p>
+                </div>
+            `;
+            // Set up a watcher to re-render when itemsData is ready
+            if (!window.__inventoryDataWatcher) {
+                window.__inventoryDataWatcher = setInterval(() => {
+                    if (typeof itemsData !== 'undefined' && itemsData && Object.keys(itemsData).length > 0) {
+                        clearInterval(window.__inventoryDataWatcher);
+                        window.__inventoryDataWatcher = null;
+                        this.renderAdvancedInventory();
+                    }
+                }, 100);
+            }
+            return;
+        }
 
         inventoryContentEl.innerHTML = `
             <div class="advanced-inventory-container">
@@ -146,7 +167,7 @@ class InventoryManager {
                             </div>
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Equipment:</span>
-                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/10</span>
+                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/11</span>
                             </div>
                             <button onclick="inventoryManager.toggleStatsPanel()" 
                                     class="stat-item bg-blue-700 hover:bg-blue-600 rounded px-3 py-2 text-center transition-colors">
@@ -262,7 +283,11 @@ class InventoryManager {
                             ${gameData.player.equipment.feet ? this.renderEquippedItem('feet') : '<i class="ph-duotone ph-sneaker text-gray-400"></i><br><span class="text-xs text-gray-400">Feet</span>'}
                         </div>
                     </div>
-                    <div></div>
+                    <div class="equipment-slot" data-slot="waist">
+                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
+                            ${gameData.player.equipment.waist ? this.renderEquippedItem('waist') : '<i class="ph-duotone ph-link text-gray-400"></i><br><span class="text-xs text-gray-400">Waist</span>'}
+                        </div>
+                    </div>
                     <div></div>
                 </div>
                 <!-- Character Stats Summary -->
@@ -923,14 +948,14 @@ class InventoryManager {
         document.querySelectorAll('.equipment-slot').forEach(element => {
             const slot = element.getAttribute('data-slot');
             if (slot && inventoryUIFeatures) {
-                inventoryUIFeatures.makeDropZone(element, 'equipment', slot);
+                // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(element, 'equipment', slot);
             }
         });
 
         // Make inventory grid a drop zone
         const inventoryGrid = document.querySelector('.inventory-grid');
         if (inventoryGrid && inventoryUIFeatures) {
-            inventoryUIFeatures.makeDropZone(inventoryGrid, 'inventory');
+            // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(inventoryGrid, 'inventory');
         }
     }
 

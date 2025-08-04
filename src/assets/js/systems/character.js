@@ -114,6 +114,16 @@ function equipItem(itemId, slot = null) {
         slot = item.slot;
     }
     
+    // Convert slot names to match equipment object
+    const slotConversions = {
+        'mainHand': 'mainhand',
+        'offHand': 'offhand'
+    };
+    
+    if (slotConversions[slot]) {
+        slot = slotConversions[slot];
+    }
+    
     // Handle special cases for rings
     if (slot === 'finger') {
         slot = gameData.player.equipment.finger1 ? 'finger2' : 'finger1';
@@ -562,6 +572,11 @@ function renderInventory() {
                         <div class="equipment-slot" data-slot="feet">
                             <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center">
                                 ${gameData.player.equipment.feet ? getItemName(gameData.player.equipment.feet) : '👢 Feet'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="waist">
+                            <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center">
+                                ${gameData.player.equipment.waist ? getItemName(gameData.player.equipment.waist) : '🔗 Waist'}
                             </div>
                         </div>
                         <div></div>

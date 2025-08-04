@@ -31,7 +31,8 @@ const gameData = {
             offhand: null,
             finger1: null,
             finger2: null,
-            feet: null
+            feet: null,
+            waist: null
         },
         quests: { active: [], completed: [] },
         lore: new Set(),
@@ -409,7 +410,7 @@ async function loadItemData() {
             'equipment.json',
             'nature.json'
         ];
-        let itemsData = {};
+        // Use global itemsData
         // Load base item files
         for (const file of itemFiles) {
             try {
@@ -433,15 +434,19 @@ async function loadItemData() {
             for (const file of itemFiles) {
                 try {
                     const response = await fetch(`${modBase}${file}`);
+                    if (typeof window.failedModItemFiles === 'undefined') {
+                        window.failedModItemFiles = [];
+                    }
                     if (response.ok) {
                         try {
                             const data = await response.json();
                             Object.assign(itemsData, data);
                         } catch (jsonErr) {
                             console.error(`Error parsing JSON for mod file ${file}:`, jsonErr);
+                            window.failedModItemFiles.push(file);
                         }
                     } else {
-                        console.warn(`Mod item data file not found or failed to load: ${file}`);
+                        window.failedModItemFiles.push(file);
                     }
                 } catch (err) {
                     console.error(`Error loading mod item data file ${file}:`, err);
