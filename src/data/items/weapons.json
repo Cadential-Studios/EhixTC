@@ -1,20 +1,4 @@
 {
-  "rangers_bow": {
-    "id": "rangers_bow",
-    "name": "Ranger's Bow",
-    "type": "weapon",
-    "subtype": "ranged",
-    "slot": "mainHand",
-    "description": "A well-crafted hunting bow, worn smooth by years of use.",
-    "damage": "1d8",
-    "damageType": "piercing",
-    "range": "150ft",
-    "properties": ["two-handed", "ammunition"],
-    "statBonus": { "dexterity": 1 },
-    "rarity": "common",
-    "value": 25,
-    "weight": 2
-  },
   "ceremonial_spear": {
     "id": "ceremonial_spear",
     "name": "Ceremonial Spear",
@@ -74,21 +58,6 @@
     "rarity": "common",
     "value": 50,
     "weight": 2
-  },
-  "masterwork_sword": {
-    "id": "masterwork_sword",
-    "name": "Masterwork Longsword",
-    "type": "weapon",
-    "subtype": "melee",
-    "slot": "mainHand",
-    "description": "A perfectly balanced sword crafted by master smiths.",
-    "damage": "1d8+1",
-    "damageType": "slashing",
-    "properties": ["versatile", "masterwork"],
-    "statBonus": { "strength": 2 },
-    "rarity": "rare",
-    "value": 300,
-    "weight": 3
   },
   "iron_sword": {
     "id": "iron_sword",

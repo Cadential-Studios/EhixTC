@@ -197,7 +197,7 @@ class InventoryAnalytics {
         metrics.valuePerWeight = metrics.valuePerWeight.slice(0, 10);
 
         // Calculate equipment utilization
-        const equipmentSlots = ['head', 'chest', 'clothing', 'legs', 'feet', 'hands', 'mainHand', 'offHand', 'neck', 'finger1', 'finger2'];
+        const equipmentSlots = ['head', 'chest', 'clothing', 'mainhand', 'offhand', 'neck', 'finger1', 'finger2', 'feet', 'waist', 'back'];
         const equippedSlots = equipmentSlots.filter(slot => gameData.player.equipment[slot]);
         metrics.equipmentUtilization = Math.round((equippedSlots.length / equipmentSlots.length) * 100);
 
