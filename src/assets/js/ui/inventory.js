@@ -642,13 +642,11 @@ class InventoryManager {
                         inventoryUIFeatures.showTooltip(e, itemsData[equippedItemId]);
                     }
                 });
-                // Right click: unequip and prevent context menu
+                // Right click: show equipment options dropdown
                 slotContent.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (gameData.player.equipment[slotName]) {
-                        this.unequipItem(slotName);
-                    }
+                    this.showEquipmentDropdown(e, slotName);
                 });
             }
         });
@@ -750,6 +748,225 @@ class InventoryManager {
                 this.equipmentPanelWidth = width;
             }
         }
+    }
+
+    /**
+     * Show equipment dropdown when right-clicking on an equipment slot
+     */
+    showEquipmentDropdown(event, slotName) {
+        // Remove any existing dropdown
+        this.hideEquipmentDropdown();
+
+        // Get available items for this slot
+        const availableItems = this.getAvailableItemsForSlot(slotName);
+        
+        if (availableItems.length === 0 && !gameData.player.equipment[slotName]) {
+            return; // No items available and slot is empty
+        }
+
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'equipment-dropdown';
+        dropdown.className = 'equipment-dropdown';
+        dropdown.style.cssText = `
+            position: fixed;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+            border: 2px solid rgba(100, 116, 139, 0.4);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.1) inset;
+            backdrop-filter: blur(16px);
+            min-width: 280px;
+            max-width: 320px;
+            max-height: 400px;
+            overflow: hidden;
+            z-index: 10000;
+            animation: dropdownFadeIn 0.2s ease-out;
+        `;
+        
+        let dropdownContent = `
+            <div class="equipment-dropdown-header">
+                <span class="slot-name">${this.formatSlotName(slotName)}</span>
+                <button class="close-dropdown" onclick="inventoryManager.hideEquipmentDropdown()">
+                    <i class="ph-duotone ph-x"></i>
+                </button>
+            </div>
+            <div class="equipment-dropdown-content">
+        `;
+
+        // Add current equipped item with unequip option
+        if (gameData.player.equipment[slotName]) {
+            const currentItem = itemsData[gameData.player.equipment[slotName]];
+            if (currentItem) {
+                const rarityColor = this.getRarityTextColor(currentItem.rarity);
+                dropdownContent += `
+                    <div class="equipment-option equipped-item" onclick="inventoryManager.unequipFromDropdown('${slotName}')">
+                        <div class="item-info">
+                            <span class="item-name ${rarityColor}">${currentItem.name}</span>
+                            <span class="item-type">Currently Equipped</span>
+                        </div>
+                        <div class="option-action unequip">
+                            <i class="ph-duotone ph-x-circle"></i> Unequip
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Add available items
+        availableItems.forEach(item => {
+            const itemData = itemsData[item.id];
+            if (!itemData) return;
+            
+            const rarityColor = this.getRarityTextColor(itemData.rarity);
+            dropdownContent += `
+                <div class="equipment-option available-item" onclick="inventoryManager.equipFromDropdown('${item.id}', '${slotName}')">
+                    <div class="item-info">
+                        <span class="item-name ${rarityColor}">${itemData.name}</span>
+                        <span class="item-type">${this.capitalizeFirst(itemData.type)}${itemData.subtype ? ' • ' + this.capitalizeFirst(itemData.subtype) : ''}</span>
+                        ${item.quantity > 1 ? `<span class="item-quantity">x${item.quantity}</span>` : ''}
+                    </div>
+                    <div class="option-action equip">
+                        <i class="ph-duotone ph-check-circle"></i> Equip
+                    </div>
+                </div>
+            `;
+        });
+
+        if (availableItems.length === 0 && !gameData.player.equipment[slotName]) {
+            dropdownContent += `
+                <div class="no-items">
+                    <i class="ph-duotone ph-package text-gray-400"></i>
+                    <span>No compatible items found</span>
+                </div>
+            `;
+        }
+
+        dropdownContent += `</div>`;
+        dropdown.innerHTML = dropdownContent;
+
+        // Position dropdown
+        document.body.appendChild(dropdown);
+        this.positionDropdown(dropdown, event);
+
+        // Add click outside to close
+        setTimeout(() => {
+            document.addEventListener('click', this.handleDropdownOutsideClick.bind(this));
+        }, 10);
+    }
+
+    /**
+     * Get items from inventory that can be equipped in the specified slot
+     */
+    getAvailableItemsForSlot(slotName) {
+        if (!gameData.player.inventory || !itemsData) return [];
+
+        return gameData.player.inventory.filter(item => {
+            const itemData = itemsData[item.id];
+            if (!itemData) return false;
+            
+            // Normalize slot names for comparison (handle camelCase vs lowercase)
+            const itemSlot = itemData.slot ? itemData.slot.toLowerCase() : '';
+            const targetSlot = slotName.toLowerCase();
+            
+            // Check if item can be equipped in this slot
+            return itemSlot === targetSlot && itemData.type !== 'consumable';
+        }).sort((a, b) => {
+            // Sort by rarity, then by name
+            const rarityOrder = { 'common': 1, 'uncommon': 2, 'rare': 3, 'very_rare': 4, 'epic': 5, 'legendary': 6, 'artifact': 7 };
+            const rarityDiff = (rarityOrder[itemsData[b.id].rarity] || 1) - (rarityOrder[itemsData[a.id].rarity] || 1);
+            if (rarityDiff !== 0) return rarityDiff;
+            return itemsData[a.id].name.localeCompare(itemsData[b.id].name);
+        });
+    }
+
+    /**
+     * Format slot name for display
+     */
+    formatSlotName(slotName) {
+        const nameMap = {
+            'mainhand': 'Main Hand',
+            'offhand': 'Off Hand',
+            'finger1': 'Ring 1',
+            'finger2': 'Ring 2'
+        };
+        return nameMap[slotName] || slotName.charAt(0).toUpperCase() + slotName.slice(1);
+    }
+
+    /**
+     * Position the dropdown near the clicked element
+     */
+    positionDropdown(dropdown, event) {
+        const rect = event.target.closest('.equipment-slot').getBoundingClientRect();
+        const dropdownRect = dropdown.getBoundingClientRect();
+        
+        let left = rect.right + 10;
+        let top = rect.top;
+
+        // Adjust if dropdown would go off screen
+        if (left + dropdownRect.width > window.innerWidth) {
+            left = rect.left - dropdownRect.width - 10;
+        }
+        
+        if (top + dropdownRect.height > window.innerHeight) {
+            top = window.innerHeight - dropdownRect.height - 10;
+        }
+
+        if (top < 10) top = 10;
+        if (left < 10) left = 10;
+
+        dropdown.style.left = `${left}px`;
+        dropdown.style.top = `${top}px`;
+    }
+
+    /**
+     * Handle clicking outside the dropdown to close it
+     */
+    handleDropdownOutsideClick(event) {
+        const dropdown = document.getElementById('equipment-dropdown');
+        if (dropdown && !dropdown.contains(event.target)) {
+            this.hideEquipmentDropdown();
+        }
+    }
+
+    /**
+     * Hide the equipment dropdown
+     */
+    hideEquipmentDropdown() {
+        const dropdown = document.getElementById('equipment-dropdown');
+        if (dropdown) {
+            dropdown.remove();
+            document.removeEventListener('click', this.handleDropdownOutsideClick.bind(this));
+        }
+    }
+
+    /**
+     * Equip an item from the dropdown
+     */
+    equipFromDropdown(itemId, slotName) {
+        this.hideEquipmentDropdown();
+        if (typeof equipItem === 'function') {
+            equipItem(itemId, slotName);
+        }
+        // Refresh the entire inventory display including equipment panel
+        this.renderAdvancedInventory();
+    }
+
+    /**
+     * Unequip an item from the dropdown
+     */
+    unequipFromDropdown(slotName) {
+        this.hideEquipmentDropdown();
+        this.unequipItem(slotName);
+        // Refresh the entire inventory display including equipment panel
+        this.renderAdvancedInventory();
+    }
+
+    /**
+     * Capitalize first letter (helper method)
+     */
+    capitalizeFirst(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     /**
@@ -1090,35 +1307,38 @@ class InventoryManager {
 
     // Initialize drag and drop functionality after rendering
     initializeDragAndDrop() {
-        // Make inventory items draggable
+        // Note: Drag-and-drop functionality has been removed/disabled
+        // The makeDraggable method is not available in inventoryUIFeatures
+        
+        // Make inventory items draggable (DISABLED)
         document.querySelectorAll('.inventory-item[data-inventory-item-id]').forEach(element => {
             const itemId = element.getAttribute('data-inventory-item-id');
             const item = this.findItemById(itemId);
-            if (item && inventoryUIFeatures) {
+            if (item && inventoryUIFeatures && typeof inventoryUIFeatures.makeDraggable === 'function') {
                 inventoryUIFeatures.makeDraggable(element, item, 'inventory');
             }
         });
 
-        // Make equipment items draggable
+        // Make equipment items draggable (DISABLED)
         document.querySelectorAll('.equipped-item-display[data-item-id]').forEach(element => {
             const itemId = element.getAttribute('data-item-id');
             const item = itemsData[itemId];
-            if (item && inventoryUIFeatures) {
+            if (item && inventoryUIFeatures && typeof inventoryUIFeatures.makeDraggable === 'function') {
                 inventoryUIFeatures.makeDraggable(element, item, 'equipment');
             }
         });
 
-        // Make equipment slots drop zones
+        // Make equipment slots drop zones (DISABLED)
         document.querySelectorAll('.equipment-slot').forEach(element => {
             const slot = element.getAttribute('data-slot');
-            if (slot && inventoryUIFeatures) {
+            if (slot && inventoryUIFeatures && typeof inventoryUIFeatures.makeDropZone === 'function') {
                 // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(element, 'equipment', slot);
             }
         });
 
-        // Make inventory grid a drop zone
+        // Make inventory grid a drop zone (DISABLED)
         const inventoryGrid = document.querySelector('.inventory-grid');
-        if (inventoryGrid && inventoryUIFeatures) {
+        if (inventoryGrid && inventoryUIFeatures && typeof inventoryUIFeatures.makeDropZone === 'function') {
             // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(inventoryGrid, 'inventory');
         }
     }
