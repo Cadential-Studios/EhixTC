@@ -105,16 +105,44 @@ class DeveloperMenu {
             },
 
             // Player commands
+            'player': {
+                description: 'Show player information',
+                usage: 'player',
+                execute: () => this.getPlayerInfo()
+            },
             'player.level': {
                 description: 'Set or get player level',
                 usage: 'player.level [level]',
                 execute: (args) => args.length ? this.setLevel(parseInt(args[0])) : this.getPlayerInfo()
+            },
+            'level': {
+                description: 'Set player level',
+                usage: 'level <number>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: level <number>', 'error');
+                        return;
+                    }
+                    this.setLevel(parseInt(args[0]));
+                }
             },
             'player.hp': {
                 description: 'Set or heal player HP',
                 usage: 'player.hp [amount|max]',
                 execute: (args) => {
                     if (!args.length) return this.getPlayerInfo();
+                    if (args[0] === 'max') return this.setHPToMax();
+                    this.setHP(parseInt(args[0]));
+                }
+            },
+            'hp': {
+                description: 'Set player HP',
+                usage: 'hp <amount|max>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: hp <amount|max>', 'error');
+                        return;
+                    }
                     if (args[0] === 'max') return this.setHPToMax();
                     this.setHP(parseInt(args[0]));
                 }
@@ -128,14 +156,42 @@ class DeveloperMenu {
                     this.setMP(parseInt(args[0]));
                 }
             },
+            'mp': {
+                description: 'Set player MP',
+                usage: 'mp <amount|max>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: mp <amount|max>', 'error');
+                        return;
+                    }
+                    if (args[0] === 'max') return this.setMPToMax();
+                    this.setMP(parseInt(args[0]));
+                }
+            },
             'player.gold': {
                 description: 'Add or set player gold',
                 usage: 'player.gold [amount]',
                 execute: (args) => args.length ? this.addGold(parseInt(args[0])) : this.getPlayerInfo()
             },
+            'gold': {
+                description: 'Add gold to player',
+                usage: 'gold <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: gold <amount>', 'error');
+                        return;
+                    }
+                    this.addGold(parseInt(args[0]));
+                }
+            },
             'player.heal': {
                 description: 'Fully heal the player',
                 usage: 'player.heal',
+                execute: () => this.healFully()
+            },
+            'heal': {
+                description: 'Fully heal the player',
+                usage: 'heal',
                 execute: () => this.healFully()
             },
             'player.godmode': {
@@ -143,17 +199,45 @@ class DeveloperMenu {
                 usage: 'player.godmode [on|off]',
                 execute: (args) => this.toggleGodMode(args[0])
             },
+            'godmode': {
+                description: 'Toggle god mode',
+                usage: 'godmode [on|off]',
+                execute: (args) => this.toggleGodMode(args[0])
+            },
 
             // Experience commands
             'xp.add': {
                 description: 'Add experience points',
                 usage: 'xp.add <amount>',
-                execute: (args) => this.addXP(parseInt(args[0]))
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp.add <amount>', 'error');
+                        return;
+                    }
+                    this.addXP(parseInt(args[0]));
+                }
+            },
+            'xp': {
+                description: 'Add experience points',
+                usage: 'xp <amount>',
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp <amount>', 'error');
+                        return;
+                    }
+                    this.addXP(parseInt(args[0]));
+                }
             },
             'xp.set': {
                 description: 'Set total experience',
                 usage: 'xp.set <amount>',
-                execute: (args) => this.setXP(parseInt(args[0]))
+                execute: (args) => {
+                    if (!args.length) {
+                        this.log('Usage: xp.set <amount>', 'error');
+                        return;
+                    }
+                    this.setXP(parseInt(args[0]));
+                }
             },
             'levelup': {
                 description: 'Level up the player',
@@ -453,18 +537,18 @@ class DeveloperMenu {
         header.className = 'border-b border-purple-500 cursor-move select-none';
         header.id = 'dev-menu-header';
         header.innerHTML = `
-            <div class="flex justify-between items-center p-4 pb-0">
+            <div class="flex justify-between items-center p-2 pb-0">
                 <div>
-                    <h2 class="text-2xl font-bold text-purple-400">🛠️ DEVELOPER MENU</h2>
-                    <p class="text-purple-300 text-sm">Drag to move • Resize from corners</p>
+                    <h2 class="text-lg font-bold text-purple-400">🛠️ DEVELOPER MENU</h2>
+                    <p class="text-purple-300 text-xs">Drag to move • Resize from corners</p>
                 </div>
-                <button onclick="devMenu.hide()" class="text-purple-400 hover:text-white text-2xl">&times;</button>
+                <button onclick="devMenu.hide()" class="text-purple-400 hover:text-white text-xl">&times;</button>
             </div>
-            <div class="flex border-t border-gray-700 mt-4">
-                <button id="console-tab" class="px-6 py-3 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold ${this.currentTab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('console')">
+            <div class="flex border-t border-gray-700 mt-2">
+                <button id="console-tab" class="px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${this.currentTab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('console')">
                     🖥️ Console
                 </button>
-                <button id="cheats-tab" class="px-6 py-3 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold ${this.currentTab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('cheats')">
+                <button id="cheats-tab" class="px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${this.currentTab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}" onclick="devMenu.switchTab('cheats')">
                     ⚡ Quick Cheats
                 </button>
             </div>
@@ -489,14 +573,14 @@ class DeveloperMenu {
                         <span>Ctrl+L: Clear</span>
                     </div>
                 </div>
-                <div id="console-output" class="flex-1 bg-black p-4 overflow-y-scroll text-purple-300 text-sm font-mono min-h-0">
+                <div id="console-output" class="flex-1 bg-black p-4 overflow-y-auto text-purple-300 text-sm font-mono min-h-0 border-t border-b border-gray-800" style="min-height: 120px; box-sizing: border-box; scrollbar-width: thin; overflow-x: hidden;">
                     <div class="text-purple-400">Developer Console v2.0</div>
                     <div class="text-gray-400">Type "help" to get started</div>
                 </div>
                 <div class="p-4 border-t border-gray-700 bg-gray-850">
                     <div class="flex items-center">
                         <span class="text-purple-400 mr-2">></span>
-                        <input type="text" id="console-input" class="flex-1 bg-transparent text-purple-300 outline-none font-mono" placeholder="Enter command..." autocomplete="off">
+                        <input type="text" id="console-input" class="flex-1 bg-white text-black border border-gray-400 rounded outline-none font-mono px-2 py-1" placeholder="Enter command..." autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -707,8 +791,8 @@ class DeveloperMenu {
         this.currentTab = tab;
         
         // Update tab appearance
-        document.getElementById('console-tab').className = `px-6 py-3 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold ${tab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
-        document.getElementById('cheats-tab').className = `px-6 py-3 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold ${tab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
+        document.getElementById('console-tab').className = `px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${tab === 'console' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
+        document.getElementById('cheats-tab').className = `px-4 py-2 text-purple-400 border-r border-gray-700 hover:bg-gray-800 font-semibold text-sm ${tab === 'cheats' ? 'bg-gray-800 border-b-2 border-purple-400' : ''}`;
         
         // Show/hide content
         document.getElementById('console-content').className = `h-full ${tab === 'console' ? 'block' : 'hidden'}`;
@@ -963,14 +1047,26 @@ class DeveloperMenu {
     }
 
     setHPToMax() {
-        gameData.player.derivedStats.health = gameData.player.derivedStats.maxHealth;
-        this.log(`HP set to maximum (${gameData.player.derivedStats.maxHealth})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const derivedStats = gameData.player.derivedStats || {};
+        derivedStats.health = derivedStats.maxHealth || 100;
+        this.log(`HP set to maximum (${derivedStats.maxHealth})`);
         this.refreshUI();
     }
 
     setMPToMax() {
-        gameData.player.derivedStats.mana = gameData.player.derivedStats.maxMana;
-        this.log(`MP set to maximum (${gameData.player.derivedStats.maxMana})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const derivedStats = gameData.player.derivedStats || {};
+        derivedStats.mana = derivedStats.maxMana || 100;
+        this.log(`MP set to maximum (${derivedStats.maxMana})`);
         this.refreshUI();
     }
 
@@ -981,9 +1077,20 @@ class DeveloperMenu {
     }
 
     addGold(amount) {
-        if (!gameData.player.gold) gameData.player.gold = 0;
-        gameData.player.gold += amount;
-        this.log(`Added ${amount} gold (Total: ${gameData.player.gold.toLocaleString()})`);
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        if (isNaN(amount)) {
+            this.log('Gold amount must be a number', 'error');
+            return;
+        }
+        
+        const player = gameData.player;
+        if (!player.gold) player.gold = 0;
+        player.gold += amount;
+        this.log(`Added ${amount} gold (Total: ${player.gold.toLocaleString()})`);
         this.refreshUI();
     }
 
@@ -1018,20 +1125,21 @@ class DeveloperMenu {
      * Get and display player information
      */
     getPlayerInfo() {
-        if (!window.gameState || !window.gameState.player) {
+        if (!gameData || !gameData.player) {
             this.log('Player data not available', 'error');
             return;
         }
 
-        const player = window.gameState.player;
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
         const info = [
             `Name: ${player.name || 'Unknown'}`,
             `Level: ${player.level || 1}`,
             `XP: ${player.experience || 0}`,
-            `HP: ${player.currentHP || 0}/${player.maxHP || 0}`,
-            `MP: ${player.currentMP || 0}/${player.maxMP || 0}`,
+            `HP: ${derivedStats.health || 0}/${derivedStats.maxHealth || 0}`,
+            `MP: ${derivedStats.mana || 0}/${derivedStats.maxMana || 0}`,
             `Gold: ${player.gold || 0}`,
-            `Location: ${window.gameState.currentLocation || 'Unknown'}`
+            `Location: ${player.location || 'Unknown'}`
         ];
 
         this.log('Player Information:', 'success');
@@ -1042,34 +1150,90 @@ class DeveloperMenu {
      * Set player HP
      */
     setHP(value) {
-        if (!window.gameState || !window.gameState.player) {
+        if (!gameData || !gameData.player) {
             this.log('Player data not available', 'error');
             return;
         }
 
-        const player = window.gameState.player;
-        const newHP = Math.max(0, Math.min(value, player.maxHP || 100));
-        player.currentHP = newHP;
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
+        const newHP = Math.max(0, Math.min(value, derivedStats.maxHealth || 100));
+        derivedStats.health = newHP;
         
-        this.log(`HP set to ${newHP}/${player.maxHP}`, 'success');
-        this.updateUI();
+        this.log(`HP set to ${newHP}/${derivedStats.maxHealth}`, 'success');
+        this.refreshUI();
     }
 
     /**
      * Set player MP
      */
     setMP(value) {
-        if (!window.gameState || !window.gameState.player) {
+        if (!gameData || !gameData.player) {
             this.log('Player data not available', 'error');
             return;
         }
 
-        const player = window.gameState.player;
-        const newMP = Math.max(0, Math.min(value, player.maxMP || 100));
-        player.currentMP = newMP;
+        const player = gameData.player;
+        const derivedStats = player.derivedStats || {};
+        const newMP = Math.max(0, Math.min(value, derivedStats.maxMana || 100));
+        derivedStats.mana = newMP;
         
-        this.log(`MP set to ${newMP}/${player.maxMP}`, 'success');
-        this.updateUI();
+        this.log(`MP set to ${newMP}/${derivedStats.maxMana}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Set player level
+     */
+    setLevel(level) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        if (isNaN(level) || level < 1 || level > 20) {
+            this.log('Level must be a number between 1 and 20', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const oldLevel = player.level;
+        player.level = level;
+        
+        // Recalculate stats if character system is available
+        if (typeof calculateDerivedStats === 'function') {
+            calculateDerivedStats();
+        }
+        
+        this.log(`Level changed from ${oldLevel} to ${level}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Set player experience
+     */
+    setXP(amount) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        if (isNaN(amount) || amount < 0) {
+            this.log('Experience must be a positive number', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        const oldXP = player.experience || 0;
+        player.experience = amount;
+        
+        // Update level based on experience if system is available
+        if (typeof experienceManager !== 'undefined' && experienceManager.updateLevelFromExperience) {
+            experienceManager.updateLevelFromExperience();
+        }
+        
+        this.log(`Experience changed from ${oldXP} to ${amount}`, 'success');
+        this.refreshUI();
     }
 
     /**
@@ -1081,36 +1245,118 @@ class DeveloperMenu {
             return;
         }
 
-        if (!window.itemsData) {
-            this.log('Items data not loaded', 'error');
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
             return;
         }
 
-        // Search for item in all categories
+        // Create a simple item if we don't have item data loaded
         let foundItem = null;
-        const categories = ['weapons', 'armor', 'consumables', 'tools', 'misc'];
         
-        for (const category of categories) {
-            if (window.itemsData[category] && window.itemsData[category][itemId]) {
-                foundItem = window.itemsData[category][itemId];
-                break;
+        // Try to find item in loaded data first
+        if (window.itemsData) {
+            const categories = ['weapons', 'armor', 'consumables', 'tools', 'misc'];
+            for (const category of categories) {
+                if (window.itemsData[category] && window.itemsData[category][itemId]) {
+                    foundItem = window.itemsData[category][itemId];
+                    break;
+                }
             }
         }
 
+        // If not found, create a basic item
         if (!foundItem) {
-            this.log(`Item with ID '${itemId}' not found`, 'error');
-            return;
+            foundItem = {
+                id: itemId,
+                name: itemId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                type: 'misc',
+                description: `Item created via developer console`,
+                rarity: 'common',
+                weight: 1
+            };
         }
 
         // Add to inventory
-        if (window.addItemToInventory) {
-            window.addItemToInventory(itemId, quantity);
-            this.log(`Added ${quantity}x ${foundItem.name || itemId}`, 'success');
-        } else {
-            this.log('Inventory system not available', 'error');
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
+        for (let i = 0; i < quantity; i++) {
+            player.inventory.push({ ...foundItem });
+        }
+        
+        this.log(`Added ${quantity}x ${foundItem.name}`, 'success');
+        this.refreshUI();
+    }
+
+    /**
+     * Remove item by ID from inventory
+     */
+    removeItemById(itemId, quantity = 1) {
+        if (!itemId) {
+            this.log('Item ID required', 'error');
+            return;
         }
 
-        this.updateUI();
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        if (!player.inventory || player.inventory.length === 0) {
+            this.log('Inventory is empty', 'warning');
+            return;
+        }
+
+        let removedCount = 0;
+        for (let i = player.inventory.length - 1; i >= 0 && removedCount < quantity; i--) {
+            if (player.inventory[i].id === itemId) {
+                player.inventory.splice(i, 1);
+                removedCount++;
+            }
+        }
+
+        if (removedCount > 0) {
+            this.log(`Removed ${removedCount}x ${itemId}`, 'success');
+            this.refreshUI();
+        } else {
+            this.log(`Item '${itemId}' not found in inventory`, 'warning');
+        }
+    }
+
+    /**
+     * List available items or show inventory
+     */
+    listItems(type) {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player;
+        if (!player.inventory || player.inventory.length === 0) {
+            this.log('Inventory is empty', 'info');
+            return;
+        }
+
+        this.log('Current Inventory:', 'success');
+        let filteredItems = player.inventory;
+        
+        if (type) {
+            filteredItems = player.inventory.filter(item => item.type === type);
+            this.log(`Filtering by type: ${type}`, 'info');
+        }
+
+        if (filteredItems.length === 0) {
+            this.log(`No items found${type ? ` of type '${type}'` : ''}`, 'warning');
+            return;
+        }
+
+        filteredItems.forEach((item, index) => {
+            this.log(`  ${index + 1}. ${item.name} (${item.type}) - ${item.description || 'No description'}`);
+        });
+        
+        this.log(`Total: ${filteredItems.length} items`, 'info');
     }
 
     showHelp() {
@@ -1180,16 +1426,30 @@ class DeveloperMenu {
     }
 
     showGameState() {
+        if (!gameData) {
+            this.log('Game data not available', 'error');
+            return;
+        }
+
+        const player = gameData.player || {};
+        const derivedStats = player.derivedStats || {};
+        
         const state = {
             player: {
-                name: gameData.player.name,
-                level: gameData.player.level,
-                experience: gameData.player.experience,
-                location: gameData.player.location,
-                stats: gameData.player.stats,
-                derivedStats: gameData.player.derivedStats,
-                inventory: gameData.player.inventory.length + ' items',
-                gold: gameData.player.gold || 0
+                name: player.name || 'Unknown',
+                level: player.level || 1,
+                experience: player.experience || 0,
+                location: player.location || 'Unknown',
+                stats: player.stats || {},
+                derivedStats: {
+                    health: derivedStats.health || 0,
+                    maxHealth: derivedStats.maxHealth || 0,
+                    mana: derivedStats.mana || 0,
+                    maxMana: derivedStats.maxMana || 0
+                },
+                inventory: (player.inventory ? player.inventory.length : 0) + ' items',
+                gold: player.gold || 0,
+                godMode: player.godMode || false
             },
             world: {
                 time: gameData.time || 'Not available',
@@ -1204,14 +1464,32 @@ class DeveloperMenu {
         };
         
         console.log('Game State:', state);
-        this.log('Game state logged to console');
+        this.log('Game state logged to browser console', 'success');
+        
+        // Also display key info in the developer console
+        this.log('=== GAME STATE SUMMARY ===', 'success');
+        this.log(`Player: ${state.player.name} (Level ${state.player.level})`);
+        this.log(`HP: ${state.player.derivedStats.health}/${state.player.derivedStats.maxHealth}`);
+        this.log(`MP: ${state.player.derivedStats.mana}/${state.player.derivedStats.maxMana}`);
+        this.log(`XP: ${state.player.experience}, Gold: ${state.player.gold}`);
+        this.log(`Location: ${state.player.location}`);
+        this.log(`Inventory: ${state.player.inventory}`);
+        if (state.player.godMode) this.log('God Mode: ACTIVE', 'warning');
     }
 
     // ==================
     // INVENTORY COMMANDS
     // ==================
     
-    addTestItems() { 
+    addTestItems() {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
+            return;
+        }
+        
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
         const testItems = [
             { 
                 id: 'dev_iron_sword', 
@@ -1260,25 +1538,31 @@ class DeveloperMenu {
         ];
         
         testItems.forEach(item => {
-            gameData.player.inventory.push(item);
+            player.inventory.push(item);
         });
         
-        this.log(`Added ${testItems.length} test items to inventory`);
+        this.log(`Added ${testItems.length} test items to inventory`, 'success');
         this.refreshUI();
     }
     
-    clearInventory() { 
-        const itemCount = gameData.player.inventory.length;
-        if (itemCount === 0) {
-            this.log('Inventory is already empty');
+    clearInventory() {
+        if (!gameData || !gameData.player) {
+            this.log('Player data not available', 'error');
             return;
         }
         
-        if (confirm(`Clear inventory? This will remove ${itemCount} items.`)) {
-            gameData.player.inventory = [];
-            this.log(`Cleared inventory (${itemCount} items removed)`);
-            this.refreshUI();
+        const player = gameData.player;
+        if (!player.inventory) player.inventory = [];
+        
+        const itemCount = player.inventory.length;
+        if (itemCount === 0) {
+            this.log('Inventory is already empty', 'info');
+            return;
         }
+        
+        player.inventory = [];
+        this.log(`Cleared inventory (${itemCount} items removed)`, 'success');
+        this.refreshUI();
     }
     
     promptAddItem(type) { 
