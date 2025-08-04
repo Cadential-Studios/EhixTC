@@ -114,19 +114,5 @@
     "rarity": "rare",
     "value": 200,
     "weight": 1
-  },
-  "chain_mail": {
-    "id": "chain_mail",
-    "name": "Chain Mail",
-    "type": "armor",
-    "subtype": "medium",
-    "slot": "chest",
-    "description": "A suit of armor made from interlocking metal rings.",
-    "armorClass": 4,
-    "properties": ["metal", "medium"],
-    "statBonus": { "dexterity": -2 },
-    "rarity": "uncommon",
-    "value": 75,
-    "weight": 20
   }
 }
