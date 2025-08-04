@@ -864,9 +864,9 @@ class InventoryManager {
             const itemData = itemsData[item.id];
             if (!itemData) return false;
             
-            // Normalize slot names for comparison (handle camelCase vs lowercase)
-            const itemSlot = itemData.slot ? itemData.slot.toLowerCase() : '';
-            const targetSlot = slotName.toLowerCase();
+            // Normalize slot names for comparison using equipUtils.js logic
+            const itemSlot = itemData.slot ? normalizeSlotName(itemData.slot) : '';
+            const targetSlot = normalizeSlotName(slotName);
             
             // Check if item can be equipped in this slot
             return itemSlot === targetSlot && itemData.type !== 'consumable';
