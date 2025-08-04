@@ -199,7 +199,7 @@ class InventoryManager {
                             ${this.renderEquipmentPanel()}
                         </div>
                                         <!-- Resizable Separator -->
-                    <div class="resize-separator" id="inventory-separator" title="Drag to resize panels" style="width: 1px; flex-shrink: 0; cursor: col-resize; display: flex; align-items: center; justify-content: center; margin: 0 1px;">
+                    <div class="resize-separator" id="inventory-separator" title="Drag to resize panels" style="width: 4px; flex-shrink: 0; cursor: col-resize; display: flex; align-items: center; justify-content: center; margin: 0 2px;">
                         <div class="separator-handle">
                             <i class="ph-duotone ph-dots-six-vertical text-gray-400"></i>
                         </div>
