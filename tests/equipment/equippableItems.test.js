@@ -23,7 +23,7 @@ describe('Equippable Items Slot Validation', () => {
   };
 
   // Use absolute path to avoid issues with spaces/OneDrive
-  const itemsDir = path.resolve(__dirname, '../src/data/items/');
+  const itemsDir = path.resolve(__dirname, '../../src/data/items/');
   itemFiles.forEach(file => {
     const filePath = path.join(itemsDir, file);
     test(`${file} - equippable items have valid slots`, () => {
