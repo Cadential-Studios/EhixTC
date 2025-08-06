@@ -1,0 +1,210 @@
+# Town Guard Dialogue
+# Character: Town Guard (Sergeant Willem)
+# Location: town_square
+# Description: Vigilant guard who challenges newcomers and provides security info
+
+dialogue_trees:
+  - id: "town_guard_first_meeting"
+    character: "Town Guard"
+    location: "town_square"
+    priority: 1
+    repeatable: false
+    root: "challenge"
+    conditions:
+      - type: "flag"
+        flag: "spoke_to_guard"
+        value: false
+    variables:
+      guard_approval: 0
+      citizen_status: "stranger"
+    nodes:
+      challenge:
+        text:
+          - default: "Hold there, citizen. I haven't seen you around before. New in town?"
+        on_enter:
+          - type: "set_flag"
+            flag: "spoke_to_guard"
+            value: true
+        responses:
+          - text: "Yes, just arrived. Is there a problem?"
+            next: "no_problem"
+          - text: "I'm just passing through."
+            next: "passing_through"
+          - text: "[Intimidate] Do you have a problem with travelers?"
+            next: "intimidate_attempt"
+            skill_check:
+              skill: "intimidation"
+              difficulty: 14
+              success_node: "intimidate_success"
+              failure_node: "intimidate_failure"
+
+      no_problem:
+        text:
+          - default: "No problem at all! Welcome to our town. Stay out of trouble, and you'll find it's a peaceful place. Name's Willem, by the way."
+        on_enter:
+          - type: "increment_variable"
+            variable: "guard_approval"
+            amount: 3
+          - type: "set_variable"
+            variable: "citizen_status"
+            value: "welcomed"
+        responses:
+          - text: "I'll keep that in mind. Thanks, Willem."
+            next: "friendly_chat"
+          - text: "Good to know. I should be going."
+            next: "end"
+
+      passing_through:
+        text:
+          - default: "Fair enough. Safe travels then, stranger. Watch yourself on the roads - there's been talk of unusual wolf activity."
+        on_enter:
+          - type: "set_variable"
+            variable: "citizen_status"
+            value: "neutral"
+        responses:
+          - text: "Wolves? Tell me more."
+            next: "wolf_warning"
+          - text: "Thank you for the warning."
+            next: "end"
+
+      intimidate_success:
+        text:
+          - default: "Easy there, friend. I'm just doing my job. No need for hostility. Just... keep the peace while you're here."
+        on_enter:
+          - type: "increment_variable"
+            variable: "guard_approval"
+            amount: -2
+          - type: "set_variable"
+            variable: "citizen_status"
+            value: "suspicious"
+        responses:
+          - text: "Fine. I'll behave."
+            next: "end"
+
+      intimidate_failure:
+        text:
+          - default: "That attitude won't get you far here, stranger. I suggest you check yourself before you cause real trouble."
+        on_enter:
+          - type: "increment_variable"
+            variable: "guard_approval"
+            amount: -5
+          - type: "set_variable"
+            variable: "citizen_status"
+            value: "troublemaker"
+        responses:
+          - text: "Sorry, bad day. Won't happen again."
+            next: "apologize"
+          - text: "Whatever."
+            next: "end"
+
+      apologize:
+        text:
+          - default: "We all have those. Just remember - this is a good town with good people. Treat them right."
+        on_enter:
+          - type: "increment_variable"
+            variable: "guard_approval"
+            amount: 2
+          - type: "set_variable"
+            variable: "citizen_status"
+            value: "neutral"
+        responses:
+          - text: "Understood. Thanks for the second chance."
+            next: "end"
+
+      friendly_chat:
+        text:
+          - default: "Been guarding this town for fifteen years. Quiet work, mostly, but honest. You seem decent enough - if you're looking for work, check with the Elder or the notice board."
+        responses:
+          - text: "Any specific threats I should know about?"
+            next: "security_briefing"
+          - text: "Thanks for the advice."
+            next: "end"
+
+      wolf_warning:
+        text:
+          - default: "Aye, wolf packs acting strange. More aggressive than usual, attacking livestock in broad daylight. Elder's concerned, but we're handling it."
+        responses:
+          - text: "I might be able to help with that."
+            next: "offer_help"
+          - text: "I'll be careful. Thanks."
+            next: "end"
+
+      offer_help:
+        text:
+          - condition:
+              type: "variable"
+              variable: "guard_approval"
+              min_value: 2
+            text: "Appreciate the offer! Talk to Elder Aldric if you're serious - he's coordinating our response to the wolf problem."
+          - default: "That's... thoughtful. But we've got it handled. Maybe prove yourself with smaller tasks first."
+        responses:
+          - text: "I'll speak with the Elder."
+            next: "end"
+
+      security_briefing:
+        text:
+          - default: "Keep your eyes open for anything unusual. Strange folk, weird lights in the forest, animals acting odd. Report anything suspicious to me or the other guards."
+        responses:
+          - text: "Will do. Good to know someone's watching out."
+            next: "end"
+
+      end:
+        text:
+          - condition:
+              type: "variable"
+              variable: "citizen_status"
+              value: "welcomed"
+            text: "Safe travels, and welcome to our town!"
+          - condition:
+              type: "variable"
+              variable: "citizen_status"
+              value: "troublemaker"
+            text: "Remember what I said."
+          - default: "Take care."
+        responses: []
+
+  - id: "town_guard_repeat"
+    character: "Town Guard"
+    location: "town_square"
+    priority: 2
+    repeatable: true
+    root: "repeat_greeting"
+    conditions:
+      - type: "flag"
+        flag: "spoke_to_guard"
+        value: true
+    nodes:
+      repeat_greeting:
+        text:
+          - condition:
+              type: "variable"
+              variable: "citizen_status"
+              value: "welcomed"
+            text: "Good to see you again! How are you settling in?"
+          - condition:
+              type: "variable"
+              variable: "citizen_status"
+              value: "troublemaker"
+            text: "You again. Staying out of trouble, I hope?"
+          - default: "Afternoon. Everything alright?"
+        responses:
+          - text: "All good, thanks for asking."
+            next: "end_repeat"
+          - text: "Any new developments with the wolves?"
+            next: "wolf_update"
+            conditions:
+              - type: "quest_status"
+                quest_id: "wolf_pack_threat"
+                status: "active"
+
+      wolf_update:
+        text:
+          - default: "Still a problem. Elder's got someone looking into it though. Hopefully we'll have answers soon."
+        responses:
+          - text: "Good to hear."
+            next: "end_repeat"
+
+      end_repeat:
+        text:
+          - default: "Stay safe out there."
+        responses: []

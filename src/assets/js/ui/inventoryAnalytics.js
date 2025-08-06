@@ -104,7 +104,7 @@ class InventoryAnalytics {
 
     calculateRarityDistribution(items) {
         const distribution = {};
-        const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
+        const rarities = ['common', 'uncommon', 'rare', 'very_rare', 'legendary', 'mythic'];
         
         rarities.forEach(rarity => {
             distribution[rarity] = {
@@ -197,7 +197,7 @@ class InventoryAnalytics {
         metrics.valuePerWeight = metrics.valuePerWeight.slice(0, 10);
 
         // Calculate equipment utilization
-        const equipmentSlots = ['head', 'chest', 'legs', 'feet', 'hands', 'mainHand', 'offHand', 'neck', 'finger1', 'finger2'];
+        const equipmentSlots = ['head', 'chest', 'clothing', 'mainhand', 'offhand', 'neck', 'finger1', 'finger2', 'feet', 'waist', 'back'];
         const equippedSlots = equipmentSlots.filter(slot => gameData.player.equipment[slot]);
         metrics.equipmentUtilization = Math.round((equippedSlots.length / equipmentSlots.length) * 100);
 

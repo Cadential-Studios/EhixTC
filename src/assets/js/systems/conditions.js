@@ -8,6 +8,7 @@ const activeConditions = {
 };
 
 // Condition definitions
+// todo: Have this be in a data file that can be easily extended.
 const conditionDefinitions = {
     // Physical Conditions
     poisoned: {
@@ -131,6 +132,7 @@ const conditionDefinitions = {
 };
 
 // Saving throw DCs
+// todo: have this be in a general config file
 const saveDCs = {
     easy: 10,
     medium: 13,

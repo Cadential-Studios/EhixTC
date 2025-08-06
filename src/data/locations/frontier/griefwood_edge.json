@@ -1,0 +1,75 @@
+{
+  "id": "griefwood_edge",
+  "name": "Edge of the Griefwood",
+  "description": "Dark trees crowd together, their twisted branches forming a barrier of shadow. Whispers ride the wind from within the forest.",
+  "image": "assets/images/locations/griefwood_edge.jpg",
+  "region": "Frontier",
+  "location": {
+    "x": 50,
+    "y": 125
+  },
+  "tags": ["forest", "wilderness", "dangerous", "mysterious"],
+  "available_actions": {
+    "shop": false,
+    "talk": false,
+    "rest": false,
+    "travel": true,
+    "explore": true
+  },
+  "connections": {
+    "griefwood_clearing": {
+      "name": "Griefwood Clearing",
+      "distance": 15,
+      "difficulty": "moderate",
+      "travel_time": "30 minutes"
+    },
+    "westwalker_camp": {
+      "name": "Westwalker Campfire",
+      "distance": 25,
+      "difficulty": "easy",
+      "travel_time": "1 hour"
+    }
+  },
+  "services": {
+    "inn": {
+      "available": false
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    }
+  },
+  "loot_table": "forest",
+  "foragable": false,
+  "exploration": {
+    "description": "The edge of the mysterious Griefwood holds secrets for those brave enough to look.",
+    "huntable": false,
+    "scoutable": true,
+    "camp": false,
+    "meditate": false,
+    "investigate": true,
+    "scouting_dc": 15,
+    "investigation_dc": 16,
+    "dangers": [
+      "Griefwood creatures lurk just beyond sight",
+      "Dark magic permeates the air",
+      "Easy to become lost in the twisted trees",
+      "Ancient spirits may be hostile to intruders"
+    ],
+    "scout_discoveries": [
+      "You identify safe paths that avoid the deepest shadows.",
+      "You spot evidence of recent creature activity.",
+      "You notice which trees seem to move when you're not watching.",
+      "You find old markers left by previous travelers."
+    ],
+    "investigation_discoveries": [
+      "You discover scratch marks on trees that tell a story of conflict.",
+      "You find remnants of old campsites from desperate travelers.",
+      "You uncover evidence of ritualistic activity at the forest's edge.",
+      "You locate hidden caches left by those who didn't return."
+    ]
+  },
+  "danger_level": "dangerous"
+}

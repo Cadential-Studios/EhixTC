@@ -87,7 +87,14 @@ function performSavingThrow(ability, dc) {
     };
 }
 
+
 // Equipment System Functions
+
+// Export for Jest/CommonJS
+if (typeof exports !== 'undefined') {
+  exports.equipItem = equipItem;
+  exports.unequipItem = unequipItem;
+}
 function equipItem(itemId, slot = null) {
     const item = itemsData[itemId];
     if (!item) return false;
@@ -105,6 +112,16 @@ function equipItem(itemId, slot = null) {
     // Determine slot if not specified
     if (!slot) {
         slot = item.slot;
+    }
+    
+    // Convert slot names to match equipment object
+    const slotConversions = {
+        'mainHand': 'mainhand',
+        'offHand': 'offhand'
+    };
+    
+    if (slotConversions[slot]) {
+        slot = slotConversions[slot];
     }
     
     // Handle special cases for rings
@@ -125,7 +142,18 @@ function equipItem(itemId, slot = null) {
         unequipItem(slot);
     }
     
-    // Equip new item (but keep it in inventory)
+    // Remove item from inventory and equip
+    let invIndex = gameData.player.inventory.findIndex(invItem => typeof invItem === 'string' ? invItem === itemId : invItem.id === itemId);
+    let equippedItem = null;
+    if (invIndex !== -1) {
+        if (typeof gameData.player.inventory[invIndex] === 'string') {
+            equippedItem = { id: itemId, quantity: 1 };
+        } else {
+            equippedItem = { ...gameData.player.inventory[invIndex] };
+        }
+        // Remove from inventory
+        gameData.player.inventory.splice(invIndex, 1);
+    }
     gameData.player.equipment[slot] = itemId;
     
     // Recalculate stats
@@ -167,8 +195,17 @@ function unequipItem(slot) {
     // Capture old stats for animation
     const oldStats = { ...gameData.player.stats };
     
-    // Remove from equipment (item stays in inventory)
+    // Remove from equipment and re-add to inventory
     gameData.player.equipment[slot] = null;
+    if (itemId) {
+        // Check if item already exists in inventory (stackable)
+        let invItem = gameData.player.inventory.find(inv => (typeof inv === 'string' ? inv === itemId : inv.id === itemId));
+        if (invItem && typeof invItem !== 'string') {
+            invItem.quantity = (invItem.quantity || 1) + 1;
+        } else {
+            gameData.player.inventory.push({ id: itemId, quantity: 1 });
+        }
+    }
     
     // Recalculate stats
     recalculateStats();
@@ -244,6 +281,13 @@ function calculateDerivedStats() {
     recalculateStats();
 }
 
+function updateCharacterStats() {
+    calculateDerivedStats();
+    if (typeof renderCharacterSheet === 'function') {
+        renderCharacterSheet();
+    }
+}
+
 function getTotalWeight() {
     let weight = 0;
     
@@ -302,40 +346,6 @@ function levelUp() {
     }
 }
 
-function showLevelUpModal(oldLevel, newLevel) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
-    modal.style.zIndex = '9999';
-    
-    const modalContent = document.createElement('div');
-    modalContent.className = 'bg-gradient-to-br from-yellow-900 to-orange-900 rounded-lg p-8 max-w-md w-full mx-4 border-4 border-yellow-500 shadow-2xl text-center';
-    
-    modalContent.innerHTML = `
-        <h2 class="font-cinzel text-3xl text-yellow-300 mb-4">Level Up!</h2>
-        <div class="text-white text-xl mb-4">
-            Level ${oldLevel} → Level <span class="text-yellow-300 font-bold">${newLevel}</span>
-        </div>
-        <div class="space-y-2 text-sm text-yellow-100 mb-6">
-            <div>• Health and Mana increased</div>
-            <div>• Proficiency bonus: +${gameData.player.proficiencyBonus}</div>
-            <div>• New abilities may be available</div>
-        </div>
-        <button onclick="this.closest('.fixed').remove()" 
-                class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-bold transition-colors">
-            Continue Adventure
-        </button>
-    `;
-    
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    // Auto-close after 10 seconds
-    setTimeout(() => {
-        if (modal.parentNode) {
-            modal.parentNode.removeChild(modal);
-        }
-    }, 10000);
-}
 
 // Character Sheet Rendering
 function renderCharacterSheet() {
@@ -564,6 +574,11 @@ function renderInventory() {
                                 ${gameData.player.equipment.feet ? getItemName(gameData.player.equipment.feet) : '👢 Feet'}
                             </div>
                         </div>
+                        <div class="equipment-slot" data-slot="waist">
+                            <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center">
+                                ${gameData.player.equipment.waist ? getItemName(gameData.player.equipment.waist) : '🔗 Waist'}
+                            </div>
+                        </div>
                         <div></div>
                     </div>
                     
@@ -657,7 +672,7 @@ function getRarityColor(rarity) {
         case 'common': return 'border-gray-500';
         case 'uncommon': return 'border-green-500';
         case 'rare': return 'border-blue-500';
-        case 'epic': return 'border-purple-500';
+        case 'very_rare': return 'border-purple-500';
         case 'legendary': return 'border-yellow-500';
         default: return 'border-gray-500';
     }
@@ -668,4 +683,8 @@ function handleItemClick(itemId) {
     if (item) {
         showModal(item.name, item.description || 'No description available.');
     }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { updateCharacterStats };
 }

@@ -1,0 +1,82 @@
+{
+  "id": "griefwood_clearing",
+  "name": "Griefwood Clearing",
+  "description": "A small clearing bathed in dim light where ancient stones rise from the earth. The air here hums with old power.",
+  "image": "assets/images/locations/griefwood_clearing.jpg",
+  "region": "Frontier",
+  "location": {
+    "x": 35,
+    "y": 110
+  },
+  "tags": ["forest", "clearing", "ancient", "magical", "mysterious"],
+  "available_actions": {
+    "shop": false,
+    "talk": false,
+    "rest": false,
+    "travel": true,
+    "explore": true
+  },
+  "connections": {
+    "griefwood_edge": {
+      "name": "Edge of the Griefwood",
+      "distance": 15,
+      "difficulty": "moderate",
+      "travel_time": "30 minutes"
+    }
+  },
+  "services": {
+    "inn": {
+      "available": false
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    }
+  },
+  "points_of_interest": [
+    {
+      "id": "ancient_stones",
+      "name": "Ancient Standing Stones",
+      "description": "Weathered stone monoliths that predate recorded history. They hum with barely contained magical energy."
+    }
+  ],
+  "loot_table": "forest",
+  "foragable": true,
+  "exploration": {
+    "description": "The mystical clearing pulses with ancient energies, offering unique opportunities for exploration.",
+    "huntable": false,
+    "scoutable": true,
+    "camp": false,
+    "meditate": true,
+    "investigate": true,
+    "scouting_dc": 13,
+    "meditation_dc": 15,
+    "investigation_dc": 14,
+    "dangers": [
+      "Ancient magical energies are unpredictable",
+      "Griefwood creatures are drawn to this place",
+      "The stones may react to magical disturbances"
+    ],
+    "scout_discoveries": [
+      "You notice the stones are aligned with celestial bodies.",
+      "You see strange markings carved into the ancient stones.",
+      "You observe that local wildlife avoids the stone circle.",
+      "You detect faint magical emanations from the ground."
+    ],
+    "meditation_insights": [
+      "You sense the stones were used for ancient rituals involving the three moons.",
+      "The magical energy here feels connected to the Griefwood's spiritual essence.",
+      "You perceive echoes of long-forgotten ceremonies performed here.",
+      "The stones seem to amplify magical energies during certain moon phases."
+    ],
+    "investigation_discoveries": [
+      "You find ancient runes carved into the base of the stones.",
+      "You discover that the stones are positioned in a specific magical pattern.",
+      "You notice that the stones show signs of recent ritualistic use.",
+      "You uncover hidden compartments containing old ceremonial items."
+    ]
+  },
+  "danger_level": "moderate"
+}

@@ -1,0 +1,66 @@
+{
+  "id": "leonin_encampment",
+  "name": "M'ra Kaal Encampment",
+  "description": "The scent of woodsmoke and roasting meat hangs in the air. Around you, the proud Leonin of your clan share stories and sharpen their blades. The sounds of the Ancestral Roar still echo in your spirit.",
+  "image": "assets/images/locations/leonin_encampment.jpg",
+  "region": "Pridelands",
+  "location": {
+    "x": 300,
+    "y": 250
+  },
+  "tags": ["encampment", "leonin", "clan", "training", "ancestral"],
+  "available_actions": {
+    "shop": false,
+    "talk": true,
+    "rest": true,
+    "travel": true,
+    "explore": false
+  },
+  "connections": {},
+  "services": {
+    "inn": {
+      "available": false
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    },
+    "training": {
+      "available": true,
+      "cost": 0,
+      "description": "Practice combat skills at the Honor Arena"
+    },
+    "rest": {
+      "available": true,
+      "cost": 0,
+      "description": "Rest and meditate on the spirits"
+    }
+  },
+  "npcs": [
+    {
+      "id": "clan_elders",
+      "name": "Clan Elders",
+      "role": "Spiritual Leaders",
+      "description": "The wise elders of M'ra Kaal who guide the clan with ancient wisdom.",
+      "relationships": [],
+      "dialogue_trees": ["clan_elders"]
+    }
+  ],
+  "points_of_interest": [
+    {
+      "id": "honor_arena",
+      "name": "Honor Arena",
+      "description": "A circular training ground where young Leonin prove their worth in combat."
+    },
+    {
+      "id": "ancestral_shrine",
+      "name": "Ancestral Shrine",
+      "description": "A sacred place where the spirits of fallen warriors are honored."
+    }
+  ],
+  "loot_table": "tribal",
+  "foragable": false,
+  "danger_level": "safe"
+}

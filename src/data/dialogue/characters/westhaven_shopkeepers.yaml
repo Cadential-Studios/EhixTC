@@ -1,0 +1,4 @@
+dialogue_trees:
+  - id: "borin"
+    character: "borin"
+    location: "Westhaven"

@@ -43,114 +43,24 @@ class InventoryUIFeatures {
         document.body.appendChild(this.tooltipElement);
     }
 
-    // Drag and Drop System
-    makeDraggable(element, itemData, sourceType) {
-        element.draggable = true;
-        element.addEventListener('dragstart', (e) => {
-            this.draggedItem = itemData;
-            this.draggedSource = sourceType;
-            element.style.opacity = '0.5';
-            e.dataTransfer.effectAllowed = 'move';
-            
-            // Create drag image
-            const dragImage = this.createDragImage(itemData);
-            e.dataTransfer.setDragImage(dragImage, 25, 25);
-        });
-
-        element.addEventListener('dragend', (e) => {
-            element.style.opacity = '1';
-            this.draggedItem = null;
-            this.draggedSource = null;
-        });
-    }
-
-    createDragImage(itemData) {
-        const dragImage = document.createElement('div');
-        dragImage.style.cssText = `
-            position: absolute;
-            top: -1000px;
-            left: -1000px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border: 2px solid #fbbf24;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        `;
-        dragImage.textContent = this.getItemIcon(itemData);
-        document.body.appendChild(dragImage);
-        
-        setTimeout(() => document.body.removeChild(dragImage), 100);
-        return dragImage;
-    }
-
-    makeDropZone(element, targetType, slotId = null) {
-        element.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (this.canDrop(this.draggedItem, targetType, slotId)) {
-                element.classList.add('drop-valid');
-                e.dataTransfer.dropEffect = 'move';
-            } else {
-                element.classList.add('drop-invalid');
-                e.dataTransfer.dropEffect = 'none';
-            }
-        });
-
-        element.addEventListener('dragleave', (e) => {
-            element.classList.remove('drop-valid', 'drop-invalid');
-        });
-
-        element.addEventListener('drop', (e) => {
-            e.preventDefault();
-            element.classList.remove('drop-valid', 'drop-invalid');
-            
-            if (this.canDrop(this.draggedItem, targetType, slotId)) {
-                this.handleDrop(this.draggedItem, this.draggedSource, targetType, slotId);
-            }
-        });
-    }
-
-    canDrop(item, targetType, slotId) {
-        if (!item) return false;
-
-        switch (targetType) {
-            case 'equipment':
-                return item.type === 'equipment' && 
-                       (slotId === item.slot || this.isCompatibleSlot(item, slotId));
-            case 'inventory':
-                return true;
-            case 'consumable':
-                return item.type === 'consumable';
-            default:
-                return false;
-        }
-    }
-
-    isCompatibleSlot(item, slotId) {
-        const compatibilityMap = {
-            'mainHand': ['weapon', 'shield'],
-            'offHand': ['weapon', 'shield'],
-            'ring1': ['ring'],
-            'ring2': ['ring']
-        };
-        return compatibilityMap[slotId]?.includes(item.subtype);
-    }
 
     handleDrop(item, sourceType, targetType, slotId) {
         if (sourceType === 'inventory' && targetType === 'equipment') {
-            equipmentSystem.equipItem(item.id);
+            // Always pass slotId and ensure it's valid
+            if (typeof equipmentSystem.equipItem === 'function' && slotId) {
+                equipmentSystem.equipItem(item.id, slotId);
+            } else if (typeof equipmentSystem.equipItem === 'function') {
+                equipmentSystem.equipItem(item.id);
+            }
         } else if (sourceType === 'equipment' && targetType === 'inventory') {
-            equipmentSystem.unequipItem(slotId);
+            if (typeof equipmentSystem.unequipItem === 'function' && slotId) {
+                equipmentSystem.unequipItem(slotId);
+            }
         } else if (sourceType === 'inventory' && targetType === 'inventory') {
             // Reorder inventory items (future enhancement)
             this.showMessage('Item reordering coming soon!');
         }
-        
-        gameData.saveGame();
+        // Do not save game on drag and drop
         inventoryManager.updateDisplay();
         this.showDropSuccess(item.name);
     }
@@ -212,7 +122,7 @@ class InventoryUIFeatures {
             'common': '#9ca3af',
             'uncommon': '#22c55e',
             'rare': '#3b82f6',
-            'epic': '#a855f7',
+            'very_rare': '#a855f7',
             'legendary': '#f59e0b',
             'mythic': '#ef4444'
         };
@@ -223,12 +133,9 @@ class InventoryUIFeatures {
                     <span style="font-family: 'Cinzel', serif; font-weight: bold; color: ${rarityColors[itemData.rarity] || '#e0e0e0'};">
                         ${itemData.name}
                     </span>
-                    <span style="color: #fbbf24; font-size: 18px;">
-                        ${this.getItemIcon(itemData)}
-                    </span>
                 </div>
                 <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">
-                    ${itemData.type} ${itemData.subtype ? `• ${itemData.subtype}` : ''}
+                    ${capitalizeFirst(itemData.type)} ${itemData.subtype ? `• ${capitalizeFirst(itemData.subtype)}` : ''}
                 </div>
             </div>
         `;
@@ -245,6 +152,18 @@ class InventoryUIFeatures {
             content += `
                 <div style="margin-top: 8px; font-style: italic; color: #d1d5db;">
                     "${itemData.description}"
+                </div>
+            `;
+        }
+
+        if (itemData.properties && itemData.properties.includes('container')) {
+            const totalW = (itemData.container_contents || []).reduce((w,id)=> w + (itemsData[id]?.weight || 0),0);
+            const list = itemData.container_contents && itemData.container_contents.length > 0 ?
+                itemData.container_contents.map(id => itemsData[id]?.name || id).join(', ') : 'Empty';
+            content += `
+                <div style="margin-top:8px;">
+                    <strong>Contents:</strong> ${list}<br/>
+                    <span style="font-size:12px;color:#9ca3af;">Weight: ${totalW}/${itemData.capacity || 0} lb</span>
                 </div>
             `;
         }
@@ -338,16 +257,7 @@ class InventoryUIFeatures {
         return statNames[stat] || stat;
     }
 
-    getItemIcon(itemData) {
-        const iconMap = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'accessory': '💍',
-            'consumable': '🧪',
-            'misc': '📦'
-        };
-        return iconMap[itemData.type] || iconMap[itemData.subtype] || '📦';
-    }
+
 
     // Item Comparison System
     toggleComparisonMode() {
@@ -433,31 +343,30 @@ class InventoryUIFeatures {
             'common': '#9ca3af',
             'uncommon': '#22c55e', 
             'rare': '#3b82f6',
-            'epic': '#a855f7',
+            'very_rare': '#a855f7',
             'legendary': '#f59e0b',
             'mythic': '#ef4444'
         };
 
         return `
             <div style="background: #374151; border: 2px solid ${rarityColors[item.rarity] || '#4b5563'}; 
-                        border-radius: 8px; padding: 16px;">
-                <div style="text-align: center; margin-bottom: 12px;">
-                    <div style="font-size: 24px; margin-bottom: 8px;">${this.getItemIcon(item)}</div>
-                    <div style="color: ${rarityColors[item.rarity] || '#f3f4f6'}; font-weight: bold;">
-                        ${item.name}
-                    </div>
-                    <div style="color: #9ca3af; font-size: 12px;">
-                        ${item.type} ${item.subtype ? `• ${item.subtype}` : ''}
-                    </div>
+                border-radius: 8px; padding: 16px;">
+            <div style="text-align: center; margin-bottom: 12px;">
+                <div style="color: ${rarityColors[item.rarity] || '#f3f4f6'}; font-weight: bold;">
+                ${item.name}
                 </div>
-                
-                ${item.type === 'equipment' ? this.generateComparisonStats(item) : this.generateConsumableStats(item)}
-                
-                <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #4b5563; 
-                           display: flex; justify-content: space-between; font-size: 12px;">
-                    <span style="color: #fbbf24;">${item.value || 0} gp</span>
-                    <span style="color: #94a3b8;">${item.weight || 0} lbs</span>
+                <div style="color: #9ca3af; font-size: 12px;">
+                ${capitalizeFirst(item.type)} ${item.subtype ? `• ${capitalizeFirst(item.subtype)}` : ''}
                 </div>
+            </div>
+            
+            ${item.type === 'equipment' ? this.generateComparisonStats(item) : this.generateConsumableStats(item)}
+            
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #4b5563; 
+                   display: flex; justify-content: space-between; font-size: 12px;">
+                <span style="color: #fbbf24;">${item.value || 0} gp</span>
+                <span style="color: #94a3b8;">${item.weight || 0} lbs</span>
+            </div>
             </div>
         `;
     }
@@ -627,7 +536,7 @@ style.textContent = `
     
     .dragging {
         opacity: 0.5 !important;
-        transform: rotate(5deg) !important;
+        /* No tilt/rotation */
     }
 `;
 document.head.appendChild(style);

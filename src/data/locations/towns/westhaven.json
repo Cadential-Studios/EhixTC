@@ -1,0 +1,139 @@
+{
+  "id": "westhaven",
+  "name": "Westhaven",
+  "description": "A bustling trading hub where merchants from across the realm gather. The town square bustles with activity as travelers, traders, and locals conduct business beneath colorful awnings.",
+  "image": "assets/images/locations/westhaven.jpg",
+  "region": "Frontier",
+  "location": {
+    "x": 100,
+    "y": 200
+  },
+  "tags": ["town", "trading", "civilized", "safe", "rest"],
+  "available_actions": {
+    "shop": true,
+    "talk": true,
+    "rest": true,
+    "travel": true,
+    "explore": true
+  },
+  "connections": {
+    "westwalker_camp": {
+      "name": "Westwalker Camp",
+      "distance": 50,
+      "difficulty": "easy",
+      "travel_time": "2 hours"
+    },
+    "jorn": {
+      "name": "Town of Jorn", 
+      "distance": 120,
+      "difficulty": "moderate",
+      "travel_time": "1 day"
+    }
+  },
+  "shops": [
+    {
+      "id": "westhaven_general_store",
+      "name": "Westhaven General Store",
+      "location": "Westhaven",
+      "owner": "Borin",
+      "inventory": [
+        {
+          "item": "rations",
+          "price": 10,
+          "quantity": 5
+        },
+        {
+          "item": "common_clothes",
+          "price": 25,
+          "quantity": 10
+        },
+        {
+          "item": "satchel",
+          "price": 25,
+          "quantity": 3
+        }
+      ]
+    }
+  ],
+  "npcs": [
+    {
+      "id": "borin",
+      "name": "Borin",
+      "role": "Shopkeeper",
+      "description": "A friendly dwarf who runs the general store in Westhaven.",
+      "relationships": [],
+      "dialogue_trees": ["borin"]
+    }
+  ],
+  "points_of_interest": [
+    {
+      "id": "town_square",
+      "name": "Town Square",
+      "description": "The heart of Westhaven where merchants display their wares and travelers share news from distant lands."
+    },
+    {
+      "id": "travelers_inn",
+      "name": "The Weary Traveler Inn",
+      "description": "A cozy inn offering rooms and meals to visitors. The common room is always filled with interesting stories."
+    }
+  ],
+  "services": {
+    "inn": {
+      "available": true,
+      "cost": 5,
+      "description": "Rest at The Weary Traveler Inn"
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    }
+  },
+  "loot_table": "town",
+  "foragable": false,
+  "exploration": {
+    "description": "A bustling town offers opportunities for social exploration and information gathering.",
+    "huntable": false,
+    "scoutable": true,
+    "camp": false,
+    "investigate": true,
+    "scouting_dc": 10,
+    "investigation_dc": 12,
+    "custom_activities": [
+      {
+        "type": "gather_rumors",
+        "name": "Gather Rumors",
+        "icon": "👂",
+        "description": "Listen for gossip and news around the town square",
+        "timeRequired": "1 hour",
+        "skillRequired": "Persuasion"
+      },
+      {
+        "type": "network",
+        "name": "Network",
+        "icon": "🤝",
+        "description": "Build connections with local merchants and residents",
+        "timeRequired": "2 hours", 
+        "skillRequired": "Persuasion"
+      }
+    ],
+    "dangers": [
+      "Pickpockets operate in crowded areas",
+      "Some locals may be suspicious of strangers"
+    ],
+    "scout_discoveries": [
+      "You identify the best routes through the busy streets.",
+      "You locate discrete meeting spots away from crowds.",
+      "You notice which merchants seem most trustworthy.",
+      "You spot guard patrol patterns and timing."
+    ],
+    "investigation_discoveries": [
+      "You uncover interesting details about the town's recent history.",
+      "You discover hidden alcoves and shortcuts through the town.",
+      "You learn about local politics and influential figures.",
+      "You identify which buildings have unusual foot traffic."
+    ]
+  },
+  "danger_level": "safe"
+}

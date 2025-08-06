@@ -1,3 +1,46 @@
+// Foraging Progress Modal
+function showForagingProgress({duration = 2000, onComplete, diceRoll, bonus, skillName}) {
+    let modal = document.getElementById('foraging-progress-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'foraging-progress-modal';
+        modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden';
+        modal.innerHTML = `
+            <div class="bg-green-950 border-2 border-green-700 rounded-lg p-8 max-w-md mx-4 flex flex-col items-center shadow-2xl animate-pulse">
+                <div class="flex flex-col items-center mb-4">
+                    <span class="text-3xl font-cinzel text-green-200 animate-bounce">🌿 Foraging...</span>
+                    <span id="foraging-dice-roll" class="mt-2 text-lg text-green-100"></span>
+                </div>
+                <div class="w-full h-6 bg-green-900 rounded-full overflow-hidden mb-2 border border-green-700">
+                    <div id="foraging-progress-bar" class="h-full bg-gradient-to-r from-green-400 to-green-700 transition-all duration-300" style="width:0%"></div>
+                </div>
+                <span id="foraging-time-label" class="text-xs text-green-300">Time passing...</span>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    // Set dice roll display
+    const diceText = diceRoll !== undefined ? `Rolled <span class='font-bold text-green-300'>d20</span>: <span class='font-bold text-green-200'>${diceRoll}</span> + <span class='font-bold text-green-300'>${bonus}</span> (${skillName})` : '';
+    modal.querySelector('#foraging-dice-roll').innerHTML = diceText;
+    modal.classList.remove('hidden');
+    // Animate progress bar smoothly using CSS transition
+    const bar = modal.querySelector('#foraging-progress-bar');
+    bar.style.transition = `width ${duration}ms linear`;
+    // Reset to 0 instantly before triggering animation
+    bar.style.width = '0%';
+    // Force reflow to apply the reset
+    void bar.offsetWidth;
+    // Animate to 100%
+    setTimeout(() => {
+        bar.style.width = '100%';
+    }, 10);
+    // After duration, hide modal and call onComplete
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        if (onComplete) onComplete();
+    }, duration + 400);
+}
+
 // UI Management Module
 // Edoria: The Triune Convergence - User Interface
 
@@ -340,6 +383,49 @@ function renderSettings() {
 
 // Journal Panel Rendering
 function renderJournal(activeTab = 'all') {
+    // Use the new modular journal system if available
+    if (typeof window.journalSystem !== 'undefined' && window.journalSystem && window.journalSystem.initialized) {
+        const searchEl = document.getElementById('journal-search-input');
+        const searchQuery = searchEl ? searchEl.value : '';
+        
+        try {
+            const content = window.journalSystem.render(searchQuery, activeTab);
+            if (journalContentEl) {
+                journalContentEl.innerHTML = `
+                    <div class="journal-container">
+                        <div class="journal-tabs mb-4">
+                            <div class="flex flex-wrap items-center space-x-1 bg-gray-800 rounded-lg p-1">
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('all')">All</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('quests')">Quests</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'lore' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('lore')">Lore</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('locations')">Places</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'npcs' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('npcs')">People</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'bestiary' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('bestiary')">Bestiary</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'notes' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('notes')">Notes</button>
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" id="journal-search-input" placeholder="Search journal entries..." value="${searchQuery}" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" onkeyup="debounce(() => renderJournal('${activeTab}'), 300)()">
+                            </div>
+                        </div>
+                        <div class="journal-content">
+                            ${content}
+                        </div>
+                    </div>
+                `;
+            }
+            return;
+        } catch (error) {
+            console.error('Error rendering journal with new system:', error);
+        }
+    }
+    
+    // Fallback to original implementation if journal system not available
+    console.warn('Journal system not available, using fallback implementation');
+    renderJournalFallback(activeTab);
+}
+
+// Fallback journal rendering (original implementation)
+function renderJournalFallback(activeTab = 'all') {
     if (!journalContentEl) return;
 
     const searchEl = document.getElementById('journal-search-input');
@@ -352,16 +438,169 @@ function renderJournal(activeTab = 'all') {
         <div class="journal-tabs mb-4">
             <div class="flex flex-wrap items-center space-x-1 bg-gray-800 rounded-lg p-1">
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('all')"><i class='ph-duotone ph-book-open mr-1'></i>All</button>
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('quests')"><i class='ph-duotone ph-scroll mr-1'></i>Quests</button>
-                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')"><i class='ph-duotone ph-book mr-1'></i>Lore</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'quests' ? 'bg-yellow-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('quests')"><i class='ph-duotone ph-scroll mr-1'></i>Quests</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'lore' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('lore')"><i class='ph-duotone ph-book mr-1'></i>Lore</button>
                 <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'rumors' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('rumors')"><i class='ph-duotone ph-chats-circle mr-1'></i>Rumors</button>
-                <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." oninput="renderJournal('${activeTab}')" />
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'locations' ? 'bg-green-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('locations')"><i class='ph-duotone ph-map-pin mr-1'></i>Locations</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'items' ? 'bg-orange-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('items')"><i class='ph-duotone ph-backpack mr-1'></i>Items</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'npcs' ? 'bg-cyan-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('npcs')"><i class='ph-duotone ph-users mr-1'></i>NPCs</button>
+                <button class="journal-tab px-4 py-2 rounded-lg font-cinzel ${activeTab === 'bestiary' ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white'}" onclick="renderJournal('bestiary')"><i class='ph-duotone ph-users mr-1'></i>Bestiary</button>
+                <input id="journal-search-input" class="ml-auto px-2 py-1 rounded text-black" placeholder="Search..." value="${searchQuery}" oninput="renderJournal('${activeTab}')" />
             </div>
         </div>
     `;
+    // Locations Tab
+    if (activeTab === 'locations') {
+        const locations = Object.values(gameData.locations || {});
+        content += `
+            <div class="journal-section mb-6">
+                <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                    <i class='ph-duotone ph-map-pin'></i> Locations & Regions
+                </h4>
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                    ${locations.length > 0 ?
+                        locations.map(loc => `
+                            <div class="journal-entry location">
+                                <div class="text-green-400 font-semibold">${loc.name}</div>
+                                <div class="text-white text-sm">${loc.description || ''}</div>
+                            </div>
+                        `).join('') :
+                        '<div class="text-gray-400 italic">No locations discovered</div>'
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+    // Items Tab
+    if (activeTab === 'items') {
+        const items = Object.values(gameData.journalItems || {});
+        content += `
+            <div class="journal-section mb-6">
+                <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                    <i class='ph-duotone ph-backpack'></i> Items & Artifacts
+                </h4>
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                    ${items.length > 0 ?
+                        items.map(item => `
+                            <div class="journal-entry item">
+                                <div class="text-orange-400 font-semibold">${item.name}</div>
+                                <div class="text-white text-sm">${item.description || ''}</div>
+                            </div>
+                        `).join('') :
+                        '<div class="text-gray-400 italic">No items discovered</div>'
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+    // NPCs Tab
+    if (activeTab === 'npcs') {
+        const npcs = Object.values(gameData.journalNpcs || {});
+        content += `
+            <div class="journal-section mb-6">
+                <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                    <i class='ph-duotone ph-users'></i> NPCs & Relationships
+                </h4>
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                    ${npcs.length > 0 ?
+                        npcs.map(npc => `
+                            <div class="journal-entry npc">
+                                <div class="text-purple-400 font-semibold">${npc.name}</div>
+                                <div class="text-white text-sm">${npc.description || ''}</div>
+                                <div class="text-xs text-purple-300 mt-1">Relationship: <span class="font-bold">${npc.relationship_score ?? 'Unknown'}</span></div>
+                            </div>
+                        `).join('') :
+                        '<div class="text-gray-400 italic">No NPCs discovered</div>'
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+    // Bestiary Tab
+    if (activeTab === 'bestiary') {
+        // Load monsters from gameData.monsters or fallback to window.monstersData if available
+        let monsters = [];
+        if (gameData.monsters) {
+            monsters = Object.values(gameData.monsters);
+        } else if (typeof window !== 'undefined' && window.monstersData) {
+            monsters = Object.values(window.monstersData);
+        }
+        content += `
+            <div class="journal-section mb-6" style="height:70%;display:flex;flex-direction:column;">
+                <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                    <i class='ph-duotone ph-paw-print'></i> Bestiary
+                </h4>
+                <div class="space-y-4 flex-1 overflow-y-auto" style="height:100%;">
+                    ${monsters.length > 0 ?
+                        monsters.map(monster => `
+                            <div class="journal-entry bestiary bg-gray-800 rounded-lg p-3 border border-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-red-400 font-bold text-lg">${monster.name}</div>
+                                    <span class="text-xs bg-gray-700 text-gray-200 px-2 py-1 rounded">Level ${monster.level}</span>
+                                </div>
+                                <div class="text-white text-sm mb-2">${monster.description || ''}</div>
+                                <div class="flex flex-wrap gap-2 text-xs mb-2">
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">HP: ${monster.hitPoints}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">AC: ${monster.armorClass}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">STR: ${monster.attributes?.strength ?? '?'}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">DEX: ${monster.attributes?.dexterity ?? '?'}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">CON: ${monster.attributes?.constitution ?? '?'}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">INT: ${monster.attributes?.intelligence ?? '?'}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">WIS: ${monster.attributes?.wisdom ?? '?'}</span>
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-1 rounded">CHA: ${monster.attributes?.charisma ?? '?'}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <span class="font-semibold text-purple-300">Abilities:</span>
+                                    <ul class="list-disc list-inside ml-4">
+                                        ${monster.abilities?.map(ability => `<li><span class="text-yellow-300 font-semibold">${ability.name}:</span> <span class="text-gray-200">${ability.description}</span></li>`).join('') || '<li class="text-gray-400">None</li>'}
+                                    </ul>
+                                </div>
+                                <div class="mb-1">
+                                    <span class="font-semibold text-blue-300">Resistances:</span> <span class="text-gray-200">${(monster.resistances || []).join(', ') || 'None'}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <span class="font-semibold text-red-300">Weaknesses:</span> <span class="text-gray-200">${(monster.weaknesses || []).join(', ') || 'None'}</span>
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-green-300">Loot:</span> <span class="text-gray-200">${(monster.loot || []).map(l => `${l.item} (${Math.round(l.chance * 100)}%)`).join(', ') || 'None'}</span>
+                                </div>
+                            </div>
+                        `).join('') :
+                        '<div class="text-gray-400 italic">No monsters discovered</div>'
+                    }
+                </div>
+            </div>
+        `;
+    }
     
     // Content based on active tab
     if (activeTab === 'all' || activeTab === 'quests') {
+        // Ensure data structure is correct before attempting to filter
+        if (!gameData.player.quests) {
+            gameData.player.quests = { active: [], completed: [] };
+        } else {
+            // Fix the completed quests being an object instead of array
+            if (typeof gameData.player.quests.completed === 'object' && !Array.isArray(gameData.player.quests.completed)) {
+                const completedArray = [];
+                for (const [key, value] of Object.entries(gameData.player.quests.completed)) {
+                    if (typeof value === 'string') {
+                        completedArray.push({ id: key, text: value, completedAt: Date.now() });
+                    } else if (typeof value === 'object') {
+                        completedArray.push({ id: key, ...value });
+                    }
+                }
+                gameData.player.quests.completed = completedArray;
+            }
+            
+            // Ensure active is array
+            if (!Array.isArray(gameData.player.quests.active)) {
+                gameData.player.quests.active = [];
+            }
+        }
+        
         const activeQuests = gameData.player.quests.active.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         const completedQuests = gameData.player.quests.completed.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         content += `
@@ -573,39 +812,50 @@ function renderCraftingWorkshop() {
     const craftingContent = document.getElementById('crafting-content');
     if (!craftingContent) return;
 
-    craftingContent.innerHTML = `
-        <div class="crafting-workshop grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-            <!-- Recipe Categories -->
-            <div class="recipe-categories bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-list mr-2"></i>Recipe Categories
-                </h3>
-                <div id="category-list" class="space-y-2">
-                    <!-- Categories will be populated here -->
-                </div>
-            </div>
 
-            <!-- Recipe List -->
-            <div class="recipe-list bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-scroll mr-2"></i>Available Recipes
-                </h3>
-                <div id="recipe-list-content" class="space-y-3 max-h-96 overflow-y-auto">
-                    <!-- Recipes will be populated here -->
-                </div>
-            </div>
+    // Clear previous content
+    craftingContent.innerHTML = '';
 
-            <!-- Crafting Details -->
-            <div class="crafting-details bg-gray-800 rounded-lg p-4 border border-gray-600">
-                <h3 class="font-cinzel text-xl text-white mb-4 flex items-center">
-                    <i class="ph-duotone ph-hammer mr-2"></i>Crafting Details
-                </h3>
-                <div id="crafting-details-content">
-                    <p class="text-gray-400 text-center py-8">Select a recipe to view crafting details</p>
-                </div>
-            </div>
-        </div>
-    `;
+    // Create main grid container
+    const workshop = document.createElement('div');
+    workshop.className = 'crafting-workshop grid grid-cols-1 lg:grid-cols-3 gap-6';
+    workshop.style.height = '80%';
+    workshop.style.minHeight = '400px';
+    workshop.style.maxHeight = '80vh';
+
+    // Helper to create a panel
+    function createPanel(className, iconClass, title, contentId, placeholder) {
+        const panel = document.createElement('div');
+        panel.className = `${className} bg-gray-800 rounded-lg p-4 border border-gray-600`;
+        panel.style.height = '85vh';
+        panel.style.maxHeight = '85vh';
+        panel.style.overflowY = 'auto';
+
+        const h3 = document.createElement('h3');
+        h3.className = 'font-cinzel text-xl text-white mb-4 flex items-center';
+        h3.innerHTML = `<i class="ph-duotone ${iconClass} mr-2"></i>${title}`;
+        panel.appendChild(h3);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.id = contentId;
+        contentDiv.className = contentId === 'category-list' ? 'space-y-2' : 'space-y-3';
+        if (placeholder) {
+            contentDiv.innerHTML = placeholder;
+        }
+        panel.appendChild(contentDiv);
+
+        return panel;
+    }
+
+    // Create and append panels
+    workshop.appendChild(createPanel('recipe-categories', 'ph-list', 'Recipe Categories', 'category-list'));
+    workshop.appendChild(createPanel('recipe-list', 'ph-scroll', 'Available Recipes', 'recipe-list-content'));
+    workshop.appendChild(createPanel(
+        'crafting-details', 'ph-hammer', 'Crafting Details', 'crafting-details-content',
+        `<p class="text-gray-400 text-center py-8">Select a recipe to view crafting details</p>`
+    ));
+
+    craftingContent.appendChild(workshop);
 
     populateCraftingCategories();
     populateRecipeList();
@@ -651,9 +901,11 @@ function populateRecipeList() {
 
     recipeListContent.innerHTML = filteredRecipes.map(recipe => {
         const canCraft = craftingManager.canCraftRecipe(recipe.id);
-        const skillsText = Object.entries(recipe.requiredSkills || {})
-            .map(([skill, level]) => `${skill} ${level}`)
-            .join(', ');
+
+        // Render skill badges
+        const skillsBadges = Object.entries(recipe.requiredSkills || {})
+            .map(([skill, level]) => `<span class="inline-block rounded-full px-2 py-1 text-xs font-semibold mr-1 mb-1 ${window.getSkillBadgeBorder(skill)} ${window.getSkillBadgeColor(skill)}">${skill.charAt(0).toUpperCase() + skill.slice(1)} ${level}</span>`)
+            .join(' ');
 
         return `
             <div class="recipe-item bg-gray-700 rounded-lg p-3 border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors
@@ -664,8 +916,10 @@ function populateRecipeList() {
                     <span class="text-xs px-2 py-1 rounded ${getDifficultyColor(recipe.difficulty)}">${recipe.difficulty}</span>
                 </div>
                 <p class="text-sm text-gray-300 mb-2">${recipe.description}</p>
+                <div class="flex flex-wrap items-center text-xs mb-1">
+                    ${skillsBadges || '<span class="text-gray-400">None</span>'}
+                </div>
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-blue-300">Skills: ${skillsText || 'None'}</span>
                     <span class="text-yellow-300">XP: ${recipe.experienceGained}</span>
                 </div>
                 ${!canCraft ? '<div class="text-red-400 text-xs mt-1">Missing requirements</div>' : ''}
@@ -716,12 +970,11 @@ function displayRecipeDetails(recipeId) {
             ${skills.length > 0 ? `
                 <div class="mb-4">
                     <h5 class="font-cinzel text-white mb-2">Required Skills</h5>
-                    <div class="space-y-1">
+                    <div class="flex flex-wrap gap-1">
                         ${skills.map(skill => `
-                            <div class="flex justify-between text-sm ${skill.hasSkill ? 'text-green-300' : 'text-red-300'}">
-                                <span>${skill.displayName}</span>
-                                <span>${skill.playerLevel}/${skill.requiredLevel}</span>
-                            </div>
+                            <span class="inline-block rounded-full px-2 py-1 text-xs font-semibold ${window.getSkillBadgeBorder(skill.id)} ${window.getSkillBadgeColor(skill.id)} ${skill.hasSkill ? '' : 'opacity-60'}" title="${skill.displayName}: ${skill.playerLevel}/${skill.requiredLevel}">
+                                ${skill.displayName} ${skill.requiredLevel}
+                            </span>
                         `).join('')}
                     </div>
                 </div>
@@ -927,6 +1180,14 @@ function activateItem(itemId) {
 
 // Toggle pin status for journal entries
 function toggleJournalPin(id) {
+    // Use centralized journal manager if available
+    if (typeof journalManager !== 'undefined' && journalManager) {
+        journalManager.togglePin(id);
+        journalManager.render(journalManager.activeTab);
+        return;
+    }
+    
+    // Fallback to original implementation
     if (gameData.player.journalPins.has(id)) {
         gameData.player.journalPins.delete(id);
     } else {
@@ -937,5 +1198,12 @@ function toggleJournalPin(id) {
 
 // Simulated quest tracking
 function trackQuest(id) {
+    // Use centralized journal manager if available
+    if (typeof journalManager !== 'undefined' && journalManager) {
+        journalManager.trackQuest(id);
+        return;
+    }
+    
+    // Fallback
     showGameMessage(`Tracking quest: ${id}`, 'info');
 }

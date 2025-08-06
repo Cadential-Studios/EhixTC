@@ -1,0 +1,29 @@
+{
+  "forest": {
+    "terrain_tags": ["wooded", "lowlight", "damp"],
+    "items": [
+      { "item": "herb_mandrake", "rarity": "rare", "chance": 3, "required_dc_threshold": 18, "amount": { "min": 1, "max": 1 }, "requires_tool": "herbalism_kit" },
+      { "item": "herb_yarrow", "rarity": "common", "chance": 20, "required_dc_threshold": 7, "amount": { "min": 1, "max": 2 } },
+      { "item": "herb_nightshade", "rarity": "uncommon", "chance": 7, "required_dc_threshold": 13, "amount": { "min": 1, "max": 1 } },
+      { "item": "herb_mint", "rarity": "common", "chance": 15, "required_dc_threshold": 5, "amount": { "min": 1, "max": 3 } }
+    ]
+  },
+  "mountains": {
+    "terrain_tags": ["rocky", "windy", "elevated"],
+    "items": [
+      { "item": "herb_mountain_mint", "rarity": "common", "chance": 18, "required_dc_threshold": 6, "amount": { "min": 1, "max": 2 } }
+    ]
+  },
+  "swamp": {
+    "terrain_tags": ["wet", "murky", "boggy"],
+    "items": [
+      { "item": "herb_nightshade", "rarity": "uncommon", "chance": 10, "required_dc_threshold": 12, "amount": { "min": 1, "max": 1 } }
+    ]
+  },
+  "plains": {
+    "terrain_tags": ["grassy", "open", "sunny"],
+    "items": [
+      { "item": "herb_yarrow", "rarity": "common", "chance": 25, "required_dc_threshold": 6, "amount": { "min": 1, "max": 2 } }
+    ]
+  }
+}

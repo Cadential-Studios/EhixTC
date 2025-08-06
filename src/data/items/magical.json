@@ -1,0 +1,42 @@
+{
+  "spirit_totem": {
+    "id": "spirit_totem",
+    "name": "Spirit Totem",
+    "type": "magical",
+    "subtype": "focus",
+    "slot": "offhand",
+    "description": "A carved wooden totem that allows communication with ancestral spirits.",
+    "effect": "spirit_communication",
+    "uses": "unlimited",
+    "statBonus": { "wisdom": 2 },
+    "rarity": "Rare",
+    "value": 100,
+    "weight": 1
+  },
+  "arcane_focus_crystal": {
+    "id": "arcane_focus_crystal",
+    "name": "Arcane Focus Crystal",
+    "type": "magical",
+    "subtype": "focus",
+    "slot": "offhand",
+    "description": "A crystal that helps channel magical energies.",
+    "effect": "spell_focus",
+    "rarity": "Uncommon",
+    "value": 50,
+    "weight": 1
+  },
+  "cursed_ring_of_strength": {
+    "id": "cursed_ring_of_strength",
+    "name": "Cursed Ring of Strength",
+    "type": "magical",
+    "subtype": "ring",
+    "slot": "finger",
+    "description": "A dark iron ring that pulses with malevolent energy. It grants great strength, but at a terrible cost.",
+    "effect": "cursed_strength_boost",
+    "uses": "unlimited",
+    "properties": ["cursed", "activatable"],
+    "rarity": "Rare",
+    "value": 150,
+    "weight": 0.1
+  }
+}

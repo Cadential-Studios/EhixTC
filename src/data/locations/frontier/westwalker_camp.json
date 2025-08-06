@@ -1,0 +1,82 @@
+{
+  "id": "westwalker_camp",
+  "name": "Westwalker Campfire",
+  "description": "A small, well-kept campfire crackles, a lonely point of light against the vast, darkening plains of the Frontier. The edge of the Griefwood looms like a wall of shadow in the distance. The air carries an unusual chill.",
+  "image": "assets/images/locations/westwalker_camp.jpg",
+  "region": "Frontier",
+  "location": {
+    "x": 75,
+    "y": 150
+  },
+  "tags": ["camp", "wilderness", "rest", "frontier"],
+  "available_actions": {
+    "shop": false,
+    "talk": false,
+    "rest": true,
+    "travel": true,
+    "explore": false
+  },
+  "connections": {
+    "griefwood_edge": {
+      "name": "Edge of the Griefwood",
+      "distance": 25,
+      "difficulty": "easy",
+      "travel_time": "1 hour"
+    },
+    "jorn": {
+      "name": "Town of Jorn",
+      "distance": 80,
+      "difficulty": "moderate",
+      "travel_time": "4 hours"
+    },
+    "westhaven": {
+      "name": "Westhaven",
+      "distance": 50,
+      "difficulty": "easy",
+      "travel_time": "2 hours"
+    }
+  },
+  "services": {
+    "inn": {
+      "available": false
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    },
+    "rest": {
+      "available": true,
+      "cost": 0,
+      "description": "Rest and recover by the warm campfire"
+    }
+  },
+
+  "foragable": true,
+  "loot_table": "forest",
+  "exploration": {
+    "description": "The frontier wilderness offers many opportunities for the resourceful traveler.",
+    "huntable": true,
+    "scoutable": true,
+    "camp": true,
+    "hunting_dc": 14,
+    "scouting_dc": 12,
+    "camping_dc": 10,
+    "dangers": [
+      "Wild animals may be territorial",
+      "Weather can change quickly",
+      "Griefwood spirits sometimes wander here"
+    ],
+    "scout_discoveries": [
+      "You spot fresh water nearby that's safe to drink.",
+      "You notice animal trails leading to good hunting grounds.",
+      "You identify a sheltered spot perfect for camping.",
+      "You see smoke rising from Westhaven in the distance."
+    ]
+  },
+  "danger_level": "moderate",
+  "lore-data": {
+    "description":"A resting spot for travelers on the edge of the Griefwood."
+  }
+}

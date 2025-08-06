@@ -1,0 +1,342 @@
+dialogue_trees:
+  - id: village_elder_greeting
+    character: Village Elder
+    location: elder_hut
+    priority: 1
+    repeatable: true
+    root: greeting
+    
+    conditions:
+      - type: time_of_day
+        hours: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+      - type: level_requirement
+        min_level: 1
+    
+    variables:
+      trust_level: 0
+      first_meeting: true
+      wisdom_shared: false
+    
+    nodes:
+      greeting:
+        text:
+          - condition:
+              type: variable
+              variable: first_meeting
+              value: true
+            text: "Welcome, young traveler. I am Aldric, elder of this village. What brings you to our humble settlement?"
+          - condition:
+              type: variable
+              variable: trust_level
+              min_value: 20
+            text: "Ah, my trusted friend returns! How fare your adventures?"
+          - default: "Good day, adventurer. How may this old man assist you?"
+        
+        on_enter:
+          - type: set_variable
+            variable: first_meeting
+            value: false
+          - type: play_sound
+            sound_id: elder_greeting
+        
+        responses:
+          - text: "I seek wisdom and guidance."
+            next: wisdom_request
+            conditions:
+              - type: variable
+                variable: trust_level
+                min_value: 5
+          
+          - text: "Tell me about this village."
+            next: village_info
+          
+          - text: "Do you have any work for me?"
+            next: quest_inquiry
+            conditions:
+              - type: level_requirement
+                min_level: 2
+          
+          - text: "I should be going."
+            next: farewell
+
+      wisdom_request:
+        text: "Wisdom comes not from words alone, but from experience. What troubles your heart, young one?"
+        
+        on_enter:
+          - type: add_relationship
+            character: Village Elder
+            amount: 2
+        
+        responses:
+          - text: "How do I become stronger?"
+            next: strength_wisdom
+          
+          - text: "What is the meaning of courage?"
+            next: courage_wisdom
+          
+          - text: "How do I know who to trust?"
+            next: trust_wisdom
+          
+          - text: "Perhaps another time."
+            next: greeting
+
+      strength_wisdom:
+        text: "True strength is not in the sword arm, but in knowing when to draw the blade and when to stay your hand. Train your body, but do not neglect your mind and spirit."
+        
+        on_enter:
+          - type: set_variable
+            variable: wisdom_shared
+            value: true
+          - type: add_relationship
+            character: Village Elder
+            amount: 3
+          - type: add_journal_entry
+            entry: "The Village Elder shared wisdom about true strength."
+        
+        responses:
+          - text: "Thank you for your wisdom."
+            next: wisdom_thanks
+          
+          - text: "Can you teach me anything practical?"
+            next: practical_teaching
+
+      village_info:
+        text: "Our village has stood for three generations. We are simple folk - farmers, craftsmen, traders. We live in harmony with the land and each other."
+        
+        responses:
+          - text: "Any notable locations I should visit?"
+            next: location_guide
+          
+          - text: "Who are the important people here?"
+            next: people_guide
+          
+          - text: "What dangers should I be aware of?"
+            next: danger_warning
+          
+          - text: "Thank you for the information."
+            next: greeting
+
+      quest_inquiry:
+        text: 
+          - condition:
+              type: variable
+              variable: trust_level
+              min_value: 15
+            text: "Actually, there is something important I could use help with. Wolves have been attacking our livestock. The pack seems unusually aggressive."
+          - default: "Work? Well, there might be something... but I need to know I can trust you first. Help some of the villagers with their problems, then return to me."
+        
+        responses:
+          - text: "I'll deal with these wolves."
+            next: accept_wolf_quest
+            conditions:
+              - type: variable
+                variable: trust_level
+                min_value: 15
+            actions:
+              - type: start_quest
+                quest_id: wolf_pack_threat
+              - type: add_journal_entry
+                entry: "The Village Elder asked me to deal with aggressive wolves threatening the livestock."
+          
+          - text: "How can I earn your trust?"
+            next: trust_building
+            conditions:
+              - type: variable
+                variable: trust_level
+                max_value: 14
+          
+          - text: "I'm not ready for that responsibility."
+            next: quest_declined
+
+      accept_wolf_quest:
+        text: "Excellent. The attacks have been happening near the old mill, north of the village. Be careful - these aren't ordinary wolves. Something has made them bold and vicious."
+        
+        on_enter:
+          - type: add_relationship
+            character: Village Elder
+            amount: 5
+          - type: set_variable
+            variable: trust_level
+            value: 20
+        
+        responses:
+          - text: "I'll investigate the mill area."
+            next: quest_details
+          
+          - text: "Any advice for dealing with aggressive wolves?"
+            next: wolf_advice
+
+      trust_building:
+        text: "Help Martha at the bakery with her grain delivery problem. Assist Tom the blacksmith with gathering materials. Show the people of this village that you care about more than just coin."
+        
+        responses:
+          - text: "I'll help the villagers."
+            next: community_service
+            actions:
+              - type: add_journal_entry
+                entry: "The Elder suggested I help Martha and Tom to build trust with the village."
+          
+          - text: "That sounds like a lot of work for nothing."
+            next: selfish_response
+
+      farewell:
+        text:
+          - condition:
+              type: variable
+              variable: wisdom_shared
+              value: true
+            text: "May the wisdom we shared guide your path, young adventurer. Return when you need counsel."
+          - condition:
+              type: variable
+              variable: trust_level
+              min_value: 10
+            text: "Safe travels, friend. Our village will always welcome you."
+          - default: "Farewell, traveler. May fortune smile upon your journey."
+        
+        on_enter:
+          - type: save_dialogue_state
+        
+        responses: []
+
+  # Follow-up dialogue for after completing the wolf quest
+  - id: village_elder_wolf_complete
+    character: Village Elder
+    priority: 2
+    repeatable: false
+    root: quest_completion
+    
+    conditions:
+      - type: quest_status
+        quest_id: wolf_pack_threat
+        status: completed
+      - type: flag
+        flag: elder_thanked_for_wolves
+        value: false
+    
+    nodes:
+      quest_completion:
+        text: "You've returned! The livestock attacks have stopped completely. The whole village is grateful for what you've done. Please, accept this reward."
+        
+        on_enter:
+          - type: set_flag
+            flag: elder_thanked_for_wolves
+            value: true
+          - type: add_gold
+            amount: 100
+          - type: add_item
+            item_id: elders_blessing
+            quantity: 1
+          - type: add_relationship
+            character: Village Elder
+            amount: 10
+        
+        responses:
+          - text: "Just doing what needed to be done."
+            next: humble_response
+          
+          - text: "The village can count on me."
+            next: loyalty_pledge
+          
+          - text: "Do you have any other problems that need solving?"
+            next: advanced_quests
+
+      humble_response:
+        text: "Your humility serves you well. True heroes don't seek glory, they simply do what's right."
+        
+        responses:
+          - text: "Thank you, Elder."
+            next: end
+
+      loyalty_pledge:
+        text: "And we are fortunate to have such a protector. You will always be welcome here, champion."
+        
+        on_enter:
+          - type: add_relationship
+            character: Village Elder
+            amount: 5
+        
+        responses:
+          - text: "I'm honored by your trust."
+            next: end
+
+  # Simple merchant dialogue
+  - id: general_merchant
+    character: General Merchant
+    location: market_square
+    priority: 1
+    repeatable: true
+    root: merchant_greeting
+    
+    variables:
+      purchases_made: 0
+      discount_earned: false
+    
+    nodes:
+      merchant_greeting:
+        text:
+          - condition:
+              type: variable
+              variable: purchases_made
+              min_value: 5
+            text: "My best customer! What can I get for you today?"
+          - default: "Welcome to my shop! I've got supplies for any adventurer."
+        
+        responses:
+          - text: "Show me your wares."
+            next: open_shop
+            actions:
+              - type: open_shop
+                shop_id: general_merchant
+          
+          - text: "[Persuade] How about a discount for a regular customer?"
+            next: discount_attempt
+            skill_check:
+              skill: persuasion
+              difficulty: 12
+              success_node: discount_success
+              failure_node: discount_failure
+            conditions:
+              - type: variable
+                variable: purchases_made
+                min_value: 3
+          
+          - text: "Just browsing."
+            next: end
+
+      discount_success:
+        text: "You know what? You've been good to me. I'll give you 10% off everything!"
+        
+        on_enter:
+          - type: set_variable
+            variable: discount_earned
+            value: true
+          - type: apply_shop_discount
+            shop_id: general_merchant
+            percent: 10
+        
+        responses:
+          - text: "Much appreciated!"
+            next: open_shop
+
+      discount_failure:
+        text: "Ha! Nice try, but business is business. Maybe when you've bought more from me."
+        
+        responses:
+          - text: "Fair enough."
+            next: open_shop
+
+      open_shop:
+        text: "Take your time and look around!"
+        
+        on_enter:
+          - type: increment_variable
+            variable: purchases_made
+            amount: 1
+        
+        responses:
+          - text: "Thanks for your time."
+            next: end
+
+      end:
+        text: "Come back anytime!"
+        responses: []

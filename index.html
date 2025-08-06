@@ -45,6 +45,10 @@
                 </div>
             </div>
             <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
+            
+            <!-- Temporary Test Button for Journal System -->
+            <button id="test-journal-button" class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm" onclick="testJournalSystem()">Test Journal System</button>
+            
             <button id="check-updates-btn" class="mt-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Check for Updates</button>
         </div>
 
@@ -325,7 +329,14 @@
     <script src="src/assets/js/utils/core.js"></script>
     <script src="src/assets/js/utils/tools.js"></script>
     <script src="src/assets/js/utils/save.js"></script>
-    
+    <script src="src/assets/js/utils/debounce.js"></script>
+    <script src="src/assets/js/utils/regionUtils.js"></script>
+    <script src="src/assets/js/utils/scriptLoader.js"></script>
+  
+    <!-- Core System Framework -->
+    <script src="src/assets/js/core/eventBus.js"></script>
+    <script src="src/assets/js/systems/baseSystem.js"></script>
+
     <!-- Game Systems -->
     <script src="src/assets/js/systems/experience.js"></script>
     <script src="src/assets/js/systems/experienceTracker.js"></script>
@@ -336,26 +347,37 @@
     <script src="src/assets/js/systems/combat.js"></script>
     <script src="src/assets/js/systems/spellcasting.js"></script>
     <script src="src/assets/js/systems/conditions.js"></script>
+    <script src="src/assets/js/systems/locationManager.js"></script>
+    <script src="src/assets/js/systems/readableItems.js"></script>
+    <script src="src/assets/js/systems/journal.js"></script>
+    
+    <!-- Dialogue System -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script src="src/assets/js/systems/yamlDialogue.js"></script>
+    <script src="src/assets/js/ui/dialogueIntegration.js"></script>
     
     <!-- UI Components -->
     <script src="src/assets/js/ui/advancedSorting.js"></script>
-    <script src="src/assets/js/ui/inventoryAnalytics.js"></script>
     <script src="src/assets/js/ui/inventoryUIFeatures.js"></script>
+    <script src="src/assets/js/ui/inventoryFilters.js"></script>
     <script src="src/assets/js/ui/inventory.js"></script>
     <script src="src/assets/js/ui/activeEffectsDisplay.js"></script>
     <script src="src/assets/js/ui/statAnimator.js"></script>
+    <script src="src/assets/js/ui/skillColors.js"></script>
     <script src="src/assets/js/ui/ui.js"></script>
 
     <!-- Version Display -->
-    <script src="src/assets/js/version.js"></script>
+    <script src="src/assets/js/core/version.js"></script>
     
     <!-- Mobile Support -->
-    <script src="src/assets/js/mobile.js"></script>
-    
+    <script src="src/assets/js/platform/mobile.js"></script>
+
     <!-- Game Flow -->
-    <script src="src/assets/js/scenes.js"></script>
-    <script src="src/assets/js/developerMenu.js"></script>
-    <script src="src/assets/js/main.js"></script>
+    <script src="src/assets/js/systems/foraging.js"></script>
+    <script src="src/assets/js/core/scenes.js"></script>
+    <script src="src/assets/js/dev/developerMenu.js"></script>
+    <script src="src/assets/js/utils/dialogueTest.js"></script>
+    <script src="src/assets/js/core/main.js"></script>
 
 </body>
 </html>

@@ -26,17 +26,27 @@ const gameData = {
             head: null,
             neck: null,
             chest: null,
+            clothing: null,
             mainhand: null,
             offhand: null,
             finger1: null,
             finger2: null,
-            feet: null
+            feet: null,
+            waist: null,
+            back: null
         },
-        quests: { active: [], completed: [] },
+        quests: { active: [], completed: [] }, // Fixed: completed should be array, not object
         lore: new Set(),
         rumors: new Set(),
         journalPins: new Set(),
         journalNotes: {},
+        journal: [], // For dialogue-added journal entries
+        discoveredLocations: [], // For journal system
+        discoveredNPCs: [], // For journal system  
+        discoveredMonsters: [], // For journal system
+        discoveredEntries: {}, // For tracking discovered journal entries
+        relationships: {}, // NPC relationships for dialogue system
+        flags: {}, // Global flags for dialogue conditions
         stats: {
             strength: 10,
             dexterity: 10,
@@ -102,6 +112,7 @@ const gameData = {
         },
         cantripsKnown: [],
         spellsKnown: [],
+        featuresGained: [], // Array to track features gained through leveling
         classFeatures: {
             actionSurge: { available: false, used: false },
             rage: { available: false, used: false },
@@ -124,6 +135,12 @@ const gameData = {
 
         //todo: add relationships, reputation, renown, etc.
     },
+    // Global quest tracking for dialogue system
+    quests: {},
+    // Global flags for dialogue system
+    flags: {},
+    // NPC relationships for dialogue system  
+    relationships: {},
     effects: {
         active: [],
         timers: {}
@@ -155,7 +172,8 @@ const gameData = {
         showDiceAnimations: true,
         combatAnimationSpeed: 1,
         autoScrollCombatLog: true,
-        showStatAnimations: true
+        showStatAnimations: true,
+        enableMods: true
     }
 };
 
@@ -171,9 +189,63 @@ let questsData = {};
 let monstersData = {};
 let calendarData = {};
 let effectsData = {};
+let lootTablesData = {};
 
-// Base path for JSON data files. This is resolved dynamically at runtime.
-let dataPath = 'src/data/';
+// Make data available globally for other modules
+window.locationsData = locationsData;
+window.scenesData = scenesData;
+window.classesData = classesData;
+window.presetCharactersData = presetCharactersData;
+window.speciesData = speciesData;
+window.recipesData = recipesData;
+window.questsData = questsData;
+window.monstersData = monstersData;
+window.calendarData = calendarData;
+window.effectsData = effectsData;
+window.lootTablesData = lootTablesData;
+
+/**
+ * Base path to JSON data files. Determined at runtime by detectDataPath().
+ * @type {string}
+ */
+let DATA_BASE_PATH = '';
+
+/**
+ * Attempts to locate the game's data directory by testing multiple candidate
+ * paths. A custom path can be provided via the global `DATA_PATH` variable.
+ *
+ * @returns {Promise<string>} Resolved base path for all data files
+ */
+async function detectDataPath() {
+    if (window.DATA_PATH) {
+        DATA_BASE_PATH = window.DATA_PATH.endsWith('/') ? window.DATA_PATH : `${window.DATA_PATH}/`;
+        return DATA_BASE_PATH;
+    }
+
+    const candidates = [
+        'src/data/',
+        'data/',
+        './data/',
+        '../data/',
+        '../src/data/',
+        '../../data/'
+    ];
+
+    for (const path of candidates) {
+        try {
+            // Test with a common file that should exist
+            const resp = await fetch(`${path}classes.json`, { cache: 'no-store' });
+            if (resp.ok) {
+                DATA_BASE_PATH = path;
+                return DATA_BASE_PATH;
+            }
+        } catch (err) {
+            // Ignore failed fetch attempt
+        }
+    }
+
+    throw new Error('Data path not found');
+}
 
 // Skills System Constants
 const skillAbilityMap = {
@@ -256,87 +328,67 @@ function rollD20() {
     return Math.floor(Math.random() * 20) + 1;
 }
 
-function rollDice(sides, count = 1) {
+
+/**
+ * Unified dice rolling function.
+ * Usage:
+ *   rollDice('2d6+3') => { rolls: [n, n], total: n, modifier: 3, expression: '2d6+3', count: 2, sides: 6 }
+ *   rollDice(6, 2) => { rolls: [n, n], total: n, modifier: 0, expression: '2d6', count: 2, sides: 6 }
+ *   rollDice(20) => { rolls: [n], total: n, modifier: 0, expression: '1d20', count: 1, sides: 20 }
+ */
+function rollDice(arg1, arg2) {
+    let count, sides, modifier = 0, expression;
+    if (typeof arg1 === 'string') {
+        // Parse dice notation like "2d6+3"
+        const match = arg1.match(/(\d+)?d(\d+)([+-]\d+)?/i);
+        if (!match) return { rolls: [], total: 0, modifier: 0, expression: arg1, count: 0, sides: 0 };
+        count = parseInt(match[1]) || 1;
+        sides = parseInt(match[2]);
+        modifier = match[3] ? parseInt(match[3]) : 0;
+        expression = arg1;
+    } else if (typeof arg1 === 'number') {
+        sides = arg1;
+        count = typeof arg2 === 'number' ? arg2 : 1;
+        expression = `${count}d${sides}`;
+    } else {
+        return { rolls: [], total: 0, modifier: 0, expression: '', count: 0, sides: 0 };
+    }
     const rolls = [];
     for (let i = 0; i < count; i++) {
         rolls.push(Math.floor(Math.random() * sides) + 1);
     }
-    return rolls;
+    const total = rolls.reduce((sum, roll) => sum + roll, 0) + modifier;
+    return { rolls, total, modifier, expression, count, sides };
 }
 
 // Data Loading Functions
-/**
- * Attempts to determine the correct base path for game data files.
- * It first checks for a `config.json` file with a `dataPath` setting. If not
- * found, it tries a series of common relative paths based on the location of
- * this script. The detected path is stored in the global `dataPath` variable.
- */
-async function determineDataPath() {
-    if (window.dataPath) return window.dataPath;
-
-    // 1. Optional configuration file
-    try {
-        const cfgResp = await fetch('config.json');
-        if (cfgResp.ok) {
-            const cfg = await cfgResp.json();
-            if (cfg.dataPath) {
-                dataPath = cfg.dataPath.endsWith('/') ? cfg.dataPath : cfg.dataPath + '/';
-                window.dataPath = dataPath;
-                return dataPath;
-            }
-        }
-    } catch (_) { /* ignore */ }
-
-    // 2. Derive from script location
-    const scriptEl = document.currentScript || document.querySelector('script[src*="main.js"]');
-    if (scriptEl) {
-        const scriptUrl = new URL(scriptEl.src, window.location.href);
-        const base = scriptUrl.pathname.split('/').slice(0, -1).join('/');
-        const candidates = [
-            `${base}/../../data/`,
-            `${base}/../data/`,
-            `${base}/../src/data/`,
-            `${base}/data/`,
-            'src/data/',
-            'data/'
-        ];
-        for (const candidate of candidates) {
-            try {
-                const resp = await fetch(candidate + 'locations.json');
-                if (resp.ok) {
-                    dataPath = candidate;
-                    window.dataPath = dataPath;
-                    return dataPath;
-                }
-            } catch (_) { /* ignore */ }
-        }
-    }
-
-    window.dataPath = dataPath;
-    return dataPath;
-}
-
 async function loadGameData() {
     try {
-        const base = await determineDataPath();
+        if (!DATA_BASE_PATH) {
+            await detectDataPath();
+        }
         // Load all JSON data files
+
+
         const responses = await Promise.all([
-            fetch(base + 'locations.json'),
-            fetch(base + 'scenes.json'),
-            fetch(base + 'classes.json'),
-            fetch(base + 'preset_characters.json'),
-            fetch(base + 'species.json'),
-            fetch(base + 'recipes.json'),
-            fetch(base + 'quests.json'),
-            fetch(base + 'monsters.json'),
-            fetch(base + 'calendar.json'),
-            fetch(base + 'effects.json')
+            // Note: locations are now loaded by LocationManager from individual files
+            fetch(`${DATA_BASE_PATH}scenes.json`),
+            fetch(`${DATA_BASE_PATH}classes.json`),
+            fetch(`${DATA_BASE_PATH}preset_characters.json`),
+            fetch(`${DATA_BASE_PATH}species.json`),
+            fetch(`${DATA_BASE_PATH}recipes.json`),
+            fetch(`${DATA_BASE_PATH}quests.json`),
+            fetch(`${DATA_BASE_PATH}monsters.json`),
+            fetch(`${DATA_BASE_PATH}calendar.json`),
+            fetch(`${DATA_BASE_PATH}effects.json`),
+            fetch(`${DATA_BASE_PATH}loot_tables/foraging.json`)
         ]);
 
-        const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse, 
-               speciesResponse, recipesResponse, questsResponse, monstersResponse, calendarResponse, effectsResponse] = responses;
+        const [scenesResponse, classesResponse, presetCharactersResponse,
+               speciesResponse, recipesResponse, questsResponse, monstersResponse,
+               calendarResponse, effectsResponse, foragingLootResponse] = responses;
 
-        if (locationsResponse.ok) locationsData = await locationsResponse.json();
+        // Note: locationsData is now loaded by LocationManager from individual files
         if (scenesResponse.ok) scenesData = await scenesResponse.json();
         if (classesResponse.ok) classesData = await classesResponse.json();
         if (presetCharactersResponse.ok) presetCharactersData = await presetCharactersResponse.json();
@@ -344,11 +396,24 @@ async function loadGameData() {
         if (recipesResponse.ok) recipesData = await recipesResponse.json();
         if (questsResponse.ok) questsData = await questsResponse.json();
         if (monstersResponse.ok) monstersData = await monstersResponse.json();
+        // Always assign to gameData.monsters for UI access
+        gameData.monsters = monstersData;
         if (calendarResponse.ok) calendarData = await calendarResponse.json();
         if (effectsResponse.ok) effectsData = await effectsResponse.json();
+        if (foragingLootResponse.ok) lootTablesData = await foragingLootResponse.json();
 
         // Load item data from multiple files
-        await loadItemData(base);
+        await loadItemData();
+
+        // Use all nature.json item IDs as foragable items
+        if (window.itemsData) {
+            gameData.foragableItems = Object.keys(window.itemsData).filter(id => window.itemsData[id].type === 'nature');
+        } else {
+            gameData.foragableItems = [];
+        }
+
+        // Load item data from multiple files
+        await loadItemData();
 
         console.log('Game data loaded successfully');
     } catch (error) {
@@ -357,73 +422,76 @@ async function loadGameData() {
     }
 }
 
-async function loadItemData(base = dataPath) {
+// --- Item Data Loading ---
+async function loadItemData() {
     try {
-        // Load all item category files
-        const itemResponses = await Promise.all([
-            fetch(base + 'item_data/weapons.json'),
-            fetch(base + 'item_data/armor.json'),
-            fetch(base + 'item_data/accessories.json'),
-            fetch(base + 'item_data/consumables.json'),
-            fetch(base + 'item_data/magical.json'),
-            fetch(base + 'item_data/tools.json'),
-            fetch(base + 'item_data/materials.json'),
-            fetch(base + 'item_data/quest_items.json'),
-            fetch(base + 'item_data/equipment.json')
-        ]);
-
-        const [weaponsResponse, armorResponse, accessoriesResponse, consumablesResponse, 
-               magicalResponse, toolsResponse, materialsResponse, questItemsResponse, equipmentResponse] = itemResponses;
-
-        // Initialize empty items data object
-        itemsData = {};
-
-        // Merge all item categories into the main itemsData object
-        if (weaponsResponse.ok) {
-            const weapons = await weaponsResponse.json();
-            Object.assign(itemsData, weapons);
+        const itemBase = `${DATA_BASE_PATH}items/`;
+        const modBase = `${DATA_BASE_PATH}mods/items/`;
+        const itemFiles = [
+            'weapons.json',
+            'armor.json',
+            'accessories.json',
+            'consumables.json',
+            'magical.json',
+            'tools.json',
+            'materials.json',
+            'quest_items.json',
+            'equipment.json',
+            'nature.json'
+        ];
+        // Use global itemsData
+        // Load base item files
+        for (const file of itemFiles) {
+            try {
+                const response = await fetch(`${itemBase}${file}`);
+                if (response.ok) {
+                    try {
+                        const data = await response.json();
+                        Object.assign(itemsData, data);
+                    } catch (jsonErr) {
+                        console.error(`Error parsing JSON for ${file}:`, jsonErr);
+                    }
+                } else {
+                    console.warn(`Item data file not found or failed to load: ${file}`);
+                }
+            } catch (err) {
+                console.error(`Error loading item data file ${file}:`, err);
+            }
         }
-        if (armorResponse.ok) {
-            const armor = await armorResponse.json();
-            Object.assign(itemsData, armor);
+        // Load modded item files if enabled
+        if (gameData.settings.enableMods) {
+            for (const file of itemFiles) {
+                try {
+                    const response = await fetch(`${modBase}${file}`);
+                    if (typeof window.failedModItemFiles === 'undefined') {
+                        window.failedModItemFiles = [];
+                    }
+                    if (response.ok) {
+                        try {
+                            const data = await response.json();
+                            Object.assign(itemsData, data);
+                        } catch (jsonErr) {
+                            console.error(`Error parsing JSON for mod file ${file}:`, jsonErr);
+                            window.failedModItemFiles.push(file);
+                        }
+                    } else {
+                        window.failedModItemFiles.push(file);
+                    }
+                } catch (err) {
+                    console.error(`Error loading mod item data file ${file}:`, err);
+                }
+            }
         }
-        if (accessoriesResponse.ok) {
-            const accessories = await accessoriesResponse.json();
-            Object.assign(itemsData, accessories);
-        }
-        if (consumablesResponse.ok) {
-            const consumables = await consumablesResponse.json();
-            Object.assign(itemsData, consumables);
-        }
-        if (magicalResponse.ok) {
-            const magical = await magicalResponse.json();
-            Object.assign(itemsData, magical);
-        }
-        if (toolsResponse.ok) {
-            const tools = await toolsResponse.json();
-            Object.assign(itemsData, tools);
-        }
-        if (materialsResponse.ok) {
-            const materials = await materialsResponse.json();
-            Object.assign(itemsData, materials);
-        }
-        if (questItemsResponse.ok) {
-            const questItems = await questItemsResponse.json();
-            Object.assign(itemsData, questItems);
-        }
-        if (equipmentResponse.ok) {
-            const equipment = await equipmentResponse.json();
-            Object.assign(itemsData, equipment);
-        }
-
+        window.itemsData = itemsData;
         console.log('Item data loaded successfully:', Object.keys(itemsData).length, 'items');
     } catch (error) {
         console.error('Error loading item data:', error);
         // Fall back to loading from the old items.json if new structure fails
         try {
-            const fallbackResponse = await fetch(base + 'items.json');
+            const fallbackResponse = await fetch(`${DATA_BASE_PATH}items.json`);
             if (fallbackResponse.ok) {
-                itemsData = await fallbackResponse.json();
+                const itemsData = await fallbackResponse.json();
+                window.itemsData = itemsData;
                 console.log('Loaded fallback items.json');
             }
         } catch (fallbackError) {
@@ -432,169 +500,21 @@ async function loadItemData(base = dataPath) {
     }
 }
 
+//! Below is a placeholder. Will be removed once the game can pull item data correctly.
+
 function loadFallbackData() {
     // Fallback data in case JSON files can't be loaded
     console.log('Loading fallback data...');
     
     // Basic fallback items
+
+    /*
     if (Object.keys(itemsData).length === 0) {
-        itemsData = {
-            'iron_sword': {
-                name: 'Iron Sword',
-                type: 'weapon',
-                subtype: 'sword',
-                slot: 'mainhand',
-                damage: '1d8',
-                damageType: 'slashing',
-                weight: 3,
-                value: 10,
-                rarity: 'common',
-                description: 'A sturdy iron sword with a sharp edge.',
-                statBonus: { strength: 1 }
-            },
-            'steel_dagger': {
-                name: 'Steel Dagger',
-                type: 'weapon',
-                subtype: 'sword',
-                slot: 'mainhand',
-                damage: '1d4',
-                damageType: 'piercing',
-                weight: 1,
-                value: 5,
-                rarity: 'common',
-                description: 'A light and quick steel dagger.',
-                statBonus: { dexterity: 1 }
-            },
-            'magic_staff': {
-                name: 'Arcane Staff',
-                type: 'weapon',
-                subtype: 'staff',
-                slot: 'mainhand',
-                damage: '1d6',
-                damageType: 'magical',
-                weight: 4,
-                value: 25,
-                rarity: 'uncommon',
-                description: 'A staff crackling with arcane energy.',
-                statBonus: { intelligence: 2 }
-            },
-            'leather_armor': {
-                name: 'Leather Armor',
-                type: 'armor',
-                subtype: 'light',
-                slot: 'chest',
-                armorClass: 11,
-                maxDexMod: null,
-                weight: 10,
-                value: 10,
-                rarity: 'common',
-                description: 'Flexible leather armor that doesn\'t restrict movement.'
-            },
-            'chain_mail': {
-                name: 'Chain Mail',
-                type: 'armor',
-                subtype: 'medium',
-                slot: 'chest',
-                armorClass: 13,
-                maxDexMod: 2,
-                weight: 20,
-                value: 50,
-                rarity: 'uncommon',
-                description: 'Interlocking metal rings provide solid protection.'
-            },
-            'wooden_shield': {
-                name: 'Wooden Shield',
-                type: 'armor',
-                subtype: 'shield',
-                slot: 'offhand',
-                armorClass: 2,
-                weight: 6,
-                value: 5,
-                rarity: 'common',
-                description: 'A simple wooden shield reinforced with iron bands.'
-            },
-            'health_potion': {
-                name: 'Health Potion',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'heal:2d4+2',
-                weight: 0.5,
-                value: 5,
-                uses: 1,
-                rarity: 'common',
-                description: 'A red potion that restores health when consumed.'
-            },
-            'mana_potion': {
-                name: 'Mana Potion',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'restore_mana:1d4+1',
-                weight: 0.5,
-                value: 8,
-                uses: 1,
-                rarity: 'common',
-                description: 'A blue potion that restores magical energy.'
-            },
-            'bread': {
-                name: 'Bread',
-                type: 'consumable',
-                slot: 'none',
-                effect: 'sustenance',
-                weight: 0.5,
-                value: 1,
-                uses: 1,
-                rarity: 'common',
-                description: 'Fresh baked bread that satisfies hunger.'
-            },
-            'silver_ring': {
-                name: 'Silver Ring',
-                type: 'accessory',
-                slot: 'finger',
-                weight: 0.1,
-                value: 25,
-                rarity: 'uncommon',
-                description: 'A finely crafted silver ring.',
-                statBonus: { charisma: 1 }
-            },
-            'amulet_protection': {
-                name: 'Amulet of Protection',
-                type: 'accessory',
-                slot: 'neck',
-                weight: 0.2,
-                value: 100,
-                rarity: 'rare',
-                description: 'An amulet that wards off evil.',
-                statBonus: { constitution: 2 }
-            },
-            'ancient_tome': {
-                name: 'Ancient Tome',
-                type: 'quest',
-                slot: 'none',
-                weight: 2,
-                value: 0,
-                rarity: 'legendary',
-                description: 'A mysterious book filled with arcane knowledge.'
-            },
-            'iron_ore': {
-                name: 'Iron Ore',
-                type: 'material',
-                slot: 'none',
-                weight: 1,
-                value: 2,
-                rarity: 'common',
-                description: 'Raw iron ore suitable for forging.'
-            },
-            'magic_crystal': {
-                name: 'Magic Crystal',
-                type: 'material',
-                slot: 'none',
-                weight: 0.5,
-                value: 15,
-                rarity: 'rare',
-                description: 'A crystal that glows with inner light.'
-            }
-        };
+        // We don't want fallback items, we want to ensure the game can pull the data.
     }
+    */
+
+
     
     // Basic fallback classes/origins
     if (Object.keys(presetCharactersData).length === 0) {
@@ -672,41 +592,11 @@ function loadFallbackData() {
         };
     }
     
-    // Basic fallback locations
+    // Locations are now loaded by LocationManager from individual files
+    // This fallback is no longer needed
     if (Object.keys(locationsData).length === 0) {
-        locationsData = {
-            'westwalker_camp': {
-                name: 'Frontier Camp',
-                description: 'A rugged camp on the edge of civilization, where Westwalkers gather to share stories and trade supplies.',
-                type: 'settlement',
-                actions: [
-                    { text: 'Rest at the campfire', type: 'rest' },
-                    { text: 'Trade with merchants', type: 'trade' },
-                    { text: 'Listen to stories', type: 'lore' },
-                    { text: '<i class="ph-duotone ph-sword"></i> Test Combat', type: 'combat', target: 'test_combat' }
-                ]
-            },
-            'leonin_encampment': {
-                name: 'M\'ra Kaal Encampment',
-                description: 'A spiritual gathering place of the Leonin, where ancient traditions are honored and the spirits are consulted.',
-                type: 'settlement',
-                actions: [
-                    { text: 'Meditate with the spirits', type: 'meditation' },
-                    { text: 'Train with warriors', type: 'training' },
-                    { text: 'Seek guidance from elders', type: 'guidance' }
-                ]
-            },
-            'gaian_library': {
-                name: 'Archive of Knowledge',
-                description: 'A grand library containing the collected wisdom of the Gaian Empire, where scholars pursue ancient mysteries.',
-                type: 'library',
-                actions: [
-                    { text: 'Research ancient lore', type: 'research' },
-                    { text: 'Study magical texts', type: 'study' },
-                    { text: 'Consult with librarians', type: 'consultation' }
-                ]
-            }
-        };
+        console.warn('⚠️ No location data found. LocationManager should handle location loading.');
+        // The LocationManager will populate locationsData when initialized
     }
     
     console.log('Fallback data loaded successfully');
@@ -975,12 +865,11 @@ function updateTimeControlDisplay() {
 
 // Dice Rolling System Enhancement
 function performSkillCheck(attribute, dc) {
-    const roll = rollDice('1d20');
+    const rollResult = rollDice('1d20');
+    const roll = rollResult.total;
     const modifier = Math.floor((gameData.player.stats[attribute] - 10) / 2);
     const total = roll + modifier;
-    
     showDiceRoll(roll, modifier, total, dc);
-    
     return total >= dc;
 }
 
@@ -1002,22 +891,7 @@ function showDiceRoll(roll, modifier, total, dc = null, label = '') {
     );
 }
 
-function rollDice(diceNotation) {
-    // Parse dice notation like "1d4", "2d6+3", etc.
-    const match = diceNotation.match(/(\d+)d(\d+)(?:\+(\d+))?/);
-    if (!match) return 0;
-    
-    const numDice = parseInt(match[1]);
-    const sides = parseInt(match[2]);
-    const modifier = parseInt(match[3]) || 0;
-    
-    let total = modifier;
-    for (let i = 0; i < numDice; i++) {
-        total += Math.floor(Math.random() * sides) + 1;
-    }
-    
-    return total;
-}
+
 
 function showInfoBox(message, type = 'info') {
     // Create and show info box

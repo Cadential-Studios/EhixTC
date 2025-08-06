@@ -1,0 +1,132 @@
+# Village Elder Dialogue - Aldric
+# Character: Village Elder (Aldric)
+# Location: elder_hut
+# Description: Wise elder of the village, quest giver for wolf threat
+
+dialogue_trees:
+  - id: "village_elder_greeting"
+    character: "Village Elder"
+    location: "elder_hut"
+    priority: 1
+    repeatable: true
+    root: "greeting"
+    conditions:
+      - type: "time_of_day"
+        hours: [6,7,8,9,10,11,12,13,14,15,16,17,18]
+      - type: "level_requirement"
+        min_level: 1
+    variables:
+      trust_level: 0
+      first_meeting: true
+      wisdom_shared: false
+    nodes:
+      greeting:
+        text:
+          - condition:
+              type: "variable"
+              variable: "first_meeting"
+              value: true
+            text: "Welcome, young traveler. I am Aldric, elder of this village. What brings you to our humble settlement?"
+          - condition:
+              type: "variable"
+              variable: "trust_level"
+              min_value: 20
+            text: "Ah, my trusted friend returns! How fare your adventures?"
+          - default: "Good day, adventurer. How may this old man assist you?"
+        on_enter:
+          - type: "set_variable"
+            variable: "first_meeting"
+            value: false
+          - type: "play_sound"
+            sound_id: "elder_greeting"
+        responses:
+          - text: "I seek wisdom and guidance."
+            next: "wisdom_request"
+            conditions:
+              - type: "variable"
+                variable: "trust_level"
+                min_value: 5
+          - text: "Tell me about this village."
+            next: "village_info"
+          - text: "Do you have any work for me?"
+            next: "quest_inquiry"
+            conditions:
+              - type: "level_requirement"
+                min_level: 2
+          - text: "I should be going."
+            next: "farewell"
+
+      village_info:
+        text:
+          - default: "Our village has stood for three generations. We are simple folk - farmers, craftsmen, traders. We live in harmony with the land and each other."
+        responses:
+          - text: "Thank you for the information."
+            next: "farewell"
+
+      wisdom_request:
+        text:
+          - condition:
+              type: "variable"
+              variable: "wisdom_shared"
+              value: false
+            text: "Wisdom comes from experience, young one. Help others, stay true to your principles, and remember - strength is not just in your sword arm, but in your heart."
+          - default: "You have grown wiser since our last talk. Continue on your path, and remember what I've taught you."
+        on_enter:
+          - type: "set_variable"
+            variable: "wisdom_shared"
+            value: true
+          - type: "add_relationship"
+            character: "Village Elder"
+            amount: 3
+        responses:
+          - text: "Thank you for your guidance."
+            next: "farewell"
+
+      quest_inquiry:
+        text:
+          - condition:
+              type: "variable"
+              variable: "trust_level"
+              min_value: 15
+            text: "Actually, there is something important I could use help with. Wolves have been attacking our livestock. The pack seems unusually aggressive."
+          - default: "Work? Well, there might be something... but I need to know I can trust you first. Help some of the villagers with their problems, then return to me."
+        responses:
+          - text: "I'll deal with these wolves."
+            next: "accept_quest"
+            conditions:
+              - type: "variable"
+                variable: "trust_level"
+                min_value: 15
+            actions:
+              - type: "start_quest"
+                quest_id: "wolf_pack_threat"
+              - type: "add_journal_entry"
+                entry: "The Village Elder asked me to deal with aggressive wolves threatening the livestock."
+          - text: "I'm not ready for that responsibility."
+            next: "farewell"
+
+      accept_quest:
+        text:
+          - default: "Excellent. The attacks have been happening near the old mill, north of the village. Be careful - these aren't ordinary wolves."
+        on_enter:
+          - type: "add_relationship"
+            character: "Village Elder"
+            amount: 5
+          - type: "set_variable"
+            variable: "trust_level"
+            value: 20
+        responses:
+          - text: "I'll investigate the mill area."
+            next: "farewell"
+
+      farewell:
+        text:
+          - condition:
+              type: "variable"
+              variable: "trust_level"
+              min_value: 10
+            text: "Safe travels, friend. Our village will always welcome you."
+          - default: "Farewell, traveler. May fortune smile upon your journey."
+        on_enter:
+          - type: "save_dialogue_state"
+        responses: []

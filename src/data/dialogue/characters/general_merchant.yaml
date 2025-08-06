@@ -1,0 +1,135 @@
+# General Merchant Dialogue
+# Character: General Merchant (Borin)
+# Location: market_square
+# Description: Trading merchant with shop functionality and relationship system
+
+dialogue_trees:
+  - id: "general_merchant"
+    character: "General Merchant"
+    location: "market_square"
+    priority: 1
+    repeatable: true
+    root: "merchant_greeting"
+    variables:
+      purchases_made: 0
+      discount_earned: false
+      relationship_level: 0
+    nodes:
+      merchant_greeting:
+        text:
+          - condition:
+              type: "variable"
+              variable: "purchases_made"
+              min_value: 5
+            text: "My best customer! What can I get for you today?"
+          - condition:
+              type: "variable"
+              variable: "purchases_made"
+              min_value: 1
+            text: "Welcome back! Good to see a familiar face."
+          - default: "Welcome to my shop! I've got supplies for any adventurer."
+        responses:
+          - text: "Show me your wares."
+            next: "open_shop"
+            actions:
+              - type: "open_shop"
+                shop_id: "general_merchant"
+          - text: "[Persuade] How about a discount for a regular customer?"
+            next: "discount_attempt"
+            skill_check:
+              skill: "persuasion"
+              difficulty: 12
+              success_node: "discount_success"
+              failure_node: "discount_failure"
+            conditions:
+              - type: "variable"
+                variable: "purchases_made"
+                min_value: 3
+              - type: "variable"
+                variable: "discount_earned"
+                value: false
+          - text: "Tell me about your travels."
+            next: "merchant_stories"
+            conditions:
+              - type: "variable"
+                variable: "relationship_level"
+                min_value: 5
+          - text: "Just browsing."
+            next: "end"
+
+      discount_success:
+        text:
+          - default: "You know what? You've been good to me. I'll give you 10% off everything!"
+        on_enter:
+          - type: "set_variable"
+            variable: "discount_earned"
+            value: true
+          - type: "apply_shop_discount"
+            shop_id: "general_merchant"
+            percent: 10
+          - type: "add_relationship"
+            character: "General Merchant"
+            amount: 5
+        responses:
+          - text: "Much appreciated!"
+            next: "open_shop"
+
+      discount_failure:
+        text:
+          - default: "Ha! Nice try, but business is business. Maybe when you've bought more from me."
+        responses:
+          - text: "Fair enough."
+            next: "open_shop"
+
+      merchant_stories:
+        text:
+          - default: "I've traveled many roads, friend. Seen the great cities of the south and the frozen peaks of the north. Each place has its treasures - and its dangers."
+        on_enter:
+          - type: "increment_variable"
+            variable: "relationship_level"
+            amount: 2
+        responses:
+          - text: "What's the most interesting place you've been?"
+            next: "travel_tales"
+          - text: "Any advice for a fellow traveler?"
+            next: "travel_advice"
+          - text: "Fascinating. Let's see your goods."
+            next: "open_shop"
+
+      travel_tales:
+        text:
+          - default: "The Crystal Caves of Eldermoor - walls that sparkle like stars! But beware the crystal spiders that guard them. Beautiful but deadly."
+        responses:
+          - text: "Sounds amazing and terrifying."
+            next: "open_shop"
+
+      travel_advice:
+        text:
+          - default: "Always carry rope, a light source, and extra food. And never, EVER, trust a deal that sounds too good to be true."
+        responses:
+          - text: "Wise words. Thank you."
+            next: "open_shop"
+
+      open_shop:
+        text:
+          - default: "Take your time and look around!"
+        on_enter:
+          - type: "increment_variable"
+            variable: "purchases_made"
+            amount: 1
+          - type: "increment_variable"
+            variable: "relationship_level"
+            amount: 1
+        responses:
+          - text: "Thanks for your time."
+            next: "end"
+
+      end:
+        text:
+          - condition:
+              type: "variable"
+              variable: "relationship_level"
+              min_value: 10
+            text: "Always a pleasure doing business with you, friend!"
+          - default: "Come back anytime!"
+        responses: []

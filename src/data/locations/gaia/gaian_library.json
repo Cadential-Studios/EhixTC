@@ -1,0 +1,61 @@
+{
+  "id": "gaian_library",
+  "name": "The Great Library of Gaia",
+  "description": "Sunlight, filtered through high, arched windows, illuminates swirling dust motes. The air smells of old parchment and endless knowledge. Scholars move like ghosts between towering shelves.",
+  "image": "assets/images/locations/gaian_library.jpg",
+  "region": "Gaia",
+  "location": {
+    "x": 200,
+    "y": 350
+  },
+  "tags": ["library", "academic", "knowledge", "scholarly", "magical"],
+  "available_actions": {
+    "shop": false,
+    "talk": true,
+    "rest": false,
+    "travel": true,
+    "explore": true
+  },
+  "connections": {},
+  "services": {
+    "inn": {
+      "available": false
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    },
+    "study": {
+      "available": true,
+      "cost": 0,
+      "description": "Research celestial charts and ancient texts"
+    }
+  },
+  "npcs": [
+    {
+      "id": "head_librarian",
+      "name": "Sage Elandra",
+      "role": "Head Librarian",
+      "description": "The keeper of ancient knowledge who oversees the Great Library's vast collection.",
+      "relationships": [],
+      "dialogue_trees": ["sage_elandra"]
+    }
+  ],
+  "points_of_interest": [
+    {
+      "id": "celestial_archive",
+      "name": "Celestial Archive",
+      "description": "A specialized section containing star charts and astronomical instruments."
+    },
+    {
+      "id": "ancient_texts",
+      "name": "Ancient Texts Section",
+      "description": "Rare manuscripts and scrolls containing forgotten knowledge from ages past."
+    }
+  ],
+  "loot_table": "academic",
+  "foragable": false,
+  "danger_level": "safe"
+}

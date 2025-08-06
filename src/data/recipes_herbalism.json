@@ -1,0 +1,56 @@
+{
+  "healing_salve": {
+    "id": "healing_salve",
+    "name": "Healing Salve",
+    "description": "A basic healing ointment made from yarrow and wild mint.",
+    "category": "herbalism",
+    "craftingMethod": "mixing",
+    "craftingTime": 2,
+    "difficulty": "easy",
+    "experienceGained": 8,
+    "requiredLevel": 1,
+    "requiredSkills": { "herbalism": 1 },
+    "requiredTools": ["herbalism_kit"],
+    "ingredients": [
+      { "itemId": "herb_yarrow", "quantity": 1, "consumed": true },
+      { "itemId": "herb_mint", "quantity": 1, "consumed": true }
+    ],
+    "results": [
+      { "itemId": "healing_herbs", "quantity": 1, "chance": 100 }
+    ],
+    "byproducts": [],
+    "failureResults": [],
+    "unlockConditions": {
+      "questsCompleted": [],
+      "itemsDiscovered": ["herb_yarrow", "herb_mint"],
+      "locationsVisited": []
+    }
+  },
+  "antidote": {
+    "id": "antidote",
+    "name": "Antidote",
+    "description": "A potion that cures poison, brewed from nightshade and mandrake root.",
+    "category": "herbalism",
+    "craftingMethod": "brewing",
+    "craftingTime": 4,
+    "difficulty": "medium",
+    "experienceGained": 18,
+    "requiredLevel": 2,
+    "requiredSkills": { "herbalism": 2 },
+    "requiredTools": ["herbalism_kit"],
+    "ingredients": [
+      { "itemId": "herb_nightshade", "quantity": 1, "consumed": true },
+      { "itemId": "herb_mandrake", "quantity": 1, "consumed": true }
+    ],
+    "results": [
+      { "itemId": "antidote_potion", "quantity": 1, "chance": 100 }
+    ],
+    "byproducts": [],
+    "failureResults": [],
+    "unlockConditions": {
+      "questsCompleted": [],
+      "itemsDiscovered": ["herb_nightshade", "herb_mandrake"],
+      "locationsVisited": []
+    }
+  }
+}

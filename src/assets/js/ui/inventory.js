@@ -1,7 +1,35 @@
+// Prevent browser context menu on right-click in the game UI
+document.body.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+}, false);
+// Ensure unequipItem is available globally for UI actions
+if (typeof unequipItem === 'undefined' && typeof window !== 'undefined' && typeof window.unequipItem === 'undefined') {
+  if (typeof window !== 'undefined' && typeof window.gameData !== 'undefined' && typeof window.itemsData !== 'undefined') {
+    // Try to assign from character.js if loaded
+    if (typeof window.unequipItem === 'function') {
+      // already present
+    } else if (typeof unequipItem === 'function') {
+      window.unequipItem = unequipItem;
+    } else if (typeof character !== 'undefined' && typeof character.unequipItem === 'function') {
+      window.unequipItem = character.unequipItem;
+    }
+  }
+}
 // Advanced Inventory System
 // Edoria: The Triune Convergence - Enhanced Inventory Management
 // TASK 24: Advanced Inventory System Implementation
 
+/**
+ * Loads the inventory analytics module on demand.
+ * @returns {Promise<void>} Resolves when the analytics script is available.
+ */
+async function loadInventoryAnalytics() {
+    await loadScript('src/assets/js/ui/inventoryAnalytics.js');
+}
+
+/**
+ * Manages rendering and interaction for the advanced inventory UI.
+ */
 class InventoryManager {
     constructor() {
         this.searchTerm = '';
@@ -17,11 +45,40 @@ class InventoryManager {
             direction: 'asc'
         };
         this.isDetailModalOpen = false;
+        this.dom = {};
+        // Resizable layout properties
+        this.isResizing = false;
+        this.equipmentPanelWidth = 350; // Default width in pixels
+        this.minPanelWidth = 355;
+        this.maxEquipmentWidth = 500;
     }
 
-    // Main inventory rendering function
+    /**
+     * Render the full inventory interface and bind DOM references.
+     */
     renderAdvancedInventory() {
         if (!inventoryContentEl) return;
+        // Wait for itemsData to be loaded
+        if (typeof itemsData === 'undefined' || !itemsData || Object.keys(itemsData).length === 0) {
+            inventoryContentEl.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12">
+                    <i class="ph-duotone ph-hourglass text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-300 text-lg mb-2">Loading item data...</p>
+                    <p class="text-gray-500 text-sm">If this message persists, there may be a data loading issue.</p>
+                </div>
+            `;
+            // Set up a watcher to re-render when itemsData is ready
+            if (!window.__inventoryDataWatcher) {
+                window.__inventoryDataWatcher = setInterval(() => {
+                    if (typeof itemsData !== 'undefined' && itemsData && Object.keys(itemsData).length > 0) {
+                        clearInterval(window.__inventoryDataWatcher);
+                        window.__inventoryDataWatcher = null;
+                        this.renderAdvancedInventory();
+                    }
+                }, 100);
+            }
+            return;
+        }
 
         inventoryContentEl.innerHTML = `
             <div class="advanced-inventory-container">
@@ -58,7 +115,7 @@ class InventoryManager {
                                 <option value="common">Common</option>
                                 <option value="uncommon">Uncommon</option>
                                 <option value="rare">Rare</option>
-                                <option value="epic">Epic</option>
+                                <option value="very_rare">Very Rare</option>
                                 <option value="legendary">Legendary</option>
                             </select>
                             
@@ -93,7 +150,13 @@ class InventoryManager {
                         <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 text-sm mb-4">
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Items:</span>
-                                <span class="text-white ml-2">${this.getFilteredItems().length}/${gameData.player.inventory.length}</span>
+                                <span class="text-white ml-2">${filterInventoryItems(
+                                    gameData.player.inventory,
+                                    this.searchTerm,
+                                    this.activeFilters,
+                                    this.sortCriteria,
+                                    itemData => this.canUseItem(itemData)
+                                ).length}/${gameData.player.inventory.length}</span>
                             </div>
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Weight:</span>
@@ -109,7 +172,7 @@ class InventoryManager {
                             </div>
                             <div class="stat-item bg-gray-700 rounded px-3 py-2">
                                 <span class="text-gray-400">Equipment:</span>
-                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/10</span>
+                                <span class="text-purple-400 ml-2">${Object.values(gameData.player.equipment).filter(Boolean).length}/12</span>
                             </div>
                             <button onclick="inventoryManager.toggleStatsPanel()" 
                                     class="stat-item bg-blue-700 hover:bg-blue-600 rounded px-3 py-2 text-center transition-colors">
@@ -125,22 +188,29 @@ class InventoryManager {
                     </div>
                 </div>
 
-                <!-- Main Content Area -->
-                <div class="inventory-main grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <!-- Main Content Area with Resizable Layout -->
+                <div class="inventory-main resizable-layout" style="display: flex !important; flex-direction: row !important; gap: 0; align-items: stretch; width: 100%; min-height: 500px; flex: 1;">
                     <!-- Equipment Panel -->
-                    <div class="equipment-section">
+                    <div class="equipment-section resizable-panel" id="equipment-panel" style="flex: 0 0 350px; min-width: 300px; display: flex; flex-direction: column; height: 100%;">
                         <h3 class="font-cinzel text-xl text-yellow-400 mb-4 border-b border-yellow-600 pb-2">
                             <i class="ph-duotone ph-sword"></i> Equipment
                         </h3>
-                        ${this.renderEquipmentPanel()}
+                        <div style="flex: 1; overflow-y: auto;">
+                            ${this.renderEquipmentPanel()}
+                        </div>
+                                        <!-- Resizable Separator -->
+                    <div class="resize-separator" id="inventory-separator" title="Drag to resize panels" style="width: 4px; flex-shrink: 0; cursor: col-resize; display: flex; align-items: center; justify-content: center; margin: 0 2px;">
+                        <div class="separator-handle">
+                            <i class="ph-duotone ph-dots-six-vertical text-gray-400"></i>
+                        </div>
                     </div>
                     
                     <!-- Inventory Grid -->
-                    <div class="inventory-section xl:col-span-2">
+                    <div class="inventory-section resizable-panel" id="inventory-panel" style="flex: 1; min-width: 400px; display: flex; flex-direction: column; height: 100%;">
                         <h3 class="font-cinzel text-xl text-green-400 mb-4 border-b border-green-600 pb-2">
                             <i class="ph-duotone ph-backpack"></i> Inventory
                         </h3>
-                        <div class="inventory-grid bg-gray-800 rounded-lg p-4 max-h-96 overflow-y-auto">
+                        <div class="inventory-grid bg-gray-800 rounded-lg p-4 flex-1 overflow-y-auto" style="flex: 1; overflow-y: auto;">
                             ${this.renderInventoryGrid()}
                         </div>
                     </div>
@@ -148,64 +218,117 @@ class InventoryManager {
             </div>
         `;
 
+        this.cacheDomElements();
         this.attachEventListeners();
         this.updateFilterValues();
+    }
+
+    /**
+     * Cache frequently accessed DOM elements to reduce query overhead.
+     */
+    cacheDomElements() {
+        this.dom = {
+            searchInput: document.getElementById('inventory-search'),
+            filterToggle: document.getElementById('filter-toggle'),
+            typeFilter: document.getElementById('type-filter'),
+            rarityFilter: document.getElementById('rarity-filter'),
+            sortField: document.getElementById('sort-field'),
+            sortDirection: document.getElementById('sort-direction'),
+            inventoryGrid: inventoryContentEl.querySelector('.inventory-grid'),
+            inventoryStats: inventoryContentEl.querySelector('.inventory-stats'),
+            filterControls: inventoryContentEl.querySelector('.filter-controls'),
+            statsPanel: document.getElementById('stats-panel'),
+            analyticsContent: document.getElementById('analytics-content')
+        };
     }
 
     // Render equipment panel
     renderEquipmentPanel() {
         return `
             <div class="equipment-grid bg-gray-800 rounded-lg p-4">
-                <div class="grid grid-cols-3 gap-2 mb-4">
-                    <div></div>
-                    <div class="equipment-slot" data-slot="head">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.head ? this.renderEquippedItem('head') : '<i class="ph-duotone ph-crown text-gray-400"></i><br><span class="text-xs text-gray-400">Head</span>'}
+                <!-- Character Equipment Layout -->
+                <div class="character-equipment-layout grid gap-2">
+                    <!-- Row 1: Head -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div></div>
+                        <div class="equipment-slot" data-slot="head">
+                            <div class="slot-content ${this.getSlotStyling('head')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.head ? this.renderEquippedItem('head') : '<i class="ph-duotone ph-crown text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Head</span>'}
+                            </div>
                         </div>
-                    </div>
-                    <div></div>
-                    
-                    <div class="equipment-slot" data-slot="mainhand">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
-                        </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="chest">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.chest ? this.renderEquippedItem('chest') : '<i class="ph-duotone ph-t-shirt text-gray-400"></i><br><span class="text-xs text-gray-400">Chest</span>'}
-                        </div>
-                    </div>
-                    <div class="equipment-slot" data-slot="offhand">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
-                        </div>
+                        <div></div>
                     </div>
                     
-                    <div class="equipment-slot" data-slot="finger1">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
+                    <!-- Row 2: Neck and Shoulders -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div></div>
+                        <div class="equipment-slot" data-slot="neck">
+                            <div class="slot-content ${this.getSlotStyling('neck')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-sketch-logo text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Neck</span>'}
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+
+                    <!-- Row 3: Weapons and Armor -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="mainhand">
+                            <div class="slot-content ${this.getSlotStyling('mainhand')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.mainhand ? this.renderEquippedItem('mainhand') : '<i class="ph-duotone ph-sword text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Main Hand</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="chest">
+                            <div class="slot-content ${this.getSlotStyling('chest')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.chest ? this.renderEquippedItem('chest') : '<i class="ph-duotone ph-t-shirt text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Chest</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="offhand">
+                            <div class="slot-content ${this.getSlotStyling('offhand')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.offhand ? this.renderEquippedItem('offhand') : '<i class="ph-duotone ph-shield text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Off Hand</span>'}
+                            </div>
                         </div>
                     </div>
-                    <div class="equipment-slot" data-slot="neck">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.neck ? this.renderEquippedItem('neck') : '<i class="ph-duotone ph-necklace text-gray-400"></i><br><span class="text-xs text-gray-400">Neck</span>'}
+
+                    <!-- Row 4: Hands and Waist -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="finger1">
+                            <div class="slot-content ${this.getSlotStyling('finger1')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.finger1 ? this.renderEquippedItem('finger1') : '<i class="ph-duotone ph-diamond text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Ring 1</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="waist">
+                            <div class="slot-content ${this.getSlotStyling('waist')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.waist ? this.renderEquippedItem('waist') : '<i class="ph-duotone ph-link text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Waist</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="finger2">
+                            <div class="slot-content ${this.getSlotStyling('finger2')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-diamond text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
+                            </div>
                         </div>
                     </div>
-                    <div class="equipment-slot" data-slot="finger2">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.finger2 ? this.renderEquippedItem('finger2') : '<i class="ph-duotone ph-ring text-gray-400"></i><br><span class="text-xs text-gray-400">Ring 2</span>'}
+
+                    <!-- Row 5: Legs and Feet -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="equipment-slot" data-slot="clothing">
+                            <div class="slot-content ${this.getSlotStyling('clothing')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.clothing ? this.renderEquippedItem('clothing') : '<i class="ph-duotone ph-scales text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Clothing</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="feet">
+                            <div class="slot-content ${this.getSlotStyling('feet')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.feet ? this.renderEquippedItem('feet') : '<i class="ph-duotone ph-sneaker text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Feet</span>'}
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="back">
+                            <div class="slot-content ${this.getSlotStyling('back')} rounded-lg p-3 text-center hover:bg-gray-600 cursor-pointer transition-all duration-200">
+                                ${gameData.player.equipment.back ? this.renderEquippedItem('back') : '<i class="ph-duotone ph-backpack text-gray-400 text-xl"></i><br><span class="text-xs text-gray-400">Back</span>'}
+                          </div>
                         </div>
                     </div>
-                    
-                    <div></div>
-                    <div class="equipment-slot" data-slot="feet">
-                        <div class="slot-content bg-gray-700 border-2 border-gray-600 rounded-lg p-4 text-center hover:bg-gray-600 cursor-pointer transition-colors">
-                            ${gameData.player.equipment.feet ? this.renderEquippedItem('feet') : '<i class="ph-duotone ph-sneaker text-gray-400"></i><br><span class="text-xs text-gray-400">Feet</span>'}
-                        </div>
-                    </div>
+                </div>
                     <div></div>
                 </div>
-                
                 <!-- Character Stats Summary -->
                 <div class="stats-summary bg-gray-700 rounded-lg p-3 mt-4">
                     <div class="grid grid-cols-2 gap-2 text-sm">
@@ -235,119 +358,47 @@ class InventoryManager {
         return `
             <div class="equipped-item-display" data-item-id="${itemId}">
                 <div class="text-xs ${rarityText} font-semibold mb-1">${item.name}</div>
-                <div class="text-xs text-gray-400">${item.type}</div>
-                <button onclick="event.stopPropagation(); equipmentSystem.unequipItem('${slot}')"
-                        class="mt-2 bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">
-                    Unequip
-                </button>
+                <div class="text-xs text-gray-400">${capitalizeFirst(item.type)}</div>
             </div>
         `;
     }
 
-    // Get filtered and sorted items
-    getFilteredItems() {
-        if (!gameData.player.inventory) return [];
-
-        // Group items by ID and count quantities
-        const groupedItems = {};
-        gameData.player.inventory.forEach(item => {
-            const itemId = typeof item === 'string' ? item : item.id;
-            const quantity = typeof item === 'string' ? 1 : (item.quantity || 1);
-            
-            if (groupedItems[itemId]) {
-                groupedItems[itemId].quantity += quantity;
-            } else {
-                const itemData = itemsData[itemId] || { 
-                    name: itemId, 
-                    type: 'misc', 
-                    rarity: 'common',
-                    description: 'Unknown item',
-                    value: 0,
-                    weight: 0
-                };
-                groupedItems[itemId] = { 
-                    id: itemId,
-                    quantity, 
-                    data: itemData 
-                };
-            }
-        });
-
-        let filteredItems = Object.values(groupedItems);
-
-        // Apply search filter
-        if (this.searchTerm) {
-            const searchLower = this.searchTerm.toLowerCase();
-            filteredItems = filteredItems.filter(item => 
-                item.data.name.toLowerCase().includes(searchLower) ||
-                item.data.description.toLowerCase().includes(searchLower) ||
-                item.data.type.toLowerCase().includes(searchLower)
-            );
+    // Get dynamic styling for equipment slots based on equipped items
+    getSlotStyling(slot) {
+        const itemId = gameData.player.equipment[slot];
+        if (!itemId) {
+            // Empty slot - default styling
+            return 'bg-gray-700 border-2 border-gray-600';
         }
-
-        // Apply type filter
-        if (this.activeFilters.type !== 'all') {
-            filteredItems = filteredItems.filter(item => item.data.type === this.activeFilters.type);
+        
+        const item = itemsData[itemId];
+        if (!item) {
+            // Unknown item - error styling
+            return 'bg-red-900 border-2 border-red-500';
         }
-
-        // Apply rarity filter
-        if (this.activeFilters.rarity !== 'all') {
-            filteredItems = filteredItems.filter(item => item.data.rarity === this.activeFilters.rarity);
-        }
-
-        // Apply usability filter
-        if (this.activeFilters.usability !== 'all') {
-            filteredItems = filteredItems.filter(item => {
-                if (this.activeFilters.usability === 'usable') {
-                    return this.canUseItem(item.data);
-                } else {
-                    return !this.canUseItem(item.data);
-                }
-            });
-        }
-
-        // Apply sorting
-        filteredItems.sort((a, b) => {
-            let valueA, valueB;
-            
-            switch (this.sortCriteria.field) {
-                case 'name':
-                    valueA = a.data.name.toLowerCase();
-                    valueB = b.data.name.toLowerCase();
-                    break;
-                case 'type':
-                    valueA = a.data.type;
-                    valueB = b.data.type;
-                    break;
-                case 'rarity':
-                    const rarityOrder = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 };
-                    valueA = rarityOrder[a.data.rarity] || 0;
-                    valueB = rarityOrder[b.data.rarity] || 0;
-                    break;
-                case 'value':
-                    valueA = a.data.value || 0;
-                    valueB = b.data.value || 0;
-                    break;
-                case 'weight':
-                    valueA = a.data.weight || 0;
-                    valueB = b.data.weight || 0;
-                    break;
-                default:
-                    valueA = a.data.name.toLowerCase();
-                    valueB = b.data.name.toLowerCase();
-            }
-
-            if (valueA < valueB) return this.sortCriteria.direction === 'asc' ? -1 : 1;
-            if (valueA > valueB) return this.sortCriteria.direction === 'asc' ? 1 : -1;
-            return 0;
-        });
-
-        return filteredItems;
+        
+        // Equipped slot - use rarity-based styling with glow effect
+        const rarityStyles = {
+            'common': 'bg-gray-600 border-2 border-gray-400 shadow-sm shadow-gray-400/20',
+            'uncommon': 'bg-green-900/30 border-2 border-green-400 shadow-md shadow-green-400/30',
+            'rare': 'bg-blue-900/30 border-2 border-blue-400 shadow-md shadow-blue-400/30',
+            'epic': 'bg-purple-900/30 border-2 border-purple-400 shadow-lg shadow-purple-400/40',
+            'legendary': 'bg-orange-900/30 border-2 border-orange-400 shadow-lg shadow-orange-400/40',
+            'artifact': 'bg-red-900/30 border-2 border-red-400 shadow-xl shadow-red-400/50'
+        };
+        
+        return rarityStyles[item.rarity] || rarityStyles['common'];
     }
 
     // Render inventory grid with filtered items
     renderInventoryGrid() {
-        const filteredItems = this.getFilteredItems();
+        const filteredItems = filterInventoryItems(
+            gameData.player.inventory,
+            this.searchTerm,
+            this.activeFilters,
+            this.sortCriteria,
+            itemData => this.canUseItem(itemData)
+        );
         
         if (filteredItems.length === 0) {
             const hasFilters = this.searchTerm || 
@@ -369,7 +420,7 @@ class InventoryManager {
                 return `
                     <div class="text-center py-8">
                         <i class="ph-duotone ph-backpack text-gray-400 text-4xl mb-4"></i>
-                        <p class="text-gray-400">Your inventory is empty.</p>
+                        <p class="text-gray-400">No items to display.</p>
                     </div>
                 `;
             }
@@ -385,8 +436,8 @@ class InventoryManager {
         const canUse = this.canUseItem(item.data);
         const isEquippable = item.data.slot && item.data.slot !== 'none' && item.data.type !== 'consumable';
         const itemTag = item.data.type === 'consumable'
-            ? '<span class="item-tag tag-consumable">Consumable</span>'
-            : (isEquippable ? '<span class="item-tag tag-equippable">Equipment</span>' : '');
+            ? `<span class="item-tag tag-consumable">${capitalizeFirst(item.data.type)}</span>`
+            : (isEquippable ? `<span class="item-tag tag-equippable">${capitalizeFirst('equipment')}</span>` : '');
         const isActivatable = item.data.properties && item.data.properties.includes('activatable');
         const isComparisonMode = inventoryUIFeatures && inventoryUIFeatures.comparisonMode;
         const isSelected = inventoryUIFeatures && inventoryUIFeatures.selectedItems.has(item.id);
@@ -415,7 +466,7 @@ class InventoryManager {
                             ${item.quantity > 1 ? `<span class="quantity-badge bg-blue-600 text-white px-2 py-1 rounded text-xs">${item.quantity}</span>` : ''}
                             ${isComparisonMode ? `<i class="ph-duotone ph-check-circle text-blue-400"></i>` : ''}
                         </div>
-                        <div class="text-gray-400 text-xs">${item.data.type.charAt(0).toUpperCase() + item.data.type.slice(1)} ${item.data.subtype ? '• ' + item.data.subtype : ''}</div>
+                        <div class="text-gray-400 text-xs">${capitalizeFirst(item.data.type)} ${item.data.subtype ? '• ' + capitalizeFirst(item.data.subtype) : ''}</div>
                     </div>
                     <div class="flex flex-col items-end text-xs text-gray-400">
                         ${item.data.value ? `<span class="text-yellow-400">${item.data.value}g</span>` : ''}
@@ -432,6 +483,17 @@ class InventoryManager {
                                     class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs transition-colors ${!canUse ? 'opacity-50 cursor-not-allowed' : ''}"
                                     ${!canUse ? 'disabled' : ''}>
                                 <i class="ph-duotone ph-sword mr-1"></i>Equip
+                            </button>
+                            <button onclick="event.stopPropagation(); inventoryManager.openItemModal('${item.id}')" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors">
+                                <i class="ph-duotone ph-eye mr-1"></i>Details
+                            </button>
+                        </div>
+                    ` : item.data.properties && item.data.properties.includes('readable') ? `
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="event.stopPropagation(); readItem('${item.id}')" 
+                                    class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-xs transition-colors">
+                                <i class="ph-duotone ph-book-open mr-1"></i>Read
                             </button>
                             <button onclick="event.stopPropagation(); inventoryManager.openItemModal('${item.id}')" 
                                     class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors">
@@ -473,7 +535,7 @@ class InventoryManager {
             common: 'border-gray-500',
             uncommon: 'border-green-500',
             rare: 'border-blue-500',
-            epic: 'border-purple-500',
+            very_rare: 'border-purple-500',
             legendary: 'border-orange-500'
         };
         return colors[rarity] || colors.common;
@@ -484,21 +546,30 @@ class InventoryManager {
             common: 'text-gray-300',
             uncommon: 'text-green-400',
             rare: 'text-blue-400',
-            epic: 'text-purple-400',
+            very_rare: 'text-purple-400',
             legendary: 'text-orange-400'
         };
         return colors[rarity] || colors.common;
     }
 
     // Utility functions
+    /**
+     * Determine if the player can use a given item.
+     * @param {Object} item - Item data to evaluate.
+     * @returns {boolean} Whether the item can currently be used.
+     */
     canUseItem(item) {
         // Add logic for checking if player can use item based on class, level, etc.
         return true; // For now, assume all items can be used
     }
 
+    /**
+     * Calculate total gold value of items in the player's inventory.
+     * @returns {number} Total value of all items.
+     */
     getTotalValue() {
         if (!gameData.player.inventory) return 0;
-        
+
         return gameData.player.inventory.reduce((total, item) => {
             const itemId = typeof item === 'string' ? item : item.id;
             const quantity = typeof item === 'string' ? 1 : (item.quantity || 1);
@@ -507,24 +578,33 @@ class InventoryManager {
         }, 0);
     }
 
+    /**
+     * Determine remaining free inventory slots.
+     * @returns {number} Available slot count.
+     */
     getFreeSlots() {
         const maxSlots = 50; // Default max inventory slots
         return maxSlots - (gameData.player.inventory?.length || 0);
     }
 
-    // Event handlers
+    /**
+     * Binds inventory UI controls and updates the display when users interact.
+     * Search input is debounced to minimize DOM thrashing during typing.
+     */
     attachEventListeners() {
-        // Search input
-        const searchInput = document.getElementById('inventory-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
+        // Always reference controls from this.dom
+        const { filterToggle, typeFilter, rarityFilter, sortField, sortDirection } = this.dom;
+
+        // Use direct DOM query for search input to avoid redeclaration
+        const searchInputEl = document.getElementById('inventory-search');
+        if (searchInputEl && typeof debounce === 'function') {
+            searchInputEl.addEventListener('input', debounce((e) => {
                 this.searchTerm = e.target.value;
                 this.updateInventoryDisplay();
-            });
+            }, 200));
         }
 
         // Filter toggle for mobile
-        const filterToggle = document.getElementById('filter-toggle');
         if (filterToggle) {
             filterToggle.addEventListener('click', () => {
                 this.toggleFilters();
@@ -532,7 +612,6 @@ class InventoryManager {
         }
 
         // Filter dropdowns
-        const typeFilter = document.getElementById('type-filter');
         if (typeFilter) {
             typeFilter.addEventListener('change', (e) => {
                 this.activeFilters.type = e.target.value;
@@ -540,7 +619,6 @@ class InventoryManager {
             });
         }
 
-        const rarityFilter = document.getElementById('rarity-filter');
         if (rarityFilter) {
             rarityFilter.addEventListener('change', (e) => {
                 this.activeFilters.rarity = e.target.value;
@@ -548,7 +626,6 @@ class InventoryManager {
             });
         }
 
-        const sortField = document.getElementById('sort-field');
         if (sortField) {
             sortField.addEventListener('change', (e) => {
                 this.sortCriteria.field = e.target.value;
@@ -556,7 +633,6 @@ class InventoryManager {
             });
         }
 
-        const sortDirection = document.getElementById('sort-direction');
         if (sortDirection) {
             sortDirection.addEventListener('click', () => {
                 this.sortCriteria.direction = this.sortCriteria.direction === 'asc' ? 'desc' : 'asc';
@@ -564,40 +640,378 @@ class InventoryManager {
             });
         }
 
-        // Equipment slot handlers
+        // Equipment slot handlers (attach to .slot-content for better click coverage)
         inventoryContentEl.querySelectorAll('.equipment-slot').forEach(slot => {
-            slot.addEventListener('click', () => {
-                const slotName = slot.dataset.slot;
-                if (gameData.player.equipment[slotName]) {
-                    this.unequipItem(slotName);
+            const slotName = slot.dataset.slot;
+            const slotContent = slot.querySelector('.slot-content');
+            if (slotContent) {
+                // Left click: show item details (tooltip)
+                slotContent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const equippedItemId = gameData.player.equipment[slotName];
+                    if (equippedItemId && itemsData[equippedItemId] && typeof inventoryUIFeatures?.showTooltip === 'function') {
+                        inventoryUIFeatures.showTooltip(e, itemsData[equippedItemId]);
+                    }
+                });
+                // Right click: show equipment options dropdown
+                slotContent.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showEquipmentDropdown(e, slotName);
+                });
+            }
+        });
+
+        // Resizable separator functionality
+        this.attachResizeListeners();
+    }
+
+    /**
+     * Attach resize functionality for the panel separator
+     */
+    attachResizeListeners() {
+        const separator = document.getElementById('inventory-separator');
+        const equipmentPanel = document.getElementById('equipment-panel');
+        const inventoryPanel = document.getElementById('inventory-panel');
+        
+        if (!separator || !equipmentPanel || !inventoryPanel) return;
+
+        const startResize = (startX, startWidth) => {
+            this.isResizing = true;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            separator.style.background = 'linear-gradient(90deg, transparent 0%, #6a8dff 25%, #6a8dff 75%, transparent 100%)';
+        };
+
+        const handleResize = (currentX, startX, startWidth) => {
+            if (!this.isResizing) return;
+            
+            const deltaX = currentX - startX;
+            const newWidth = Math.max(this.minPanelWidth, Math.min(this.maxEquipmentWidth, startWidth + deltaX));
+            
+            equipmentPanel.style.flex = `0 0 ${newWidth}px`;
+            this.equipmentPanelWidth = newWidth;
+        };
+
+        const endResize = () => {
+            if (!this.isResizing) return;
+            
+            this.isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            separator.style.background = '';
+            
+            // Save to localStorage for persistence
+            localStorage.setItem('edoria-equipment-panel-width', this.equipmentPanelWidth.toString());
+        };
+
+        // Mouse events
+        separator.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startWidth = parseInt(equipmentPanel.style.flex.split(' ')[2].replace('px', ''));
+            
+            startResize(startX, startWidth);
+            
+            const handleMouseMove = (e) => handleResize(e.clientX, startX, startWidth);
+            const handleMouseUp = () => {
+                endResize();
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            };
+            
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        });
+
+        // Touch events for mobile
+        separator.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const startX = touch.clientX;
+            const startWidth = parseInt(equipmentPanel.style.flex.split(' ')[2].replace('px', ''));
+            
+            startResize(startX, startWidth);
+            
+            const handleTouchMove = (e) => {
+                e.preventDefault();
+                if (e.touches.length === 1) {
+                    handleResize(e.touches[0].clientX, startX, startWidth);
                 }
-            });
+            };
+            
+            const handleTouchEnd = () => {
+                endResize();
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
+            };
+            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+        }, { passive: false });
+
+        // Load saved width on startup
+        const savedWidth = localStorage.getItem('edoria-equipment-panel-width');
+        if (savedWidth) {
+            const width = parseInt(savedWidth);
+            if (width >= this.minPanelWidth && width <= this.maxEquipmentWidth) {
+                equipmentPanel.style.flex = `0 0 ${width}px`;
+                this.equipmentPanelWidth = width;
+            }
+        }
+    }
+
+    /**
+     * Show equipment dropdown when right-clicking on an equipment slot
+     */
+    showEquipmentDropdown(event, slotName) {
+        // Remove any existing dropdown
+        this.hideEquipmentDropdown();
+
+        // Get available items for this slot
+        const availableItems = this.getAvailableItemsForSlot(slotName);
+        
+        if (availableItems.length === 0 && !gameData.player.equipment[slotName]) {
+            return; // No items available and slot is empty
+        }
+
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'equipment-dropdown';
+        dropdown.className = 'equipment-dropdown';
+        dropdown.style.cssText = `
+            position: fixed;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+            border: 2px solid rgba(100, 116, 139, 0.4);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.1) inset;
+            backdrop-filter: blur(16px);
+            min-width: 280px;
+            max-width: 320px;
+            max-height: 400px;
+            overflow: hidden;
+            z-index: 10000;
+            animation: dropdownFadeIn 0.2s ease-out;
+        `;
+        
+        let dropdownContent = `
+            <div class="equipment-dropdown-header">
+                <span class="slot-name">${this.formatSlotName(slotName)}</span>
+                <button class="close-dropdown" onclick="inventoryManager.hideEquipmentDropdown()">
+                    <i class="ph-duotone ph-x"></i>
+                </button>
+            </div>
+            <div class="equipment-dropdown-content">
+        `;
+
+        // Add current equipped item with unequip option
+        if (gameData.player.equipment[slotName]) {
+            const currentItem = itemsData[gameData.player.equipment[slotName]];
+            if (currentItem) {
+                const rarityColor = this.getRarityTextColor(currentItem.rarity);
+                dropdownContent += `
+                    <div class="equipment-option equipped-item" onclick="inventoryManager.unequipFromDropdown('${slotName}')">
+                        <div class="item-info">
+                            <span class="item-name ${rarityColor}">${currentItem.name}</span>
+                            <span class="item-type">Currently Equipped</span>
+                        </div>
+                        <div class="option-action unequip">
+                            <i class="ph-duotone ph-x-circle"></i> Unequip
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Add available items
+        availableItems.forEach(item => {
+            const itemData = itemsData[item.id];
+            if (!itemData) return;
+            
+            const rarityColor = this.getRarityTextColor(itemData.rarity);
+            dropdownContent += `
+                <div class="equipment-option available-item" onclick="inventoryManager.equipFromDropdown('${item.id}', '${slotName}')">
+                    <div class="item-info">
+                        <span class="item-name ${rarityColor}">${itemData.name}</span>
+                        <span class="item-type">${this.capitalizeFirst(itemData.type)}${itemData.subtype ? ' • ' + this.capitalizeFirst(itemData.subtype) : ''}</span>
+                        ${item.quantity > 1 ? `<span class="item-quantity">x${item.quantity}</span>` : ''}
+                    </div>
+                    <div class="option-action equip">
+                        <i class="ph-duotone ph-check-circle"></i> Equip
+                    </div>
+                </div>
+            `;
+        });
+
+        if (availableItems.length === 0 && !gameData.player.equipment[slotName]) {
+            dropdownContent += `
+                <div class="no-items">
+                    <i class="ph-duotone ph-package text-gray-400"></i>
+                    <span>No compatible items found</span>
+                </div>
+            `;
+        }
+
+        dropdownContent += `</div>`;
+        dropdown.innerHTML = dropdownContent;
+
+        // Position dropdown
+        document.body.appendChild(dropdown);
+        this.positionDropdown(dropdown, event);
+
+        // Add click outside to close
+        setTimeout(() => {
+            document.addEventListener('click', this.handleDropdownOutsideClick.bind(this));
+        }, 10);
+    }
+
+    /**
+     * Get items from inventory that can be equipped in the specified slot
+     */
+    getAvailableItemsForSlot(slotName) {
+        if (!gameData.player.inventory || !itemsData) return [];
+
+        return gameData.player.inventory.filter(item => {
+            const itemData = itemsData[item.id];
+            if (!itemData) return false;
+            
+            // Normalize slot names for comparison using equipUtils.js logic
+            const itemSlot = itemData.slot ? normalizeSlotName(itemData.slot) : '';
+            const targetSlot = normalizeSlotName(slotName);
+            
+            // Check if item can be equipped in this slot
+            return itemSlot === targetSlot && itemData.type !== 'consumable';
+        }).sort((a, b) => {
+            // Sort by rarity, then by name
+            const rarityOrder = { 'common': 1, 'uncommon': 2, 'rare': 3, 'very_rare': 4, 'epic': 5, 'legendary': 6, 'artifact': 7 };
+            const rarityDiff = (rarityOrder[itemsData[b.id].rarity] || 1) - (rarityOrder[itemsData[a.id].rarity] || 1);
+            if (rarityDiff !== 0) return rarityDiff;
+            return itemsData[a.id].name.localeCompare(itemsData[b.id].name);
         });
     }
 
-    updateFilterValues() {
-        const typeFilter = document.getElementById('type-filter');
-        const rarityFilter = document.getElementById('rarity-filter');
-        const sortField = document.getElementById('sort-field');
+    /**
+     * Format slot name for display
+     */
+    formatSlotName(slotName) {
+        const nameMap = {
+            'mainhand': 'Main Hand',
+            'offhand': 'Off Hand',
+            'finger1': 'Ring 1',
+            'finger2': 'Ring 2'
+        };
+        return nameMap[slotName] || slotName.charAt(0).toUpperCase() + slotName.slice(1);
+    }
+
+    /**
+     * Position the dropdown near the clicked element
+     */
+    positionDropdown(dropdown, event) {
+        const rect = event.target.closest('.equipment-slot').getBoundingClientRect();
+        const dropdownRect = dropdown.getBoundingClientRect();
         
+        let left = rect.right + 10;
+        let top = rect.top;
+
+        // Adjust if dropdown would go off screen
+        if (left + dropdownRect.width > window.innerWidth) {
+            left = rect.left - dropdownRect.width - 10;
+        }
+        
+        if (top + dropdownRect.height > window.innerHeight) {
+            top = window.innerHeight - dropdownRect.height - 10;
+        }
+
+        if (top < 10) top = 10;
+        if (left < 10) left = 10;
+
+        dropdown.style.left = `${left}px`;
+        dropdown.style.top = `${top}px`;
+    }
+
+    /**
+     * Handle clicking outside the dropdown to close it
+     */
+    handleDropdownOutsideClick(event) {
+        const dropdown = document.getElementById('equipment-dropdown');
+        if (dropdown && !dropdown.contains(event.target)) {
+            this.hideEquipmentDropdown();
+        }
+    }
+
+    /**
+     * Hide the equipment dropdown
+     */
+    hideEquipmentDropdown() {
+        const dropdown = document.getElementById('equipment-dropdown');
+        if (dropdown) {
+            dropdown.remove();
+            document.removeEventListener('click', this.handleDropdownOutsideClick.bind(this));
+        }
+    }
+
+    /**
+     * Equip an item from the dropdown
+     */
+    equipFromDropdown(itemId, slotName) {
+        this.hideEquipmentDropdown();
+        if (typeof equipItem === 'function') {
+            equipItem(itemId, slotName);
+        }
+        // Refresh the entire inventory display including equipment panel
+        this.renderAdvancedInventory();
+    }
+
+    /**
+     * Unequip an item from the dropdown
+     */
+    unequipFromDropdown(slotName) {
+        this.hideEquipmentDropdown();
+        this.unequipItem(slotName);
+        // Refresh the entire inventory display including equipment panel
+        this.renderAdvancedInventory();
+    }
+
+    /**
+     * Capitalize first letter (helper method)
+     */
+    capitalizeFirst(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    /**
+     * Sync filter dropdowns with current state.
+     */
+    updateFilterValues() {
+        const { typeFilter, rarityFilter, sortField } = this.dom;
+
         if (typeFilter) typeFilter.value = this.activeFilters.type;
         if (rarityFilter) rarityFilter.value = this.activeFilters.rarity;
         if (sortField) sortField.value = this.sortCriteria.field;
     }
 
+    /**
+     * Re-render inventory grid and stats using cached DOM elements.
+     */
     updateInventoryDisplay() {
-        const inventoryGrid = document.querySelector('.inventory-grid');
-        const inventoryStats = document.querySelector('.inventory-stats');
-        
+        const { inventoryGrid, inventoryStats, sortDirection } = this.dom;
+
         if (inventoryGrid) {
             inventoryGrid.innerHTML = this.renderInventoryGrid();
         }
-        
+
         if (inventoryStats) {
             inventoryStats.innerHTML = `
                 <div class="stat-item bg-gray-700 rounded px-3 py-2">
                     <span class="text-gray-400">Items:</span>
-                    <span class="text-white ml-2">${this.getFilteredItems().length}/${gameData.player.inventory.length}</span>
+                    <span class="text-white ml-2">${filterInventoryItems(
+                        gameData.player.inventory,
+                        this.searchTerm,
+                        this.activeFilters,
+                        this.sortCriteria,
+                        itemData => this.canUseItem(itemData)
+                    ).length}/${gameData.player.inventory.length}</span>
                 </div>
                 <div class="stat-item bg-gray-700 rounded px-3 py-2">
                     <span class="text-gray-400">Weight:</span>
@@ -614,16 +1028,21 @@ class InventoryManager {
             `;
         }
 
+        // Always re-attach event listeners after DOM updates
+        this.attachEventListeners();
+
         // Update sort direction icon
-        const sortDirectionBtn = document.getElementById('sort-direction');
-        if (sortDirectionBtn) {
-            const icon = sortDirectionBtn.querySelector('i');
+        if (sortDirection) {
+            const icon = sortDirection.querySelector('i');
             if (icon) {
                 icon.className = `ph-duotone ${this.sortCriteria.direction === 'asc' ? 'ph-sort-ascending' : 'ph-sort-descending'}`;
             }
         }
     }
 
+    /**
+     * Reset search and filter controls to defaults and refresh display.
+     */
     clearFilters() {
         this.searchTerm = '';
         this.activeFilters = {
@@ -633,9 +1052,9 @@ class InventoryManager {
             slot: 'all'
         };
         
-        const searchInput = document.getElementById('inventory-search');
+        const { searchInput } = this.dom;
         if (searchInput) searchInput.value = '';
-        
+
         this.updateFilterValues();
         this.updateInventoryDisplay();
     }
@@ -792,11 +1211,11 @@ class InventoryManager {
                     <div class="flex justify-between items-start">
                         <div>
                             <h2 class="text-2xl font-cinzel ${rarityTextColor} mb-2">${item.name}</h2>
-                            <div class="flex gap-4 text-sm text-gray-400">
-                                <span>${item.type.charAt(0).toUpperCase() + item.type.slice(1)}</span>
-                                ${item.subtype ? `<span>• ${item.subtype}</span>` : ''}
-                                <span>• ${item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)}</span>
-                                ${quantity > 1 ? `<span>• Quantity: ${quantity}</span>` : ''}
+                            <div class="flex gap-2 text-sm text-gray-400">
+                                <span><i class="ph-duotone ph-tag mr-1"></i>${capitalizeFirst(item.type)}</span>
+                                ${item.subtype ? `<span><i class='ph-duotone ph-shapes mr-1'></i>${capitalizeFirst(item.subtype)}</span>` : ''}
+                                <span><i class="ph-duotone ph-star mr-1"></i>${capitalizeFirst(item.rarity)}</span>
+                                ${quantity > 1 ? `<span><i class="ph-duotone ph-stack mr-1"></i>Qty: ${quantity}</span>` : ''}
                             </div>
                         </div>
                         <button onclick="inventoryManager.closeItemModal()" 
@@ -819,12 +1238,12 @@ class InventoryManager {
                         <div>
                             <h3 class="text-lg font-semibold text-white mb-3">Properties</h3>
                             <div class="space-y-2 text-sm">
-                                ${item.value ? `<div><span class="text-gray-400">Value:</span> <span class="text-green-400">${item.value} gold</span></div>` : ''}
-                                ${item.weight ? `<div><span class="text-gray-400">Weight:</span> <span class="text-yellow-400">${item.weight} lb</span></div>` : ''}
-                                ${item.slot ? `<div><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${item.slot}</span></div>` : ''}
-                                ${item.damage ? `<div><span class="text-gray-400">Damage:</span> <span class="text-red-400">${item.damage} ${item.damageType}</span></div>` : ''}
-                                ${item.armorClass ? `<div><span class="text-gray-400">Armor Class:</span> <span class="text-blue-400">${item.armorClass}</span></div>` : ''}
-                                ${item.range ? `<div><span class="text-gray-400">Range:</span> <span class="text-purple-400">${item.range}</span></div>` : ''}
+                                ${item.value ? `<div><i class='ph-duotone ph-coins text-yellow-400 mr-1'></i><span class="text-gray-400">Value:</span> <span class="text-green-400">${item.value} gold</span></div>` : ''}
+                                ${item.weight ? `<div><i class='ph-duotone ph-scale text-yellow-400 mr-1'></i><span class="text-gray-400">Weight:</span> <span class="text-yellow-400">${item.weight} lb</span></div>` : ''}
+                                ${item.slot ? `<div><i class='ph-duotone ph-archive-box text-blue-400 mr-1'></i><span class="text-gray-400">Slot:</span> <span class="text-blue-400">${formatSlotName(item.slot)}</span></div>` : ''}
+                                ${item.damage ? `<div><i class='ph-duotone ph-sword text-red-400 mr-1'></i><span class="text-gray-400">Damage:</span> <span class="text-red-400">${item.damage} ${item.damageType}</span></div>` : ''}
+                                ${item.armorClass ? `<div><i class='ph-duotone ph-shield text-blue-400 mr-1'></i><span class="text-gray-400">Armor Class:</span> <span class="text-blue-400">${item.armorClass}</span></div>` : ''}
+                                ${item.range ? `<div><i class='ph-duotone ph-arrows-out-line-horizontal text-purple-400 mr-1'></i><span class="text-gray-400">Range:</span> <span class="text-purple-400">${item.range}</span></div>` : ''}
                             </div>
                         </div>
 
@@ -833,7 +1252,7 @@ class InventoryManager {
                                 <h3 class="text-lg font-semibold text-white mb-3">Stat Bonuses</h3>
                                 <div class="space-y-2 text-sm">
                                     ${Object.entries(item.statBonus).map(([stat, bonus]) => 
-                                        `<div><span class="text-gray-400">${stat.charAt(0).toUpperCase() + stat.slice(1)}:</span> <span class="text-green-400">+${bonus}</span></div>`
+                                        `<div><i class='ph-duotone ph-plus-circle text-green-400 mr-1'></i><span class="text-gray-400">${stat.charAt(0).toUpperCase() + stat.slice(1)}:</span> <span class="text-green-400">+${bonus}</span></div>`
                                     ).join('')}
                                 </div>
                             </div>
@@ -844,9 +1263,20 @@ class InventoryManager {
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold text-white mb-3">Special Properties</h3>
                             <div class="flex flex-wrap gap-2">
-                                ${item.properties.map(prop => 
-                                    `<span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">${prop}</span>`
+                                ${item.properties.map(prop =>
+                                    `<span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"><i class='ph-duotone ph-sparkle mr-1'></i>${prop}</span>`
                                 ).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${item.properties && item.properties.includes('container') ? `
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-white mb-3">Contents</h3>
+                            <div class="text-sm text-gray-300">
+                                ${item.container_contents && item.container_contents.length > 0 ?
+                                    item.container_contents.map(id => itemsData[id]?.name || id).join(', ') : 'Empty'}
+                                <div class="mt-2 text-xs text-gray-400"><i class='ph-duotone ph-scale text-yellow-400 mr-1'></i>Weight: ${item.container_contents ? item.container_contents.reduce((w, id) => w + (itemsData[id]?.weight || 0), 0) : 0}/${item.capacity || 0} lb</div>
                             </div>
                         </div>
                     ` : ''}
@@ -857,6 +1287,12 @@ class InventoryManager {
                             <button onclick="inventoryManager.equipItem('${item.id}'); inventoryManager.closeItemModal();" 
                                     class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold transition-colors">
                                 <i class="ph-duotone ph-sword mr-2"></i>Equip
+                            </button>
+                        ` : ''}
+                        ${item.properties && item.properties.includes('readable') ? `
+                            <button onclick="readItem('${item.id}'); inventoryManager.closeItemModal();" 
+                                    class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded font-semibold transition-colors">
+                                <i class="ph-duotone ph-book-open mr-2"></i>Read
                             </button>
                         ` : ''}
                         ${isConsumable ? `
@@ -888,36 +1324,39 @@ class InventoryManager {
 
     // Initialize drag and drop functionality after rendering
     initializeDragAndDrop() {
-        // Make inventory items draggable
+        // Note: Drag-and-drop functionality has been removed/disabled
+        // The makeDraggable method is not available in inventoryUIFeatures
+        
+        // Make inventory items draggable (DISABLED)
         document.querySelectorAll('.inventory-item[data-inventory-item-id]').forEach(element => {
             const itemId = element.getAttribute('data-inventory-item-id');
             const item = this.findItemById(itemId);
-            if (item && inventoryUIFeatures) {
+            if (item && inventoryUIFeatures && typeof inventoryUIFeatures.makeDraggable === 'function') {
                 inventoryUIFeatures.makeDraggable(element, item, 'inventory');
             }
         });
 
-        // Make equipment items draggable
+        // Make equipment items draggable (DISABLED)
         document.querySelectorAll('.equipped-item-display[data-item-id]').forEach(element => {
             const itemId = element.getAttribute('data-item-id');
             const item = itemsData[itemId];
-            if (item && inventoryUIFeatures) {
+            if (item && inventoryUIFeatures && typeof inventoryUIFeatures.makeDraggable === 'function') {
                 inventoryUIFeatures.makeDraggable(element, item, 'equipment');
             }
         });
 
-        // Make equipment slots drop zones
+        // Make equipment slots drop zones (DISABLED)
         document.querySelectorAll('.equipment-slot').forEach(element => {
             const slot = element.getAttribute('data-slot');
-            if (slot && inventoryUIFeatures) {
-                inventoryUIFeatures.makeDropZone(element, 'equipment', slot);
+            if (slot && inventoryUIFeatures && typeof inventoryUIFeatures.makeDropZone === 'function') {
+                // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(element, 'equipment', slot);
             }
         });
 
-        // Make inventory grid a drop zone
+        // Make inventory grid a drop zone (DISABLED)
         const inventoryGrid = document.querySelector('.inventory-grid');
-        if (inventoryGrid && inventoryUIFeatures) {
-            inventoryUIFeatures.makeDropZone(inventoryGrid, 'inventory');
+        if (inventoryGrid && inventoryUIFeatures && typeof inventoryUIFeatures.makeDropZone === 'function') {
+            // Drag-and-drop removed: inventoryUIFeatures.makeDropZone(inventoryGrid, 'inventory');
         }
     }
 
@@ -945,33 +1384,47 @@ class InventoryManager {
     }
 
     // Toggle analytics panel
-    toggleStatsPanel() {
-        const panel = document.getElementById('stats-panel');
-        const content = document.getElementById('analytics-content');
-        
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-            this.renderAnalytics(content);
+    /**
+     * Toggle the visibility of the analytics panel, loading the module lazily.
+     */
+    /**
+     * Toggle the visibility of the analytics panel, loading content as needed.
+     */
+    async toggleStatsPanel() {
+        const { statsPanel, analyticsContent } = this.dom;
+        if (!statsPanel) return;
+
+        if (statsPanel.style.display === 'none') {
+            statsPanel.style.display = 'block';
+            await this.renderAnalytics(analyticsContent);
         } else {
-            panel.style.display = 'none';
+            statsPanel.style.display = 'none';
         }
     }
 
     // Toggle filter controls visibility (mobile)
+    /**
+     * Toggle filter control visibility for mobile layouts.
+     */
     toggleFilters() {
         this.filtersCollapsed = !this.filtersCollapsed;
-        const controls = document.querySelector('.filter-controls');
-        if (controls) {
-            controls.classList.toggle('collapsed', this.filtersCollapsed);
+        const { filterControls } = this.dom;
+        if (filterControls) {
+            filterControls.classList.toggle('collapsed', this.filtersCollapsed);
         }
     }
 
     // Render analytics dashboard
-    renderAnalytics(container) {
+    /**
+     * Render the analytics dashboard. Loads the analytics module if needed.
+     * @param {HTMLElement} container - Target element for analytics content.
+     */
+    async renderAnalytics(container) {
+        await loadInventoryAnalytics();
         if (!inventoryAnalytics) return;
-        
+
         const stats = inventoryAnalytics.getInventoryStats();
-        
+
         container.innerHTML = `
             <div class="analytics-dashboard">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -1104,17 +1557,28 @@ class InventoryManager {
 
                 <!-- Action Buttons -->
                 <div class="analytics-actions flex gap-4 justify-center">
-                    <button onclick="inventoryAnalytics.exportInventoryData()" 
+                    <button onclick="inventoryAnalytics.exportInventoryData()"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">
                         <i class="ph-duotone ph-download mr-2"></i>Export Data
                     </button>
-                    <button onclick="inventoryAnalytics.invalidateCache(); inventoryManager.renderAnalytics(document.getElementById('analytics-content'))" 
+                    <button onclick="inventoryManager.refreshAnalytics()"
                             class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors">
                         <i class="ph-duotone ph-arrow-clockwise mr-2"></i>Refresh
                     </button>
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Refresh analytics data, ensuring the module is loaded first.
+     */
+    async refreshAnalytics() {
+        await loadInventoryAnalytics();
+        if (inventoryAnalytics) {
+            inventoryAnalytics.invalidateCache();
+            this.renderAnalytics(document.getElementById('analytics-content'));
+        }
     }
 }
 
@@ -1129,4 +1593,16 @@ function renderAdvancedInventory() {
 // Maintain backward compatibility
 function renderInventory() {
     inventoryManager.updateDisplay();
+}
+
+function formatSlotName(slot) {
+    return slot
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/_/g, ' ')
+        .replace(/^./, s => s.toUpperCase())
+        .trim();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { formatSlotName };
 }

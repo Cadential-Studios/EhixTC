@@ -1,0 +1,221 @@
+{
+  "forest": {
+    "terrain_tags": ["wooded", "lowlight", "damp"],
+    "items": [
+      {
+        "item": "mushroom_red",
+        "rarity": "uncommon",
+        "chance": 25,
+        "required_dc_threshold": 10,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "mushroom_brown",
+        "rarity": "common",
+        "chance": 15,
+        "required_dc_threshold": 8,
+        "amount": { "min": 1, "max": 3 }
+      },
+      {
+        "item": "stick",
+        "rarity": "common",
+        "chance": 30,
+        "required_dc_threshold": 5,
+        "amount": { "min": 1, "max": 3 }
+      },
+      {
+        "item": "elfroot",
+        "rarity": "rare",
+        "chance": 5,
+        "required_dc_threshold": 15,
+        "amount": { "min": 1, "max": 1 },
+        "requires_tool": "herbalism_kit"
+      }
+    ]
+  },
+
+  "mountains": {
+    "terrain_tags": ["rocky", "windy", "elevated"],
+    "items": [
+      {
+        "item": "iron_shard",
+        "rarity": "uncommon",
+        "chance": 20,
+        "required_dc_threshold": 12,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "goat_milk_bulb",
+        "rarity": "rare",
+        "chance": 8,
+        "required_dc_threshold": 14,
+        "amount": { "min": 1, "max": 1 }
+      },
+      {
+        "item": "herb_mountain_mint",
+        "rarity": "common",
+        "chance": 30,
+        "required_dc_threshold": 6,
+        "amount": { "min": 1, "max": 3 }
+      }
+    ]
+  },
+
+  "swamp": {
+    "terrain_tags": ["wet", "murky", "boggy"],
+    "items": [
+      {
+        "item": "reeds",
+        "rarity": "common",
+        "chance": 40,
+        "required_dc_threshold": 5,
+        "amount": { "min": 1, "max": 4 }
+      },
+      {
+        "item": "glowcap_mushroom",
+        "rarity": "uncommon",
+        "chance": 15,
+        "required_dc_threshold": 12,
+        "amount": { "min": 1, "max": 2 },
+        "seasonal_availability": ["spring", "summer"]
+      },
+      {
+        "item": "fenleaf",
+        "rarity": "uncommon",
+        "chance": 10,
+        "required_dc_threshold": 13,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "leech_sap",
+        "rarity": "rare",
+        "chance": 5,
+        "required_dc_threshold": 14,
+        "amount": { "min": 1, "max": 1 },
+        "requires_tool": "glass_vial"
+      }
+    ]
+  },
+
+  "plains": {
+    "terrain_tags": ["grassy", "open", "sunny"],
+    "items": [
+      {
+        "item": "wild_wheat",
+        "rarity": "common",
+        "chance": 35,
+        "required_dc_threshold": 6,
+        "amount": { "min": 2, "max": 5 }
+      },
+      {
+        "item": "prairie_flower",
+        "rarity": "uncommon",
+        "chance": 20,
+        "required_dc_threshold": 10,
+        "amount": { "min": 1, "max": 3 }
+      },
+      {
+        "item": "buried_arrowhead",
+        "rarity": "rare",
+        "chance": 3,
+        "required_dc_threshold": 15,
+        "amount": { "min": 1, "max": 1 }
+      }
+    ]
+  },
+
+  "coast": {
+    "terrain_tags": ["sandy", "saltwater", "tide"],
+    "items": [
+      {
+        "item": "driftwood",
+        "rarity": "common",
+        "chance": 50,
+        "required_dc_threshold": 4,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "sea_lettuce",
+        "rarity": "common",
+        "chance": 20,
+        "required_dc_threshold": 7,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "salt_crystal",
+        "rarity": "uncommon",
+        "chance": 18,
+        "required_dc_threshold": 11,
+        "amount": { "min": 1, "max": 1 }
+      },
+      {
+        "item": "pearl_fragment",
+        "rarity": "rare",
+        "chance": 4,
+        "required_dc_threshold": 16,
+        "amount": { "min": 1, "max": 1 },
+        "requires_tool": "knife"
+      }
+    ]
+  },
+  "desert": {
+    "terrain_tags": ["hot", "dry", "sandy"],
+    "items": [
+      {
+        "item": "cactus_fruit",
+        "rarity": "common",
+        "chance": 30,
+        "required_dc_threshold": 7,
+        "amount": { "min": 1, "max": 3 }
+      },
+      {
+        "item": "desert_sage",
+        "rarity": "uncommon",
+        "chance": 12,
+        "required_dc_threshold": 11,
+        "amount": { "min": 1, "max": 2 }
+      },
+      {
+        "item": "scorpion_shell",
+        "rarity": "uncommon",
+        "chance": 10,
+        "required_dc_threshold": 13,
+        "amount": { "min": 1, "max": 1 }
+      },
+      {
+        "item": "sunstone_shard",
+        "rarity": "rare",
+        "chance": 2,
+        "required_dc_threshold": 18,
+        "amount": { "min": 1, "max": 1 },
+        "seasonal_availability": ["summer"]
+      }
+    ]
+  },
+  "cave": {
+    "terrain_tags": ["underground", "dark", "damp"],
+    "items": [
+      {
+        "item": "azure_moss",
+        "rarity": "rare",
+        "chance": 8,
+        "required_dc_threshold": 15,
+        "amount": { "min": 1, "max": 1 }
+      },
+      {
+        "item": "cave_truffle",
+        "rarity": "rare",
+        "chance": 5,
+        "required_dc_threshold": 17,
+        "amount": { "min": 1, "max": 1 }
+      },
+      {
+        "item": "mushroom_brown",
+        "rarity": "common",
+        "chance": 25,
+        "required_dc_threshold": 7,
+        "amount": { "min": 1, "max": 3 }
+      }
+    ]
+  }
+}

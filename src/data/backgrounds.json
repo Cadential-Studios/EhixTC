@@ -4,9 +4,9 @@
         "skillProficiencies": ["arcana", "history"],
         "languages": ["common", "elvish"],
         "equipment": [
-            "A set of common clothes",
-            "A scholar's pack",
-            "A spellbook"
+            "Common clothes",
+            "Scholar's pack",
+            "Spellbook"
         ],
         "feature": "Researcher"
     },
@@ -15,9 +15,9 @@
         "skillProficiencies": ["athletics", "survival"],
         "languages": ["common", "one_exotic_language"],
         "equipment": [
-            "A set of traveler's clothes",
-            "A hunting trap",
-            "A staff"
+            "Traveler's clothes",
+            "Hunting trap",
+            "Staff"
         ],
         "feature": "Wanderer"
     },
@@ -26,9 +26,9 @@
         "skillProficiencies": ["insight", "religion"],
         "languages": ["common", "celestial", "one_exotic_language"],
         "equipment": [
-            "A set of priest's robes",
-            "A holy symbol",
-            "A prayer book"
+            "Priest's robes",
+            "Holy symbol",
+            "Prayer book"
         ],
         "feature": "Shelter of the Faithful"
     }

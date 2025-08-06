@@ -1,0 +1,83 @@
+{
+  "id": "jorn",
+  "name": "Town of Jorn",
+  "description": "A hardy frontier settlement that serves as a trading post for trappers and travelers. Smoke rises from sturdy stone chimneys.",
+  "image": "assets/images/locations/jorn.jpg",
+  "region": "Frontier",
+  "location": {
+    "x": 150,
+    "y": 100
+  },
+  "tags": ["town", "trading", "frontier", "settlement", "safe"],
+  "available_actions": {
+    "shop": true,
+    "talk": true,
+    "rest": true,
+    "travel": true,
+    "explore": false
+  },
+  "connections": {
+    "westwalker_camp": {
+      "name": "Westwalker Campfire",
+      "distance": 80,
+      "difficulty": "moderate",
+      "travel_time": "4 hours"
+    },
+    "westhaven": {
+      "name": "Westhaven",
+      "distance": 120,
+      "difficulty": "moderate",
+      "travel_time": "1 day"
+    }
+  },
+  "services": {
+    "inn": {
+      "available": true,
+      "cost": 3,
+      "description": "Rest at the local frontier inn"
+    },
+    "healer": {
+      "available": false
+    },
+    "blacksmith": {
+      "available": false
+    }
+  },
+  "shops": [
+    {
+      "id": "jorn_trading_post",
+      "name": "Jorn Trading Post",
+      "owner": "Gareth the Trader",
+      "inventory": [
+        {
+          "item": "rations",
+          "price": 8,
+          "quantity": 10
+        },
+        {
+          "item": "rope",
+          "price": 15,
+          "quantity": 3
+        }
+      ]
+    }
+  ],
+  "npcs": [
+    {
+      "id": "gareth_trader",
+      "name": "Gareth",
+      "role": "Trader",
+      "description": "A weathered frontier trader who knows the value of every item that passes through Jorn."
+    }
+  ],
+  "points_of_interest": [
+    {
+      "id": "trading_post",
+      "name": "Jorn Trading Post",
+      "description": "The heart of commerce in this frontier settlement where trappers sell their goods."
+    }
+  ],
+  "loot_table": "town",
+  "foragable": false,
+  "danger_level": "safe"
+}

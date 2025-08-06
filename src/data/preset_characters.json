@@ -6,6 +6,12 @@
     "class": "ranger",
     "species": "human",
     "level": 1,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 12,
       "dexterity": 15,
@@ -36,6 +42,12 @@
     "class": "paladin",
     "species": "leonin",
     "level": 1,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 15,
       "dexterity": 10,
@@ -54,7 +66,7 @@
       "cooking": 1,
       "arcana": 1
     },
-    "startingEquipment": ["ceremonial_spear", "chain_mail", "health_potion", "moonstone_amulet", "prayer_book"],
+    "startingEquipment": ["ceremonial_spear", "chainmail", "health_potion", "moonstone_amulet", "prayer_book"],
     "background": "acolyte",
     "personalityTraits": ["I honor my ancestors through every action.", "The spirits guide my path, and I trust their wisdom above all."],
     "lore": "M'ra Kaal clans believe the coming Convergence will test their honor like never before. Spirit-speakers like Thara bear the voices of the ancestors into battle, channeling divine power through sacred oaths."
@@ -66,6 +78,12 @@
     "class": "wizard",
     "species": "human",
     "level": 1,
+    "relationships": [
+      {
+        "npc_id": "tarn",
+        "relationship_score": 2
+      }
+    ],
     "stats": {
       "strength": 8,
       "dexterity": 12,
