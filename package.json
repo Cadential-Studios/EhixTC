@@ -2,12 +2,15 @@
   "name": "ehix-the-triune-convergence",
   "version": "1.0.0",
   "description": "Ehix - The Triune Convergence: A browser-based RPG system.",
-  "main": "src/assets/js/main.js",
+  "main": "src/assets/js/core/main.js",
   "scripts": {
     "start": "python -m http.server 8000",
     "build": "echo 'No build step defined'",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "version:update": "node scripts/updateVersion.js",
+    "location:report": "node tools/generate-location-report.js",
+    "location:test": "start tools/testing/test-location-manager.html"
   },
   "repository": {
     "type": "git",

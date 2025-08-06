@@ -42,18 +42,7 @@ global.updateDisplay = jest.fn();
 global.DATA_BASE_PATH = 'src/data/';
 
 // Import the LocationManager class
-const fs = require('fs');
-const path = require('path');
-
-// Read the LocationManager file and extract the class
-const locationManagerPath = path.join(__dirname, '../../src/assets/js/systems/locationManager.js');
-const locationManagerCode = fs.readFileSync(locationManagerPath, 'utf8');
-
-// Extract just the class definition (remove the global instantiation)
-const classDefinition = locationManagerCode.split('// Create global location manager instance')[0];
-
-// Evaluate the class definition
-eval(classDefinition);
+const LocationManager = require('../../src/assets/js/systems/locationManager');
 
 describe('LocationManager', () => {
     let locationManager;

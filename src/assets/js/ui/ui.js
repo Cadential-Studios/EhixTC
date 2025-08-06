@@ -383,6 +383,49 @@ function renderSettings() {
 
 // Journal Panel Rendering
 function renderJournal(activeTab = 'all') {
+    // Use the new modular journal system if available
+    if (typeof window.journalSystem !== 'undefined' && window.journalSystem && window.journalSystem.initialized) {
+        const searchEl = document.getElementById('journal-search-input');
+        const searchQuery = searchEl ? searchEl.value : '';
+        
+        try {
+            const content = window.journalSystem.render(searchQuery, activeTab);
+            if (journalContentEl) {
+                journalContentEl.innerHTML = `
+                    <div class="journal-container">
+                        <div class="journal-tabs mb-4">
+                            <div class="flex flex-wrap items-center space-x-1 bg-gray-800 rounded-lg p-1">
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('all')">All</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'quests' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('quests')">Quests</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'lore' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('lore')">Lore</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('locations')">Places</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'npcs' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('npcs')">People</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'bestiary' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('bestiary')">Bestiary</button>
+                                <button class="journal-tab px-3 py-1.5 rounded text-sm transition-colors ${activeTab === 'notes' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}" onclick="switchJournalTab('notes')">Notes</button>
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" id="journal-search-input" placeholder="Search journal entries..." value="${searchQuery}" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" onkeyup="debounce(() => renderJournal('${activeTab}'), 300)()">
+                            </div>
+                        </div>
+                        <div class="journal-content">
+                            ${content}
+                        </div>
+                    </div>
+                `;
+            }
+            return;
+        } catch (error) {
+            console.error('Error rendering journal with new system:', error);
+        }
+    }
+    
+    // Fallback to original implementation if journal system not available
+    console.warn('Journal system not available, using fallback implementation');
+    renderJournalFallback(activeTab);
+}
+
+// Fallback journal rendering (original implementation)
+function renderJournalFallback(activeTab = 'all') {
     if (!journalContentEl) return;
 
     const searchEl = document.getElementById('journal-search-input');
@@ -535,6 +578,29 @@ function renderJournal(activeTab = 'all') {
     
     // Content based on active tab
     if (activeTab === 'all' || activeTab === 'quests') {
+        // Ensure data structure is correct before attempting to filter
+        if (!gameData.player.quests) {
+            gameData.player.quests = { active: [], completed: [] };
+        } else {
+            // Fix the completed quests being an object instead of array
+            if (typeof gameData.player.quests.completed === 'object' && !Array.isArray(gameData.player.quests.completed)) {
+                const completedArray = [];
+                for (const [key, value] of Object.entries(gameData.player.quests.completed)) {
+                    if (typeof value === 'string') {
+                        completedArray.push({ id: key, text: value, completedAt: Date.now() });
+                    } else if (typeof value === 'object') {
+                        completedArray.push({ id: key, ...value });
+                    }
+                }
+                gameData.player.quests.completed = completedArray;
+            }
+            
+            // Ensure active is array
+            if (!Array.isArray(gameData.player.quests.active)) {
+                gameData.player.quests.active = [];
+            }
+        }
+        
         const activeQuests = gameData.player.quests.active.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         const completedQuests = gameData.player.quests.completed.filter(q => (q.text || q).toLowerCase().includes(searchQuery));
         content += `
@@ -1114,6 +1180,14 @@ function activateItem(itemId) {
 
 // Toggle pin status for journal entries
 function toggleJournalPin(id) {
+    // Use centralized journal manager if available
+    if (typeof journalManager !== 'undefined' && journalManager) {
+        journalManager.togglePin(id);
+        journalManager.render(journalManager.activeTab);
+        return;
+    }
+    
+    // Fallback to original implementation
     if (gameData.player.journalPins.has(id)) {
         gameData.player.journalPins.delete(id);
     } else {
@@ -1124,5 +1198,12 @@ function toggleJournalPin(id) {
 
 // Simulated quest tracking
 function trackQuest(id) {
+    // Use centralized journal manager if available
+    if (typeof journalManager !== 'undefined' && journalManager) {
+        journalManager.trackQuest(id);
+        return;
+    }
+    
+    // Fallback
     showGameMessage(`Tracking quest: ${id}`, 'info');
 }

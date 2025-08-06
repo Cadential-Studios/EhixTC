@@ -983,3 +983,8 @@ if (typeof window !== 'undefined') {
 document.addEventListener('DOMContentLoaded', () => {
     locationManager.initialize();
 });
+
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = LocationManager;
+}

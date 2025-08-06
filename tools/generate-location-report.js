@@ -6,6 +6,10 @@
 const fs = require('fs');
 const path = require('path');
 
+// Set working directory to project root
+const projectRoot = path.join(__dirname, '..');
+process.chdir(projectRoot);
+
 const locationFilePaths = [
     'src/data/locations/frontier/westwalker_camp.json',
     'src/data/locations/frontier/griefwood_edge.json',
@@ -32,7 +36,7 @@ let regionCounts = {};
 let dangerLevels = {};
 
 locationFilePaths.forEach((filePath, index) => {
-    const fullPath = path.join(__dirname, filePath);
+    const fullPath = path.resolve(projectRoot, filePath);
     
     try {
         const content = fs.readFileSync(fullPath, 'utf8');
@@ -124,7 +128,7 @@ const expectedActions = ['shop', 'talk', 'rest', 'travel', 'explore'];
 const expectedServices = ['inn', 'healer', 'blacksmith'];
 
 locationFilePaths.forEach(filePath => {
-    const fullPath = path.join(__dirname, filePath);
+    const fullPath = path.resolve(projectRoot, filePath);
     const content = fs.readFileSync(fullPath, 'utf8');
     const locationData = JSON.parse(content);
     

@@ -549,8 +549,96 @@ async function initializeGame() {
         initializeExperienceSystem();
     }
     
+    // Initialize journal system after everything is loaded
+    if (typeof initializeModularJournalSystem === 'function') {
+        try {
+            console.log('[Main] Attempting to initialize modular journal system...');
+            console.log('[Main] Available dependencies:', {
+                initializeModularJournalSystem: !!window.initializeModularJournalSystem,
+                eventBus: !!window.eventBus,
+                BaseSystem: !!window.BaseSystem,
+                JournalSystem: !!window.JournalSystem,
+                EVENTS: !!window.EVENTS
+            });
+            await initializeModularJournalSystem(gameData);
+            console.log('✅ Modular Journal system initialized');
+        } catch (error) {
+            console.error('❌ Failed to initialize journal system:', error);
+            console.error('[Main] Error stack:', error.stack);
+            // Fallback to legacy journal system if available
+            if (typeof initializeJournalSystem === 'function') {
+                console.log('[Main] Falling back to legacy journal system...');
+                initializeJournalSystem(gameData);
+                console.log('✅ Legacy Journal system initialized as fallback');
+            }
+        }
+    } else if (typeof initializeJournalSystem === 'function') {
+        console.log('[Main] Using legacy journal system...');
+        initializeJournalSystem(gameData);
+        console.log('✅ Legacy Journal system initialized');
+    } else {
+        console.error('[Main] No journal system initialization function available!');
+    }
+    
     console.log('Game initialization complete!');
+    
+    // Auto-run journal test after a delay to ensure everything is loaded
+    setTimeout(() => {
+        if (window.testJournalSystem) {
+            console.log('🧪 Auto-running journal system test...');
+            window.testJournalSystem();
+        }
+    }, 2000); // Wait 2 seconds after game init
 }
+
+// Test function for journal system
+window.testJournalSystem = function() {
+    console.log('=== JOURNAL SYSTEM TEST ===');
+    
+    // Check if journal system is available
+    console.log('Journal System Status:', {
+        journalSystem: !!window.journalSystem,
+        initFunction: !!window.initializeModularJournalSystem,
+        eventBus: !!window.eventBus,
+        BaseSystem: !!window.BaseSystem,
+        JournalSystem: !!window.JournalSystem,
+        EVENTS: !!window.EVENTS
+    });
+    
+    // Test the data structure
+    if (window.gameData?.player?.quests) {
+        console.log('Quest Data Structure:', {
+            active: Array.isArray(window.gameData.player.quests.active),
+            completed: Array.isArray(window.gameData.player.quests.completed),
+            activeCount: window.gameData.player.quests.active?.length || 0,
+            completedCount: window.gameData.player.quests.completed?.length || 0
+        });
+        
+        // Try the filter operation that was failing
+        try {
+            const completedQuests = window.gameData.player.quests.completed.filter(q => q);
+            console.log('✅ Filter operation successful. Completed quests:', completedQuests);
+        } catch (error) {
+            console.error('❌ Filter operation failed:', error);
+        }
+    }
+    
+    // Try to render the journal
+    if (window.journalSystem && window.journalSystem.renderQuestsSection) {
+        try {
+            const questsHtml = window.journalSystem.renderQuestsSection();
+            console.log('✅ Journal rendering successful. HTML length:', questsHtml.length);
+        } catch (error) {
+            console.error('❌ Journal rendering failed:', error);
+        }
+    }
+    
+    // Show results in an alert
+    const status = window.journalSystem ? '✅ Working' : '❌ Not initialized';
+    const dataOk = window.gameData?.player?.quests?.completed?.filter ? '✅ Data OK' : '❌ Data issues';
+    
+    alert(`Journal System Test Results:\n\nSystem: ${status}\nData Structure: ${dataOk}\n\nCheck console for details.`);
+};
 
 // Start the game when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeGame);

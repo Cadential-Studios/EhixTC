@@ -35,12 +35,16 @@ const gameData = {
             waist: null,
             back: null
         },
-        quests: { active: [], completed: {} },
+        quests: { active: [], completed: [] }, // Fixed: completed should be array, not object
         lore: new Set(),
         rumors: new Set(),
         journalPins: new Set(),
         journalNotes: {},
         journal: [], // For dialogue-added journal entries
+        discoveredLocations: [], // For journal system
+        discoveredNPCs: [], // For journal system  
+        discoveredMonsters: [], // For journal system
+        discoveredEntries: {}, // For tracking discovered journal entries
         relationships: {}, // NPC relationships for dialogue system
         flags: {}, // Global flags for dialogue conditions
         stats: {

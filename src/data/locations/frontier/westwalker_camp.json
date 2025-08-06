@@ -52,8 +52,9 @@
       "description": "Rest and recover by the warm campfire"
     }
   },
-  "loot_table": "forest",
+
   "foragable": true,
+  "loot_table": "forest",
   "exploration": {
     "description": "The frontier wilderness offers many opportunities for the resourceful traveler.",
     "huntable": true,
@@ -74,5 +75,8 @@
       "You see smoke rising from Westhaven in the distance."
     ]
   },
-  "danger_level": "moderate"
+  "danger_level": "moderate",
+  "lore-data": {
+    "description":"A resting spot for travelers on the edge of the Griefwood."
+  }
 }

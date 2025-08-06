@@ -2919,9 +2919,45 @@ body.mobile-mode select {
 .journal-entry.quest.completed { border-color: #16a34a; }
 .journal-entry.lore { border-color: #0284c7; }
 .journal-entry.rumor { border-color: #7e22ce; }
+.journal-entry.location { border-color: #059669; }
+.journal-entry.item { border-color: #ea580c; }
+.journal-entry.npc { border-color: #0891b2; }
+.journal-entry.bestiary { border-color: #dc2626; }
+.journal-entry.note { border-color: #6366f1; }
 .quest-progress { height: 0.25rem; background-color: #374151; border-radius: 0.25rem; margin-top: 0.5rem; }
 .quest-progress-fill { background-color: #d97706; height: 100%; border-radius: 0.25rem; }
 .pin-btn.active { color: #fbbf24; }
+
+/* Journal link styling */
+.journal-link {
+    transition: color 0.2s ease;
+}
+.journal-link:hover {
+    text-shadow: 0 0 4px currentColor;
+}
+
+/* Journal container styling */
+.journal-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.journal-tabs {
+    flex-shrink: 0;
+}
+.journal-section {
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Modal styling for quick reference */
+#quick-reference-modal {
+    z-index: 1000;
+}
+#quick-reference-modal .bg-gray-900 {
+    max-height: 80vh;
+    overflow-y: auto;
+}
 
 /* Enhanced slider styling */
 input[type=range] {

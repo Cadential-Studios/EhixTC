@@ -354,6 +354,11 @@ class YAMLDialogueSystem {
                 case 'add_journal_entry':
                     if (!player.journal) player.journal = [];
                     player.journal.push(action.entry);
+                    
+                    // Use the centralized journal manager if available
+                    if (typeof journalManager !== 'undefined' && journalManager) {
+                        journalManager.addJournalEntry(action.entry);
+                    }
                     break;
 
                 default:

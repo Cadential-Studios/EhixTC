@@ -6,18 +6,50 @@ An interactive RPG game set in a fantasy world shaped by the celestial dance of 
 
 ```
 Ehix - The Triune Convergence/
+├── index.html                    # Main game entry point
+├── package.json                  # Project dependencies and scripts
+├── jest.config.js               # Test configuration
 │
-├── index.html              # Main game entry point
-├── index_new.html          # Updated version with organized structure
+├── src/                         # Source code and game data
+│   ├── assets/                  # Game assets
+│   │   ├── css/                 # Stylesheets
+│   │   ├── images/              # Game images and artwork
+│   │   └── js/                  # JavaScript source code
+│   │       ├── core/            # Core game logic and flow
+│   │       ├── dev/             # Developer tools and debug utilities
+│   │       ├── platform/        # Platform-specific code
+│   │       ├── systems/         # Game systems (combat, crafting, etc.)
+│   │       ├── ui/              # User interface components
+│   │       └── utils/           # Utility functions and helpers
+│   └── data/                    # Game data files (JSON, YAML)
+│       ├── dialogue/            # Conversation and story data
+│       ├── items/               # Item definitions
+│       ├── locations/           # Location data by region
+│       ├── loot_tables/         # Loot generation tables
+│       ├── npcs/                # NPC definitions
+│       └── shops/               # Shop configurations
 │
-├── assets/                 # Game assets
-│   ├── css/
-│   │   └── main.css        # Main stylesheet
-│   ├── js/
-│   │   └── main.js         # Main game script
-│   ├── images/             # Game images and artwork
-│   │   └── locations/      # Location images
-│   └── audio/              # Sound effects and music
+├── tests/                       # Test suites
+│   ├── equipment/               # Equipment system tests
+│   ├── systems/                 # Game systems tests
+│   ├── ui/                      # UI component tests
+│   └── utils/                   # Utility function tests
+│
+├── tools/                       # Development tools and utilities
+│   ├── testing/                 # Interactive testing tools
+│   └── generate-location-report.js # Location system diagnostics
+│
+├── scripts/                     # Build and development scripts
+│   └── updateVersion.js         # Version management
+│
+├── docs/                        # Documentation
+│   ├── design/                  # Design documents
+│   ├── references/              # Quick references and guides
+│   └── updates/                 # Update logs and changelogs
+│
+├── saves/                       # Save game files
+└── coverage/                    # Test coverage reports
+```
 │
 ├── data/                   # Game data (JSON files)
 │   ├── locations.json      # Location definitions
