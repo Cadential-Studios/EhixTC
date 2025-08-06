@@ -54,22 +54,8 @@ class CraftingManager {
         // Check ingredient availability
         if (recipe.ingredients) {
             for (const ingredient of recipe.ingredients) {
-                // Count total quantity of this item in inventory
-                let playerQuantity = 0;
-                gameData.player.inventory.forEach(inventoryItem => {
-                    // New structure: {item: "item_id", quantity: number}
-                    if (inventoryItem.item === ingredient.itemId) {
-                        playerQuantity += inventoryItem.quantity || 1;
-                    }
-                    // Legacy support for old structures
-                    else if (typeof inventoryItem === 'string' && inventoryItem === ingredient.itemId) {
-                        playerQuantity += 1;
-                    } else if (inventoryItem.id === ingredient.itemId) {
-                        playerQuantity += (inventoryItem.quantity || 1);
-                    }
-                });
-                
-                if (playerQuantity < ingredient.quantity) {
+                const playerItem = gameData.player.inventory.find(item => item.id === ingredient.itemId);
+                if (!playerItem || playerItem.quantity < ingredient.quantity) {
                     return false;
                 }
             }
@@ -169,49 +155,12 @@ class CraftingManager {
     // Consume recipe ingredients from inventory
     consumeIngredients(recipe) {
         for (const ingredient of recipe.ingredients) {
-            if (ingredient.consumed !== false) { // Default to consumed unless explicitly set to false
-                let remainingToConsume = ingredient.quantity;
-                
-                // Find and consume items until we've consumed the required amount
-                for (let i = gameData.player.inventory.length - 1; i >= 0 && remainingToConsume > 0; i--) {
-                    const inventoryItem = gameData.player.inventory[i];
-                    let isMatch = false;
-                    let currentQuantity = 0;
-                    
-                    // Check new structure: {item: "item_id", quantity: number}
-                    if (inventoryItem.item === ingredient.itemId) {
-                        isMatch = true;
-                        currentQuantity = inventoryItem.quantity || 1;
-                    }
-                    // Legacy support for old structures
-                    else if (typeof inventoryItem === 'string' && inventoryItem === ingredient.itemId) {
-                        isMatch = true;
-                        currentQuantity = 1;
-                    } else if (inventoryItem.id === ingredient.itemId) {
-                        isMatch = true;
-                        currentQuantity = inventoryItem.quantity || 1;
-                    }
-                    
-                    if (isMatch) {
-                        const consumeAmount = Math.min(currentQuantity, remainingToConsume);
-                        remainingToConsume -= consumeAmount;
-                        
-                        if (inventoryItem.item) {
-                            // New structure
-                            inventoryItem.quantity = currentQuantity - consumeAmount;
-                            if (inventoryItem.quantity <= 0) {
-                                gameData.player.inventory.splice(i, 1);
-                            }
-                        } else if (typeof inventoryItem === 'string') {
-                            // Legacy string item
-                            gameData.player.inventory.splice(i, 1);
-                        } else {
-                            // Legacy object structure
-                            inventoryItem.quantity = currentQuantity - consumeAmount;
-                            if (inventoryItem.quantity <= 0) {
-                                gameData.player.inventory.splice(i, 1);
-                            }
-                        }
+            if (ingredient.consumed) {
+                const itemIndex = gameData.player.inventory.findIndex(item => item.id === ingredient.itemId);
+                if (itemIndex !== -1) {
+                    gameData.player.inventory[itemIndex].quantity -= ingredient.quantity;
+                    if (gameData.player.inventory[itemIndex].quantity <= 0) {
+                        gameData.player.inventory.splice(itemIndex, 1);
                     }
                 }
             }
@@ -237,11 +186,6 @@ class CraftingManager {
                     showGameMessage(`Bonus: +${byproduct.quantity} ${byproduct.itemId.replace(/_/g, ' ')}`, 'info');
                 }
             }
-        }
-        
-        // Auto-save after successful crafting
-        if (typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
-            window.saveManager.autoSave('crafting_success', `Successfully crafted ${recipe.name}`);
         }
     }
 
@@ -279,36 +223,11 @@ class CraftingManager {
 
     // Add item to inventory
     addItemToInventory(itemId, quantity) {
-        // Find existing item with new structure: {item: "item_id", quantity: number}
-        let existingItem = gameData.player.inventory.find(inventoryItem => inventoryItem.item === itemId);
-        
+        const existingItem = gameData.player.inventory.find(item => item.id === itemId);
         if (existingItem) {
-            // Add to existing quantity
-            existingItem.quantity = (existingItem.quantity || 1) + quantity;
+            existingItem.quantity += quantity;
         } else {
-            // Check for legacy structures and convert them
-            let legacyIndex = -1;
-            for (let i = 0; i < gameData.player.inventory.length; i++) {
-                const inventoryItem = gameData.player.inventory[i];
-                if ((typeof inventoryItem === 'string' && inventoryItem === itemId) || 
-                    (inventoryItem.id === itemId)) {
-                    legacyIndex = i;
-                    break;
-                }
-            }
-            
-            if (legacyIndex !== -1) {
-                // Convert legacy item to new structure
-                const legacyItem = gameData.player.inventory[legacyIndex];
-                const legacyQuantity = typeof legacyItem === 'string' ? 1 : (legacyItem.quantity || 1);
-                gameData.player.inventory[legacyIndex] = { 
-                    item: itemId, 
-                    quantity: legacyQuantity + quantity 
-                };
-            } else {
-                // Add new item with new structure
-                gameData.player.inventory.push({ item: itemId, quantity: quantity });
-            }
+            gameData.player.inventory.push({ id: itemId, quantity: quantity });
         }
     }
 
@@ -320,21 +239,8 @@ class CraftingManager {
     // Get formatted ingredient list for a recipe
     getIngredientsList(recipe) {
         return recipe.ingredients.map(ingredient => {
-            // Count total quantity of this item in inventory
-            let playerQuantity = 0;
-            gameData.player.inventory.forEach(inventoryItem => {
-                // New structure: {item: "item_id", quantity: number}
-                if (inventoryItem.item === ingredient.itemId) {
-                    playerQuantity += inventoryItem.quantity || 1;
-                }
-                // Legacy support for old structures
-                else if (typeof inventoryItem === 'string' && inventoryItem === ingredient.itemId) {
-                    playerQuantity += 1;
-                } else if (inventoryItem.id === ingredient.itemId) {
-                    playerQuantity += (inventoryItem.quantity || 1);
-                }
-            });
-            
+            const playerItem = gameData.player.inventory.find(item => item.id === ingredient.itemId);
+            const playerQuantity = playerItem ? playerItem.quantity : 0;
             const hasEnough = playerQuantity >= ingredient.quantity;
             
             return {
@@ -362,63 +268,6 @@ class CraftingManager {
                 displayName: skill.charAt(0).toUpperCase() + skill.slice(1)
             };
         });
-    }
-
-    // Utility function to get item quantity from inventory (supports all formats)
-    getItemQuantityInInventory(itemId) {
-        let totalQuantity = 0;
-        gameData.player.inventory.forEach(inventoryItem => {
-            // New structure: {item: "item_id", quantity: number}
-            if (inventoryItem.item === itemId) {
-                totalQuantity += inventoryItem.quantity || 1;
-            }
-            // Legacy support for old structures
-            else if (typeof inventoryItem === 'string' && inventoryItem === itemId) {
-                totalQuantity += 1;
-            } else if (inventoryItem.id === itemId) {
-                totalQuantity += (inventoryItem.quantity || 1);
-            }
-        });
-        return totalQuantity;
-    }
-
-    // Utility function to convert legacy inventory items to new structure
-    convertInventoryToNewStructure() {
-        const convertedInventory = [];
-        const itemCounts = {};
-        
-        // Count all items
-        gameData.player.inventory.forEach(inventoryItem => {
-            let itemId = null;
-            let quantity = 0;
-            
-            if (inventoryItem.item) {
-                // Already new structure
-                itemId = inventoryItem.item;
-                quantity = inventoryItem.quantity || 1;
-            } else if (typeof inventoryItem === 'string') {
-                // Legacy string structure
-                itemId = inventoryItem;
-                quantity = 1;
-            } else if (inventoryItem.id) {
-                // Legacy object structure
-                itemId = inventoryItem.id;
-                quantity = inventoryItem.quantity || 1;
-            }
-            
-            if (itemId) {
-                itemCounts[itemId] = (itemCounts[itemId] || 0) + quantity;
-            }
-        });
-        
-        // Create new inventory with consolidated items
-        Object.entries(itemCounts).forEach(([itemId, quantity]) => {
-            convertedInventory.push({ item: itemId, quantity: quantity });
-        });
-        
-        // Replace old inventory
-        gameData.player.inventory = convertedInventory;
-        console.log('Inventory converted to new structure:', convertedInventory);
     }
 }
 

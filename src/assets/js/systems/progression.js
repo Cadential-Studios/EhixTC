@@ -381,11 +381,6 @@ function applyLevelUpChanges() {
     if (Array.isArray(levelUpChoices.classFeatures) && levelUpChoices.classFeatures.length > 0) {
         player.featuresGained.push(...levelUpChoices.classFeatures);
     }
-    
-    // Auto-save after level up
-    if (typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
-        window.saveManager.autoSave('level_up', `Level up to ${player.level}`);
-    }
 }
 
 /**

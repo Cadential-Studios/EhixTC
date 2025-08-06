@@ -56,74 +56,8 @@ function closePauseMenu() {
 function openSaveMenu() {
     const saveMenu = document.getElementById('save-menu');
     const list = document.getElementById('save-list');
-    if (saveMenu && list) {
-        // Use enhanced SaveManager if available
-        if (window.saveManager && window.saveManager.populateSaveSlots) {
-            // Create enhanced save interface
-            list.innerHTML = `
-                <div class="mb-4">
-                    <button id="quick-save-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded mr-2">
-                        <i class="fas fa-save"></i> Quick Save
-                    </button>
-                    <button id="new-save-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                        <i class="fas fa-plus"></i> New Save
-                    </button>
-                </div>
-                <div id="save-slots-container" class="space-y-2"></div>
-                <div class="mt-4 pt-4 border-t border-gray-600">
-                    <button id="import-save-btn" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm mr-2">
-                        <i class="fas fa-upload"></i> Import
-                    </button>
-                    <button id="clear-saves-btn" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
-                        <i class="fas fa-trash"></i> Clear All
-                    </button>
-                </div>
-            `;
-            
-            // Populate the actual save slots
-            window.saveManager.populateSaveSlots(document.getElementById('save-slots-container'));
-            
-            // Add event listeners for new buttons
-            document.getElementById('quick-save-btn')?.addEventListener('click', () => {
-                window.saveManager.saveGame('Quick Save');
-                window.saveManager.populateSaveSlots(document.getElementById('save-slots-container'));
-            });
-            
-            document.getElementById('new-save-btn')?.addEventListener('click', () => {
-                const saveName = prompt('Enter a name for your save:', `Save ${new Date().toLocaleString()}`);
-                if (saveName !== null && saveName.trim()) {
-                    window.saveManager.saveGame(saveName.trim());
-                    window.saveManager.populateSaveSlots(document.getElementById('save-slots-container'));
-                }
-            });
-            
-            document.getElementById('import-save-btn')?.addEventListener('click', () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        window.saveManager.importSave(file);
-                        setTimeout(() => {
-                            window.saveManager.populateSaveSlots(document.getElementById('save-slots-container'));
-                        }, 500);
-                    }
-                };
-                input.click();
-            });
-            
-            document.getElementById('clear-saves-btn')?.addEventListener('click', () => {
-                if (confirm('Are you sure you want to delete ALL saves? This cannot be undone.')) {
-                    window.saveManager.clearAllSaves();
-                    window.saveManager.populateSaveSlots(document.getElementById('save-slots-container'));
-                }
-            });
-        } else {
-            // Fallback to basic save interface
-            populateSaveList(list, true);
-        }
-        
+    if (saveMenu) {
+        populateSaveList(list, true);
         saveMenu.style.display = 'flex';
     }
 }
@@ -146,80 +80,30 @@ function closeSaveMenus() {
 
 function populateSaveList(container, showSaveButtons) {
     if (!container) return;
-    
-    // Use the new SaveManager if available, fallback to old method
-    let slots = [];
-    if (window.saveManager && window.saveManager.getAllSaves) {
-        slots = window.saveManager.getAllSaves();
-    } else {
-        // Fallback to old method if SaveManager not loaded yet
-        try {
-            const saves = JSON.parse(localStorage.getItem('edoria_saves') || '{}');
-            slots = Object.entries(saves).map(([key, data]) => ({
-                key,
-                data: data.data,
-                timestamp: data.timestamp,
-                name: data.name || `Save ${key.replace('save_', '')}`
-            }));
-        } catch (error) {
-            console.error('Error loading saves:', error);
-            slots = [];
-        }
-    }
-    
-    if (slots.length === 0) {
-        container.innerHTML = '<p class="text-gray-400">No saves.</p>';
-        return;
-    }
-    
+    const slots = getSaveSlots();
     container.innerHTML = slots.map((s,i)=>`<div class="flex justify-between items-center mb-2">
-            <span class="text-sm">${s.name || `Slot ${i+1}`} - ${new Date(s.timestamp).toLocaleString()} (${s.data.player.location || 'Unknown'})</span>
+            <span class="text-sm">Slot ${i+1} - ${new Date(s.timestamp).toLocaleString()} (${s.data.player.location || 'Unknown'})</span>
             <div>
-                ${showSaveButtons ? `<button class='overwrite-save-btn action-button px-2 py-1 mr-1' data-slot='${s.key || i}'>Overwrite</button>` : `<button class='load-save-btn action-button px-2 py-1 mr-1' data-slot='${s.key || i}'>Load</button>`}
-                <button class='delete-save-btn action-button px-2 py-1' data-slot='${s.key || i}'>Delete</button>
+                ${showSaveButtons ? `<button class='overwrite-save-btn action-button px-2 py-1 mr-1' data-slot='${i}'>Overwrite</button>` : `<button class='load-save-btn action-button px-2 py-1 mr-1' data-slot='${i}'>Load</button>`}
+                <button class='delete-save-btn action-button px-2 py-1' data-slot='${i}'>Delete</button>
             </div>
-        </div>`).join('');
+        </div>`).join('') || '<p class="text-gray-400">No saves.</p>';
 
     container.querySelectorAll('.load-save-btn').forEach(btn=>{
-        btn.addEventListener('click', ()=>{ 
-            const saveKey = btn.dataset.slot;
-            if (window.saveManager && window.saveManager.loadSave) {
-                window.saveManager.loadSave(saveKey);
-            } else {
-                // Fallback to old method
-                loadGame(parseInt(saveKey) || saveKey);
-            }
-            closeSaveMenus(); 
-        });
+        btn.addEventListener('click', ()=>{ loadGame(parseInt(btn.dataset.slot)); closeSaveMenus(); });
     });
     container.querySelectorAll('.overwrite-save-btn').forEach(btn=>{
         btn.addEventListener('click', ()=>{
-            const saveKey = btn.dataset.slot;
             if(confirm('Overwrite this save?')) {
-                if (window.saveManager && window.saveManager.saveGame) {
-                    const saveName = prompt('Enter a name for this save:', `Save ${saveKey.replace('save_', '')}`);
-                    if (saveName !== null) {
-                        window.saveManager.saveGame(saveName, saveKey);
-                        populateSaveList(container, showSaveButtons);
-                    }
-                } else {
-                    // Fallback to old method
-                    saveToSlot(parseInt(saveKey) || saveKey);
-                    populateSaveList(container, showSaveButtons);
-                }
+                saveToSlot(parseInt(btn.dataset.slot));
+                populateSaveList(container, showSaveButtons);
             }
         });
     });
     container.querySelectorAll('.delete-save-btn').forEach(btn=>{
         btn.addEventListener('click', ()=>{
-            const saveKey = btn.dataset.slot;
             if(confirm('Delete this save?')) {
-                if (window.saveManager && window.saveManager.deleteSave) {
-                    window.saveManager.deleteSave(saveKey);
-                } else {
-                    // Fallback to old method
-                    deleteSave(parseInt(saveKey) || saveKey);
-                }
+                deleteSave(parseInt(btn.dataset.slot));
                 populateSaveList(container, showSaveButtons);
             }
         });

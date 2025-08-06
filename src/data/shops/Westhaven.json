@@ -1,0 +1,26 @@
+{
+  "shops": [
+    {
+      "name": "Westhaven General Store",
+      "location": "Westhaven",
+      "owner": "Borin",
+      "inventory": [
+        {
+          "item": "rations",
+          "price": 10,
+          "quantity": 5
+        },
+        {
+          "item": "common_clothes",
+          "price": 25,
+          "quantity": 10
+        },
+        {
+          "item": "satchel",
+          "price": 25,
+          "quantity": 3
+        }
+      ]
+    }
+  ]
+}
