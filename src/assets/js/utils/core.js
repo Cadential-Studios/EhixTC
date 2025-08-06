@@ -35,7 +35,7 @@ const gameData = {
             waist: null,
             back: null
         },
-        quests: { active: [], completed: [] },
+        quests: { active: [], completed: {} },
         lore: new Set(),
         rumors: new Set(),
         journalPins: new Set(),
@@ -187,6 +187,19 @@ let calendarData = {};
 let effectsData = {};
 let lootTablesData = {};
 
+// Make data available globally for other modules
+window.locationsData = locationsData;
+window.scenesData = scenesData;
+window.classesData = classesData;
+window.presetCharactersData = presetCharactersData;
+window.speciesData = speciesData;
+window.recipesData = recipesData;
+window.questsData = questsData;
+window.monstersData = monstersData;
+window.calendarData = calendarData;
+window.effectsData = effectsData;
+window.lootTablesData = lootTablesData;
+
 /**
  * Base path to JSON data files. Determined at runtime by detectDataPath().
  * @type {string}
@@ -216,7 +229,8 @@ async function detectDataPath() {
 
     for (const path of candidates) {
         try {
-            const resp = await fetch(`${path}locations.json`, { cache: 'no-store' });
+            // Test with a common file that should exist
+            const resp = await fetch(`${path}classes.json`, { cache: 'no-store' });
             if (resp.ok) {
                 DATA_BASE_PATH = path;
                 return DATA_BASE_PATH;
@@ -353,7 +367,7 @@ async function loadGameData() {
 
 
         const responses = await Promise.all([
-            fetch(`${DATA_BASE_PATH}locations.json`),
+            // Note: locations are now loaded by LocationManager from individual files
             fetch(`${DATA_BASE_PATH}scenes.json`),
             fetch(`${DATA_BASE_PATH}classes.json`),
             fetch(`${DATA_BASE_PATH}preset_characters.json`),
@@ -366,11 +380,11 @@ async function loadGameData() {
             fetch(`${DATA_BASE_PATH}loot_tables/foraging.json`)
         ]);
 
-        const [locationsResponse, scenesResponse, classesResponse, presetCharactersResponse,
+        const [scenesResponse, classesResponse, presetCharactersResponse,
                speciesResponse, recipesResponse, questsResponse, monstersResponse,
                calendarResponse, effectsResponse, foragingLootResponse] = responses;
 
-        if (locationsResponse.ok) locationsData = await locationsResponse.json();
+        // Note: locationsData is now loaded by LocationManager from individual files
         if (scenesResponse.ok) scenesData = await scenesResponse.json();
         if (classesResponse.ok) classesData = await classesResponse.json();
         if (presetCharactersResponse.ok) presetCharactersData = await presetCharactersResponse.json();
@@ -574,41 +588,11 @@ function loadFallbackData() {
         };
     }
     
-    // Basic fallback locations
+    // Locations are now loaded by LocationManager from individual files
+    // This fallback is no longer needed
     if (Object.keys(locationsData).length === 0) {
-        locationsData = {
-            'westwalker_camp': {
-                name: 'Frontier Camp',
-                description: 'A rugged camp on the edge of civilization, where Westwalkers gather to share stories and trade supplies.',
-                type: 'settlement',
-                actions: [
-                    { text: 'Rest at the campfire', type: 'rest' },
-                    { text: 'Trade with merchants', type: 'trade' },
-                    { text: 'Listen to stories', type: 'lore' },
-                    { text: '<i class="ph-duotone ph-sword"></i> Test Combat', type: 'combat', target: 'test_combat' }
-                ]
-            },
-            'leonin_encampment': {
-                name: 'M\'ra Kaal Encampment',
-                description: 'A spiritual gathering place of the Leonin, where ancient traditions are honored and the spirits are consulted.',
-                type: 'settlement',
-                actions: [
-                    { text: 'Meditate with the spirits', type: 'meditation' },
-                    { text: 'Train with warriors', type: 'training' },
-                    { text: 'Seek guidance from elders', type: 'guidance' }
-                ]
-            },
-            'gaian_library': {
-                name: 'Archive of Knowledge',
-                description: 'A grand library containing the collected wisdom of the Gaian Empire, where scholars pursue ancient mysteries.',
-                type: 'library',
-                actions: [
-                    { text: 'Research ancient lore', type: 'research' },
-                    { text: 'Study magical texts', type: 'study' },
-                    { text: 'Consult with librarians', type: 'consultation' }
-                ]
-            }
-        };
+        console.warn('⚠️ No location data found. LocationManager should handle location loading.');
+        // The LocationManager will populate locationsData when initialized
     }
     
     console.log('Fallback data loaded successfully');
@@ -944,44 +928,3 @@ function showInfoBox(message, type = 'info') {
 
     }, 3000);
 }
-
-/**
- * Complete a quest and trigger auto-save
- * @param {string} questId - The ID of the quest to complete
- * @param {string} questText - The display text for the quest
- * @param {Object} additionalData - Any additional quest data
- */
-window.completeQuest = function(questId, questText, additionalData = {}) {
-    if (!gameData.player.quests.completed) {
-        gameData.player.quests.completed = [];
-    }
-    
-    // Remove from active quests if present
-    if (gameData.player.quests.active) {
-        gameData.player.quests.active = gameData.player.quests.active.filter(quest => 
-            (quest.id || quest) !== questId
-        );
-    }
-    
-    // Add to completed quests
-    const completedQuest = {
-        id: questId,
-        text: questText,
-        completedAt: Date.now(),
-        ...additionalData
-    };
-    
-    gameData.player.quests.completed.push(completedQuest);
-    
-    // Show notification
-    showInfo(`Quest completed: ${questText}`);
-    
-    // Auto-save on quest completion
-    if (typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
-        window.saveManager.autoSave('quest_complete', `Completed quest: ${questText}`);
-    }
-    
-    console.log(`✅ Quest completed: ${questText}`);
-    
-    return completedQuest;
-};

@@ -37,6 +37,97 @@ function renderScene(sceneId) {
 }
 
 function renderLocation(locationId) {
+    // Use LocationManager if available, fallback to legacy system
+    if (window.locationManager) {
+        const location = window.locationManager.getLocation(locationId);
+        if (!location) {
+            showGameMessage(`Location "${locationId}" not found.`, 'error');
+            return;
+        }
+
+        const previousLocation = gameData.player.location;
+        window.locationManager.setCurrentLocation(locationId);
+        gameData.story.currentScene = null;
+        
+        // Auto-save on location change (except for initial game load)
+        if (previousLocation && previousLocation !== locationId && typeof window !== 'undefined' && window.saveManager && window.saveManager.autoSave) {
+            window.saveManager.autoSave('location_change', `Moved to ${location.name}`);
+        }
+        
+        // Render enhanced location interface
+        mainContentEl.innerHTML = `
+            <div class="location-container">
+                ${location.image ? `<div class="mb-4 rounded-lg overflow-hidden">
+                    <img src="${location.image}" alt="${location.name}" class="w-full h-48 object-cover">
+                </div>` : ''}
+                
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-cinzel text-2xl text-white mb-1">${location.name}</h2>
+                        <div class="flex items-center gap-2 text-sm text-gray-400">
+                            ${RegionUtils ? RegionUtils.getRegionInfo(location.region).createBadge('mr-2') : `<span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">${location.region || 'Unknown'}</span>`}
+                            ${location.tags ? location.tags.map(tag => `<span class="px-2 py-1 bg-gray-700 rounded text-xs">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                    <button id="location-menu-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg">
+                        <i class="fas fa-map"></i> Location Menu
+                    </button>
+                </div>
+                
+                <p class="text-gray-300 mb-6">${location.description}</p>
+                
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-auto" id="location-actions">
+                    <!-- Actions will be populated by LocationManager -->
+                </div>
+            </div>
+        `;
+
+        // Populate actions using LocationManager
+        const actions = window.locationManager.getLocationActions(locationId);
+        const actionsContainer = document.getElementById('location-actions');
+        
+        if (actionsContainer && actions.length > 0) {
+            actionsContainer.innerHTML = actions.map((action, index) => `
+                <button class="enhanced-action-btn action-button p-4 rounded-lg transition-all hover:scale-105"
+                        data-type="${action.type}"
+                        data-subtype="${action.subtype || ''}"
+                        data-target="${action.target || ''}"
+                        data-info="${action.info || ''}"
+                        data-cost="${action.cost || 0}"
+                        data-index="${index}">
+                    ${action.icon ? `<i class="${action.icon} text-xl mb-2 block"></i>` : ''}
+                    <span class="font-cinzel text-lg block">${action.text}</span>
+                    ${action.description ? `<span class="text-xs text-gray-400 mt-1 block">${action.description}</span>` : ''}
+                </button>
+            `).join('');
+        }
+
+        // Add location menu button handler
+        document.getElementById('location-menu-btn')?.addEventListener('click', () => {
+            window.locationManager.showLocationModal(locationId);
+        });
+
+        // Bind action buttons
+        document.querySelectorAll('.enhanced-action-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const btn = e.currentTarget;
+                const type = btn.dataset.type;
+                const target = btn.dataset.target;
+                
+                // Handle enhanced actions
+                if (window.locationManager && ['shops', 'npcs', 'travel_modal', 'service', 'explore'].includes(type)) {
+                    window.locationManager.handleLocationAction(btn, locationId);
+                } else {
+                    // Fallback to legacy action handling
+                    handleActionButton(e);
+                }
+            });
+        });
+        
+        return;
+    }
+
+    // Legacy fallback rendering
     const location = locationsData[locationId];
     if (!location) return;
 
@@ -127,7 +218,7 @@ function handleActionButton(e) {
             if (locationsData[target]) {
                 renderLocation(target);
             } else {
-                showGameMessage(`Location "${target}" not found. Travel system needs this location to be defined in locations.json.`, 'warning');
+                showGameMessage(`Location "${target}" not found. Travel system needs this location to be defined in location files.`, 'warning');
             }
             break;
             
