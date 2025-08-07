@@ -31,7 +31,8 @@ function createDialogueTestButton() {
 // Create the test button when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Wait a bit for other systems to load
-    setTimeout(createDialogueTestButton, 2000);
+    // Disabled test button for production
+    // setTimeout(createDialogueTestButton, 2000);
 });
 
 // Also add to developer console commands

@@ -15,7 +15,7 @@ class JournalSystem extends BaseSystem {
             lore: new LoreSystem(),
             locations: new LocationSystem(),
             npcs: new NPCSystem(),
-            quests: new QuestJournalSystem(), // Renamed to avoid conflicts
+            quests: new QuestSystem(), // Fixed class name
             notes: new NotesSystem(),
             calendar: new CalendarSystem()
         };
