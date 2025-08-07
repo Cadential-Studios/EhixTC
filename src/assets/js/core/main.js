@@ -11,9 +11,26 @@ if (!window.showForagingProgressWithDice) {
 console.log('🎮 Main.js loaded successfully');
 
 // Initialize Data Manager and register core game data
+console.log('[Main] Checking DataManager availability:', {
+    DataManagerExists: typeof DataManager !== 'undefined',
+    DataManagerClass: DataManager,
+    gameDataExists: typeof gameData !== 'undefined'
+});
+
 if (typeof DataManager !== 'undefined') {
+    console.log('[Main] Creating DataManager instance...');
     window.dataManager = new DataManager();
+    console.log('[Main] DataManager created:', !!window.dataManager);
     dataManager.set('gameData', gameData);
+    console.log('[Main] GameData set in DataManager');
+    
+    // Test DataManager functionality
+    console.log('[Main] Testing DataManager functionality:');
+    console.log('- DataManager has set method:', typeof window.dataManager.set === 'function');
+    console.log('- DataManager has get method:', typeof window.dataManager.get === 'function');
+    console.log('- DataManager cache size:', window.dataManager.cache?.size || 'no cache');
+} else {
+    console.error('[Main] DataManager class not available!');
 }
 
 // Helper function to map class skills to game skills
@@ -559,6 +576,11 @@ async function initializeGame() {
     if (typeof initializeModularJournalSystem === 'function') {
         try {
             console.log('[Main] Attempting to initialize modular journal system...');
+            console.log('[Main] DataManager status before journal init:', {
+                windowDataManager: !!window.dataManager,
+                dataManagerType: typeof window.dataManager,
+                dataManagerInstance: window.dataManager
+            });
             console.log('[Main] Available dependencies:', {
                 initializeModularJournalSystem: !!window.initializeModularJournalSystem,
                 eventBus: !!window.eventBus,
@@ -630,10 +652,14 @@ window.testJournalSystem = function() {
     }
     
     // Try to render the journal
-    if (window.journalSystem && window.journalSystem.renderQuestsSection) {
+    if (window.journalSystem && window.journalSystem.render) {
         try {
-            const questsHtml = window.journalSystem.renderQuestsSection();
+            console.log('Testing journal render with gameData:', !!window.gameData);
+            console.log('Testing journal render with gameData.player:', !!window.gameData?.player);
+            
+            const questsHtml = window.journalSystem.render('', 'all');
             console.log('✅ Journal rendering successful. HTML length:', questsHtml.length);
+            console.log('HTML preview:', questsHtml.substring(0, 200) + '...');
         } catch (error) {
             console.error('❌ Journal rendering failed:', error);
         }

@@ -313,10 +313,15 @@ class JournalSystem extends BaseSystem {
 
     // Main render method for journal UI
     render(searchQuery = '', activeTab = 'all') {
+        console.log('[JournalSystem] render called with:', { searchQuery, activeTab });
+        
         this.requireInitialized();
         
         const playerData = this.getPlayerData();
+        console.log('[JournalSystem] playerData retrieved:', !!playerData);
+        
         if (!playerData) {
+            console.log('[JournalSystem] No player data, returning error message');
             return '<div class="text-red-400">Error: Player data not available</div>';
         }
 
@@ -331,44 +336,93 @@ class JournalSystem extends BaseSystem {
         
         let content = '';
         
-        // Render different sections based on active tab
-        if (activeTab === 'all' || activeTab === 'quests') {
-            content += this.renderQuestsSection(playerData, searchQuery);
+        try {
+            // Render different sections based on active tab
+            if (activeTab === 'all' || activeTab === 'quests') {
+                console.log('[JournalSystem] Rendering quests section...');
+                const questsContent = this.renderQuestsSection(playerData, searchQuery);
+                console.log('[JournalSystem] Quests content:', typeof questsContent, questsContent?.length);
+                content += questsContent || '';
+            }
+            
+            if (activeTab === 'all' || activeTab === 'lore') {
+                console.log('[JournalSystem] Rendering lore section...');
+                const loreContent = this.renderLoreSection(playerData, searchQuery);
+                console.log('[JournalSystem] Lore content:', typeof loreContent, loreContent?.length);
+                content += loreContent || '';
+            }
+            
+            if (activeTab === 'all' || activeTab === 'locations') {
+                console.log('[JournalSystem] Rendering locations section...');
+                const locationsContent = this.renderLocationsSection(playerData, searchQuery);
+                console.log('[JournalSystem] Locations content:', typeof locationsContent, locationsContent?.length);
+                content += locationsContent || '';
+            }
+            
+            if (activeTab === 'all' || activeTab === 'npcs') {
+                console.log('[JournalSystem] Rendering NPCs section...');
+                const npcsContent = this.renderNPCsSection(playerData, searchQuery);
+                console.log('[JournalSystem] NPCs content:', typeof npcsContent, npcsContent?.length);
+                content += npcsContent || '';
+            }
+            
+            if (activeTab === 'all' || activeTab === 'bestiary') {
+                console.log('[JournalSystem] Rendering bestiary section...');
+                const bestiaryContent = this.renderBestiarySection(playerData, searchQuery);
+                console.log('[JournalSystem] Bestiary content:', typeof bestiaryContent, bestiaryContent?.length);
+                content += bestiaryContent || '';
+            }
+            
+            if (activeTab === 'all' || activeTab === 'notes') {
+                console.log('[JournalSystem] Rendering notes section...');
+                const notesContent = this.renderNotesSection(playerData, searchQuery);
+                console.log('[JournalSystem] Notes content:', typeof notesContent, notesContent?.length);
+                content += notesContent || '';
+            }
+            
+            console.log('[JournalSystem] Final content length:', content.length);
+            return content;
+            
+        } catch (error) {
+            console.error('[JournalSystem] Error in render method:', error);
+            return '<div class="text-red-400">Error rendering journal: ' + error.message + '</div>';
         }
-        
-        if (activeTab === 'all' || activeTab === 'lore') {
-            content += this.renderLoreSection(playerData, searchQuery);
-        }
-        
-        if (activeTab === 'all' || activeTab === 'locations') {
-            content += this.renderLocationsSection(playerData, searchQuery);
-        }
-        
-        if (activeTab === 'all' || activeTab === 'npcs') {
-            content += this.renderNPCsSection(playerData, searchQuery);
-        }
-        
-        if (activeTab === 'all' || activeTab === 'bestiary') {
-            content += this.renderBestiarySection(playerData, searchQuery);
-        }
-        
-        if (activeTab === 'all' || activeTab === 'notes') {
-            content += this.renderNotesSection(playerData, searchQuery);
-        }
-        
-        return content;
     }
 
     // Get player data safely
     getPlayerData() {
+        console.log('[JournalSystem] getPlayerData called:', {
+            hasDataManager: !!this.dataManager,
+            dataManagerType: typeof this.dataManager,
+            hasGameData: !!window.gameData,
+            hasPlayerData: !!window.gameData?.player
+        });
+        
         if (this.dataManager) {
-            return this.dataManager.get('player');
+            const playerData = this.dataManager.get('player');
+            console.log('[JournalSystem] DataManager returned:', playerData);
+            return playerData;
         }
-        return window.gameData?.player;
+        
+        const fallbackData = window.gameData?.player;
+        console.log('[JournalSystem] Fallback data:', fallbackData);
+        return fallbackData;
     }
 
     // Render quests section
     renderQuestsSection(playerData, searchQuery) {
+        // Check if playerData and quests exist
+        if (!playerData || !playerData.quests) {
+            return `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-amber-300 mb-4">
+                        <i class="fas fa-scroll mr-2"></i>Quests
+                    </h3>
+                    <div class="text-gray-400">No quest data available</div>
+                </div>
+            `;
+        }
+
         const activeQuests = (playerData.quests.active || []).filter(q => 
             (q.text || q.title || q).toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -428,6 +482,18 @@ class JournalSystem extends BaseSystem {
 
     // Render lore section
     renderLoreSection(playerData, searchQuery) {
+        // Check if playerData exists
+        if (!playerData) {
+            return `
+                <div class="journal-section mb-6">
+                    <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                        📜 Discovered Lore
+                    </h4>
+                    <div class="text-gray-400">No lore data available</div>
+                </div>
+            `;
+        }
+
         const lore = Array.from(playerData.lore || []).filter(entry => 
             entry.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -464,6 +530,18 @@ class JournalSystem extends BaseSystem {
 
     // Render locations section
     renderLocationsSection(playerData, searchQuery) {
+        // Check if playerData exists
+        if (!playerData) {
+            return `
+                <div class="journal-section mb-6">
+                    <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                        🗺️ Discovered Locations
+                    </h4>
+                    <div class="text-gray-400">No location data available</div>
+                </div>
+            `;
+        }
+
         // For now, use a basic implementation - can be enhanced with proper location discovery system
         const discoveredLocations = playerData.discoveredLocations || [];
         const filteredLocations = discoveredLocations.filter(location => 
@@ -502,6 +580,18 @@ class JournalSystem extends BaseSystem {
 
     // Render NPCs section
     renderNPCsSection(playerData, searchQuery) {
+        // Check if playerData exists
+        if (!playerData) {
+            return `
+                <div class="journal-section mb-6">
+                    <h4 class="font-cinzel text-lg text-white mb-3 flex items-center gap-2">
+                        👥 Discovered NPCs
+                    </h4>
+                    <div class="text-gray-400">No NPC data available</div>
+                </div>
+            `;
+        }
+
         // For now, use a basic implementation - can be enhanced with proper NPC discovery system
         const discoveredNPCs = playerData.discoveredNPCs || [];
         const filteredNPCs = discoveredNPCs.filter(npc => 
@@ -1784,15 +1874,36 @@ async function initializeModularJournalSystem(gameData) {
         window.journalSystem = journalSystem;
         console.log('[InitModular] JournalSystem made available globally');
         
-        // Set up dependencies manually since BaseSystem expects them to be injected
-        journalSystem.eventBus = window.eventBus;
-        journalSystem.dataManager = null; // We'll create a data manager later
+        // Check for DataManager availability
+        console.log('[InitModular] Checking dependencies:', {
+            eventBus: !!window.eventBus,
+            dataManager: !!window.dataManager,
+            dataManagerType: typeof window.dataManager,
+            dataManagerInstance: window.dataManager
+        });
+        
+        // Prepare dependencies for BaseSystem initialization
+        const dependencies = {
+            eventBus: window.eventBus,
+            dataManager: window.dataManager || null
+        };
+        
+        console.log('[InitModular] Dependencies object:', dependencies);
+        
+        // Set gameData directly (not part of BaseSystem dependencies)
         journalSystem.gameData = gameData;
         
-        console.log('[InitModular] Dependencies set up, calling initialize...');
+        console.log('[InitModular] Calling initialize with dependencies...');
         
-        // Initialize using BaseSystem pattern (no parameters)
-        await journalSystem.initialize();
+        // Initialize using BaseSystem pattern with proper dependencies
+        await journalSystem.initialize(dependencies);
+        
+        console.log('[InitModular] After initialization, checking journal system state:', {
+            eventBus: !!journalSystem.eventBus,
+            dataManager: !!journalSystem.dataManager,
+            dataManagerType: typeof journalSystem.dataManager,
+            gameData: !!journalSystem.gameData
+        });
         
         console.log('✅ Modular Journal System initialized successfully');
         
@@ -1835,7 +1946,6 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Make available globally in browser
 if (typeof window !== 'undefined') {
-    window.JournalManager = JournalManager;
     window.JournalSystem = JournalSystem; // Export new system class
     window.initializeJournalSystem = initializeJournalSystem;
     window.initializeModularJournalSystem = initializeModularJournalSystem;

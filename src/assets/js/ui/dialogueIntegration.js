@@ -490,8 +490,13 @@ async function initializeDialogueSystem() {
         // Ensure js-yaml is loaded
         await ensureYAMLLoaded();
         
+        // Create dialogueIntegration instance if not exists
+        if (!window.dialogueIntegration) {
+            window.dialogueIntegration = new DialogueIntegration();
+        }
+        
         // Load all dialogue files
-        await dialogueIntegration.loadDialogueFiles();
+        await window.dialogueIntegration.loadDialogueFiles();
         
         console.log('Dialogue system fully initialized and ready');
         return true;
