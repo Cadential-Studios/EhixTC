@@ -1,0 +1,394 @@
+/* ====================================
+   TITLE SCREEN REDESIGN - PHASE 1
+   Edoria: The Triune Convergence
+   ==================================== */
+
+/* ========== VARIABLES ========== */
+:root {
+    /* Color Palette */
+    --deep-space-blue: #0f0f23;
+    --cosmic-purple: #2d1b69;
+    --starlight-white: #f8f8ff;
+    --silver-mist: #c0c0c8;
+    
+    /* Moon Colors */
+    --moon-edyria: #6a8dff;
+    --moon-kapra: #ff6a6a;
+    --moon-enia: #fffb8a;
+    
+    /* Accent Colors */
+    --mystical-gold: #d4af37;
+    --shadow-purple: #4a4a6a;
+    --ethereal-glow: rgba(255, 255, 255, 0.1);
+    
+    /* Typography */
+    --font-title: 'Cinzel', serif;
+    --font-body: system-ui, -apple-system, sans-serif;
+    
+    /* Spacing - Optimized for PC screens */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Effects */
+    --glow-radius: 20px;
+    --transition-speed: 0.3s;
+}
+
+/* ========== TITLE SCREEN CONTAINER ========== */
+#start-screen {
+    position: relative;
+    background: linear-gradient(135deg, var(--deep-space-blue) 0%, var(--cosmic-purple) 100%);
+    overflow: hidden;
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm);
+}
+
+/* Background Effects */
+#start-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(2px 2px at 20px 30px, var(--starlight-white), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--starlight-white), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--starlight-white), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--starlight-white), transparent),
+        radial-gradient(2px 2px at 160px 30px, var(--starlight-white), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    opacity: 0.3;
+    animation: starTwinkle 8s ease-in-out infinite alternate;
+    z-index: 1;
+}
+
+@keyframes starTwinkle {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+/* ========== HEADER UTILITIES ========== */
+.title-header {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.header-right {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.utility-btn {
+    background: var(--ethereal-glow);
+    border: 1px solid var(--shadow-purple);
+    color: var(--silver-mist);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all var(--transition-speed) ease;
+    backdrop-filter: blur(10px);
+}
+
+.utility-btn:hover {
+    background: var(--shadow-purple);
+    color: var(--starlight-white);
+    box-shadow: 0 0 var(--glow-radius) var(--ethereal-glow);
+}
+
+/* ========== MOON CONTAINER ========== */
+#start-screen .moon-container {
+    position: relative;
+    width: 280px;
+    height: 160px;
+    margin-bottom: var(--spacing-lg);
+    z-index: 5;
+}
+
+#start-screen .moon {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    box-shadow: 0 0 var(--glow-radius) currentColor;
+    transition: all var(--transition-speed) ease;
+}
+
+#start-screen .moon-edyria {
+    background: var(--moon-edyria);
+    color: var(--moon-edyria);
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#start-screen .moon-kapra {
+    background: var(--moon-kapra);
+    color: var(--moon-kapra);
+    bottom: 15px;
+    left: 15px;
+}
+
+#start-screen .moon-enia {
+    background: var(--moon-enia);
+    color: var(--moon-enia);
+    bottom: 15px;
+    right: 15px;
+}
+
+#start-screen .moon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 calc(var(--glow-radius) * 1.5) currentColor;
+}
+
+/* ========== TITLE SECTION ========== */
+.title-section {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    z-index: 5;
+    position: relative;
+}
+
+.main-title {
+    font-family: var(--font-title);
+    font-size: clamp(2.5rem, 7vw, 6rem);
+    font-weight: bold;
+    color: var(--starlight-white);
+    text-shadow: 0 0 var(--glow-radius) var(--ethereal-glow);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-xs);
+    animation: titleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    0% { text-shadow: 0 0 var(--glow-radius) var(--ethereal-glow); }
+    100% { text-shadow: 0 0 calc(var(--glow-radius) * 1.5) var(--mystical-gold); }
+}
+
+.subtitle {
+    font-family: var(--font-title);
+    font-size: clamp(1rem, 3vw, 2.25rem);
+    color: var(--silver-mist);
+    margin-bottom: var(--spacing-sm);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1s forwards;
+}
+
+.tagline {
+    font-family: var(--font-body);
+    font-size: clamp(0.875rem, 1.8vw, 1.1rem);
+    color: var(--silver-mist);
+    max-width: 580px;
+    margin: 0 auto var(--spacing-md);
+    line-height: 1.5;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1.5s forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== BUTTON SECTION ========== */
+.button-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    z-index: 5;
+    position: relative;
+}
+
+.primary-btn {
+    background: linear-gradient(45deg, var(--mystical-gold), var(--moon-enia));
+    border: none;
+    color: var(--deep-space-blue);
+    font-family: var(--font-title);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: bold;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 2s forwards;
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(212, 175, 55, 0.5);
+}
+
+.secondary-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 2.5s forwards;
+}
+
+.secondary-btn {
+    background: var(--ethereal-glow);
+    border: 1px solid var(--shadow-purple);
+    color: var(--silver-mist);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    backdrop-filter: blur(10px);
+}
+
+.secondary-btn:hover {
+    background: var(--shadow-purple);
+    color: var(--starlight-white);
+    box-shadow: 0 0 15px var(--ethereal-glow);
+}
+
+/* ========== VERSION INFO ========== */
+.version-info {
+    position: absolute;
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    color: var(--shadow-purple);
+    font-size: 0.75rem;
+    opacity: 0.7;
+    z-index: 5;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+/* PC Screen Optimization (768px and up) */
+@media (min-width: 768px) and (max-height: 800px) {
+    #start-screen .moon-container {
+        width: 240px;
+        height: 120px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    #start-screen .moon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .main-title {
+        font-size: clamp(2rem, 6vw, 4.5rem);
+    }
+    
+    .subtitle {
+        font-size: clamp(0.875rem, 2.5vw, 1.75rem);
+    }
+    
+    .tagline {
+        font-size: clamp(0.75rem, 1.5vw, 1rem);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .title-section {
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 768px) {
+    #start-screen .moon-container {
+        width: 250px;
+        height: 150px;
+    }
+    
+    #start-screen .moon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .secondary-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .title-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    #start-screen {
+        padding: var(--spacing-sm);
+    }
+    
+    #start-screen .moon-container {
+        width: 200px;
+        height: 120px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    #start-screen .moon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .utility-btn,
+    .secondary-btn {
+        padding: var(--spacing-xs);
+        font-size: 0.75rem;
+    }
+}
+
+/* ========== DEVELOPMENT ELEMENTS ========== */
+.dev-buttons {
+    position: absolute;
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    z-index: 10;
+}
+
+.dev-btn {
+    background: rgba(34, 197, 94, 0.8);
+    border: 1px solid #16a34a;
+    color: white;
+    font-size: 0.75rem;
+    padding: var(--spacing-xs);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    backdrop-filter: blur(10px);
+}
+
+.dev-btn:hover {
+    background: #16a34a;
+}
+
+/* Hide dev buttons in production */
+body.production .dev-buttons {
+    display: none;
+}

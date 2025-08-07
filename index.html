@@ -15,6 +15,7 @@
     
     <!-- Game Stylesheets -->
     <link rel="stylesheet" href="src/assets/css/main.css">
+    <link rel="stylesheet" href="src/assets/css/title-screen.css">
 </head>
 <body class="min-h-screen">
 
@@ -22,18 +23,55 @@
 
         <!-- START SCREEN -->
         <div id="start-screen" class="flex flex-col items-center justify-center text-center flex-grow min-h-screen p-4">
-            <!-- Mobile Mode Toggle -->
-            <div class="mobile-toggle-container absolute top-4 right-4 z-20">
-                <button id="mobile-mode-toggle" class="mobile-toggle-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors" onclick="toggleMobileMode()">
-                    <i class="ph-duotone ph-device-mobile"></i>
-                    <span id="mobile-toggle-text">Mobile Mode</span>
-                </button>
+            <!-- Header Utilities -->
+            <div class="title-header">
+                <div class="header-left">
+                    <button class="utility-btn" onclick="toggleSettings()">
+                        <i class="ph-duotone ph-gear-six"></i> Settings
+                    </button>
+                    <button class="utility-btn" onclick="toggleAudio()">
+                        <i class="ph-duotone ph-speaker-high"></i> Audio
+                    </button>
+                </div>
+                <div class="header-right">
+                    <button id="mobile-mode-toggle" class="utility-btn" onclick="toggleMobileMode()">
+                        <i class="ph-duotone ph-device-mobile"></i>
+                        <span id="mobile-toggle-text">Mobile</span>
+                    </button>
+                </div>
             </div>
+
+            <!-- Three Moons Centerpiece -->
+            <div class="moon-container">
+                <div class="moon moon-edyria" title="Edyria - Moon of Magic"></div>
+                <div class="moon moon-kapra" title="Kapra - Moon of Passion"></div>
+                <div class="moon moon-enia" title="Enia - Moon of Wisdom"></div>
+            </div>
+
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="main-title">EDORIA</h1>
+                <h2 class="subtitle">The Triune Convergence</h2>
+                <p class="tagline">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
+            </div>
+
+            <!-- Button Section -->
+            <div class="button-section">
+                <button id="start-game-button" class="primary-btn" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">
+                    <i class="ph-duotone ph-play"></i> Begin Journey
+                </button>
+                
+                <div class="secondary-buttons">
+                    <button class="secondary-btn" onclick="loadGame()">Continue</button>
+                    <button class="secondary-btn" onclick="showNewGameOptions()">New Game</button>
+                    <button class="secondary-btn" onclick="showGameSettings()">Settings</button>
+                </div>
+            </div>
+
+            <!-- Version Info -->
+            <div id="version-info" class="version-info cursor-pointer" title="View build details"></div>
             
-            <h1 class="font-cinzel text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4">EDORIA</h1>
-            <h2 class="font-cinzel text-xl sm:text-2xl md:text-3xl text-gray-300 mb-6 sm:mb-8">The Triune Convergence</h2>
-            <p class="max-w-2xl mx-auto mb-2 sm:mb-4 text-gray-300 text-base sm:text-lg px-4">An interactive story set in a world shaped by the celestial dance of three moons. Your choices will determine the fate of nations as the realms prepare for a once-in-a-generation alignment.</p>
-            <div id="version-info" class="text-gray-400 text-sm mb-6 cursor-pointer" title="View build details"></div>
+            <!-- Version Overlay (unchanged) -->
             <div id="version-overlay" class="version-overlay" style="display:none;">
                 <div class="version-popup">
                     <p id="build-date" class="mb-2"></p>
@@ -44,12 +82,16 @@
                     </div>
                 </div>
             </div>
-            <button id="start-game-button" class="start-button font-cinzel text-lg sm:text-xl font-bold text-white py-3 px-8 sm:py-4 sm:px-12 rounded-lg shadow-lg transition-transform duration-300" onclick="console.log('Inline click triggered'); try { document.getElementById('start-screen').style.display='none'; document.getElementById('character-creation-screen').style.display='flex'; console.log('Screen transition completed'); } catch(e) { console.error('Screen transition error:', e); }">Begin</button>
-            
-            <!-- Temporary Test Button for Journal System -->
-            <button id="test-journal-button" class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm" onclick="testJournalSystem()">Test Journal System</button>
-            
-            <button id="check-updates-btn" class="mt-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">Check for Updates</button>
+
+            <!-- Development Buttons -->
+            <div class="dev-buttons">
+                <button id="test-journal-button" class="dev-btn" onclick="testJournalSystem()">
+                    <i class="ph-duotone ph-bug"></i> Test Journal
+                </button>
+                <button id="check-updates-btn" class="dev-btn" onclick="checkForUpdates()">
+                    <i class="ph-duotone ph-download"></i> Check Updates
+                </button>
+            </div>
         </div>
 
         <!-- CHARACTER CREATION SCREEN -->
@@ -367,6 +409,7 @@
     <script src="src/assets/js/ui/activeEffectsDisplay.js"></script>
     <script src="src/assets/js/ui/statAnimator.js"></script>
     <script src="src/assets/js/ui/skillColors.js"></script>
+    <script src="src/assets/js/ui/title-screen.js"></script>
     <script src="src/assets/js/ui/ui.js"></script>
 
     <!-- Version Display -->
