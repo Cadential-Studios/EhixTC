@@ -10,6 +10,12 @@ if (!window.showForagingProgressWithDice) {
 
 console.log('🎮 Main.js loaded successfully');
 
+// Initialize Data Manager and register core game data
+if (typeof DataManager !== 'undefined') {
+    window.dataManager = new DataManager();
+    dataManager.set('gameData', gameData);
+}
+
 // Helper function to map class skills to game skills
 function mapClassSkillToGameSkill(classSkill) {
     const skillMapping = {
